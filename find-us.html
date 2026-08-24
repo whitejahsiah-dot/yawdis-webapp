@@ -272,9 +272,9 @@ async function initMap() {
   infoWindow = new google.maps.InfoWindow();
 
   const stores = await StoresStore.getAll();
-  markers = stores.map(store => {
+  markers = stores.filter(store => Number.isFinite(Number(store.lat)) && Number.isFinite(Number(store.lng))).map(store => {
     const marker = new google.maps.Marker({
-      position: { lat: store.lat, lng: store.lng },
+      position: { lat: Number(store.lat), lng: Number(store.lng) },
       map, title: store.name
     });
     marker.storeId = store.id;

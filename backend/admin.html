@@ -479,15 +479,15 @@ function openStoreForm(store) {
         </div>
         <div class="form-row-pair">
           <div class="form-row">
-            <label for="store-lat">Latitude</label>
-            <input type="number" step="any" id="store-lat" required value="${store ? store.lat : ''}" placeholder="45.4215" />
+            <label for="store-lat">Latitude (optional)</label>
+            <input type="number" step="any" id="store-lat" value="${store && store.lat != null ? store.lat : ''}" placeholder="45.4215" />
           </div>
           <div class="form-row">
-            <label for="store-lng">Longitude</label>
-            <input type="number" step="any" id="store-lng" required value="${store ? store.lng : ''}" placeholder="-75.6972" />
+            <label for="store-lng">Longitude (optional)</label>
+            <input type="number" step="any" id="store-lng" value="${store && store.lng != null ? store.lng : ''}" placeholder="-75.6972" />
           </div>
         </div>
-        <p class="form-hint">Tip: search the address on <a href="https://www.google.com/maps" target="_blank" rel="noopener">Google Maps</a>, right-click the exact spot, and click the coordinates shown at the top to copy them.</p>
+        <p class="form-hint">Coordinates are optional. Without them, the store appears in the list but not as a map marker. To add them later, search the address on <a href="https://www.google.com/maps" target="_blank" rel="noopener">Google Maps</a>, right-click the exact spot, and copy the coordinates shown at the top.</p>
         <label style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;display:block;margin:16px 0 8px;">Products available here</label>
         <div id="product-rows">${products.map(productRowHtml).join('')}</div>
         <button type="button" class="add-product-row" id="add-product-row-btn">+ Add product</button>
@@ -522,16 +522,24 @@ function handleStoreFormSubmit(e) {
   e.preventDefault();
   const name = document.getElementById('store-name').value.trim();
   const address = document.getElementById('store-address').value.trim();
-  const lat = parseFloat(document.getElementById('store-lat').value);
-  const lng = parseFloat(document.getElementById('store-lng').value);
-  if (!name || !address || Number.isNaN(lat) || Number.isNaN(lng)) return;
+  const latValue = document.getElementById('store-lat').value.trim();
+  const lngValue = document.getElementById('store-lng').value.trim();
+  const hasLat = latValue !== '';
+  const hasLng = lngValue !== '';
+  const lat = hasLat ? parseFloat(latValue) : null;
+  const lng = hasLng ? parseFloat(lngValue) : null;
+  if (!name || !address || hasLat !== hasLng || (hasLat && (Number.isNaN(lat) || Number.isNaN(lng)))) return;
 
   const products = Array.from(document.querySelectorAll('.product-row')).map(row => ({
     productId: row.querySelector('.product-select').value,
     aisle: row.querySelector('.aisle-input').value.trim()
   })).filter(p => p.productId && p.aisle);
 
-  const record = { name, address, lat, lng, products };
+  const record = { name, address, products };
+  if (hasLat) {
+    record.lat = lat;
+    record.lng = lng;
+  }
   const submitBtn = e.target.querySelector('[type="submit"]');
   submitBtn.disabled = true;
   (editingStoreId ? StoresStore.update(editingStoreId, record) : StoresStore.add(record))
@@ -566,7 +574,7 @@ async function renderStores() {
         <div>
           <div class="store-name">${escHtml(store.name)}</div>
           <div class="store-address">${escHtml(store.address)}</div>
-          <div class="store-coords">${store.lat}, ${store.lng}</div>
+          ${store.lat != null && store.lng != null ? `<div class="store-coords">${store.lat}, ${store.lng}</div>` : '<div class="store-coords">No map coordinates</div>'}
         </div>
       </div>
       <div class="store-products">

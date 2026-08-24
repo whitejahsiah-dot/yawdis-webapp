@@ -77,7 +77,7 @@ Full-featured static storefront for Yawdi's Canadian condiment brand. No framewo
 
 ### 📍 Where You Can Find Us (`find-us.html`)
 - Store locator page linked from the main navbar on every page.
-- Stores are managed entirely from the **"Stores" tab in `backend/admin.html`** — add, edit, or delete locations (name, address, latitude/longitude, and a product + aisle list per store) with no code editing required. Changes save to the shared Firestore `stores` collection and `find-us.html` reads from that collection directly.
+- Stores are managed entirely from the **"Stores" tab in `backend/admin.html`** — add, edit, or delete locations (name, address, optional latitude/longitude, and a product + aisle list per store) with no code editing required. Changes save to the shared Firestore `stores` collection and `find-us.html` reads from that collection directly. Stores without coordinates still appear in the list but do not receive a map marker.
 - `stores-data.js` contains optional one-time sample seed data for an empty Firestore collection; it is not the live source of truth after seeding.
 - Uses the Google Maps JavaScript API. **Setup required** (map shows a friendly "coming soon" message until configured):
   1. In [Google Cloud Console](https://console.cloud.google.com/), enable the **Maps JavaScript API** for your project.
