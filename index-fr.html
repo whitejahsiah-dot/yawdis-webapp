@@ -1,0 +1,365 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Les gel&eacute;es de poivrons et marinades jerk de Yawdi's &mdash; saveurs carib&eacute;ennes authentiques, fait au Canada." />
+  <title>Yawdi's | &Eacute;picerie de saveurs insulaires</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- -- NAV -- -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <a href="index-fr.html">Accueil</a>
+      <a href="shop.html">Boutique</a>
+      <a href="community.html">Recettes</a>
+      <a href="story.html">Notre histoire</a>
+      <a href="find-us.html" title="Où nous trouver">Nous trouver</a>
+    </div>
+    <div class="nav-wordmark">
+      <a href="index-fr.html"><em>Yawdi's</em></a>
+      <div class="nav-underline">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="nav-icons">
+        <a href="#" aria-label="Rechercher">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </a>
+        <a href="#" class="cart-link" aria-label="Panier">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="cart-badge">0</span>
+        </a>
+        <a href="index.html" style="font-size:0.78rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">EN</a>
+      </div>
+    </div>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" />
+    <label for="nav-toggle" class="nav-hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </label>
+  </div>
+</nav>
+
+<!-- -- HERO -- -->
+<section class="hero-home">
+  <div class="hero-home-text">
+    <p class="eyebrow left">&#9829; Favoris d&apos;&eacute;picerie insulaire</p>
+    <h1>Saveurs carib&eacute;ennes<br />audacieuses,<br /><em>Fait au Canada.</em></h1>
+    <p>Gel&eacute;es de poivrons et marinades jerk pour apporter douceur &eacute;pic&eacute;e et &acirc;me insulaire &agrave; chaque repas &mdash; du gril au plateau de fromages.</p>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;">
+      <a href="shop.html" class="btn btn-maroon">Voir tous les produits</a>
+      <a href="bundle.html" class="btn btn-outline">Offre group&eacute;e</a>
+    </div>
+  </div>
+  <div class="hero-home-images">
+    <img class="hero-jar-left"  src="content/SiloImages/Red-Pepper-Silo-NoShadow.png"  alt="Gel&eacute;e de poivron rouge" />
+    <img class="hero-jar-main"  src="content/SiloImages/Mango_new-Mockup.png"           alt="Gel&eacute;e de mangue et piment" />
+    <img class="hero-jar-right" src="content/SiloImages/Lavender-Silo-NoShadow.png"     alt="Gel&eacute;e de lavande et piment" />
+  </div>
+</section>
+
+<!-- -- PRODUITS -- -->
+<section class="product-strip">
+  <div class="product-strip-inner">
+    <div class="product-strip-header">
+      <p class="eyebrow">Nos produits</p>
+      <h2>Cinq saveurs audacieuses. Des possibilit&eacute;s infinies.</h2>
+      <p>Chaque pot est fabriqu&eacute; au Canada avec de vrais piments Scotch Bonnet et les meilleurs ingr&eacute;dients.</p>
+    </div>
+    <div class="product-tiles">
+
+      <div class="product-tile">
+        <div class="product-tile-img">
+          <img src="content/SiloImages/Mango-Silo-NoShadow.png" alt="Gel&eacute;e de mangue et piment" />
+        </div>
+        <div class="product-tile-info">
+          <h3>Gel&eacute;e de mangue et piment</h3>
+          <p>Douceur tropicale &eacute;pic&eacute;e pour planches, glac&eacute;s et Brie.</p>
+          <div class="product-tile-btns">
+            <a href="shop.html#mango" class="btn btn-outline btn-sm">Voir</a>
+            <button class="btn btn-maroon btn-sm" data-cart-id="mango">Ajouter</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-tile">
+        <div class="product-tile-img">
+          <img src="content/SiloImages/Red-Pepper-Silo-NoShadow.png" alt="Gel&eacute;e de poivron rouge" />
+        </div>
+        <div class="product-tile-info">
+          <h3>Gel&eacute;e de poivron rouge</h3>
+          <p>Sucr&eacute;e, acidul&eacute;e et cors&eacute;e aux vrais poivrons.</p>
+          <div class="product-tile-btns">
+            <a href="shop.html#red-pepper" class="btn btn-outline btn-sm">Voir</a>
+            <button class="btn btn-maroon btn-sm" data-cart-id="red-pepper">Ajouter</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-tile">
+        <div class="product-tile-img">
+          <img src="content/SiloImages/JerkSilo-NoShadow.png" alt="Marinade jerk" />
+        </div>
+        <div class="product-tile-info">
+          <h3>Marinade jerk</h3>
+          <p>Le vrai de vrai &mdash; piment Scotch Bonnet et &eacute;pices insulaires.</p>
+          <div class="product-tile-btns">
+            <a href="shop.html#jerk" class="btn btn-outline btn-sm">Voir</a>
+            <button class="btn btn-maroon btn-sm" data-cart-id="jerk">Ajouter</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-tile">
+        <div class="product-tile-img">
+          <img src="content/SiloImages/Lavender-Silo-NoShadow.png" alt="Gel&eacute;e de lavande et piment" />
+        </div>
+        <div class="product-tile-info">
+          <h3>Gel&eacute;e de lavande et piment</h3>
+          <p>Douceur florale rencontre chaleur carib&eacute;enne.</p>
+          <div class="product-tile-btns">
+            <a href="shop.html#lavender" class="btn btn-outline btn-sm">Voir</a>
+            <button class="btn btn-maroon btn-sm" data-cart-id="lavender">Ajouter</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-tile">
+        <div class="product-tile-img">
+          <img src="content/SiloImages/PineappleSilo.png" alt="Gel&eacute;e d&apos;ananas et piment" />
+        </div>
+        <div class="product-tile-info">
+          <h3>Gel&eacute;e d&apos;ananas et piment</h3>
+          <p>Agrumes et chaleur &mdash; trempette, glac&eacute; ou garniture.</p>
+          <div class="product-tile-btns">
+            <a href="shop.html#pineapple" class="btn btn-outline btn-sm">Voir</a>
+            <button class="btn btn-maroon btn-sm" data-cart-id="pineapple">Ajouter</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- -- OFFRE GROUPEE -- -->
+<section class="promo-banner">
+  <div class="promo-banner-inner">
+    <div class="promo-banner-text">
+      <p class="eyebrow">&#127873; Offre group&eacute;e</p>
+      <h2>Achetez 4, livraison<br />gratuite&nbsp;!</h2>
+      <p>Faites le plein de vos favoris et profitez de la LIVRAISON GRATUITE sur les commandes de 4 pots ou plus. Aucun code requis.</p>
+      <a href="bundle.html" class="btn btn-white">Cr&eacute;er votre panier group&eacute;</a>
+    </div>
+    <div class="promo-banner-img">
+      <img src="content/GlamShots/Yawdis-all-jars.png" alt="Tous les pots Yawdi's" />
+    </div>
+  </div>
+</section>
+
+<!-- -- RECETTES -- -->
+<section class="section-pad" style="background:var(--cream);">
+  <div class="inner">
+    <div class="section-center">
+      <p class="eyebrow">Inspiration culinaire</p>
+      <h2>Des plats signature qui donnent<br />toujours l&apos;impression d&apos;une occasion.</h2>
+    </div>
+    <div class="recipe-row">
+
+      <article class="recipe-card" data-post-id="classic-jerk-chicken">
+        <div class="recipe-card-img jar-bg">
+          <img src="content/SiloImages/JerkSilo-NoShadow.png" alt="Marinade jerk" />
+        </div>
+        <div class="recipe-card-body">
+          <span class="recipe-tag">Grillade</span>
+          <h3>Poulet jerk classique</h3>
+          <p>Marinez toute la nuit, grillez jusqu&apos;&agrave; obtenir une belle coloration et une chair juteuse.</p>
+          <p class="recipe-made-with">Avec <span>Marinade jerk</span></p>
+          <div class="recipe-stats">
+            <span class="recipe-stat cc-like-count" data-post="classic-jerk-chicken">&#9825; 0</span>
+            <span class="recipe-stat cc-comment-count" data-post="classic-jerk-chicken">&#128172; 0</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="recipe-card" data-post-id="mango-pepper-glazed-chicken">
+        <div class="recipe-card-img jar-bg">
+          <img src="content/SiloImages/Mango-Silo-NoShadow.png" alt="Gel&eacute;e de mangue" />
+        </div>
+        <div class="recipe-card-body">
+          <span class="recipe-tag">D&icirc;ner</span>
+          <h3>Poulet glac&eacute; &agrave; la mangue</h3>
+          <p>Sucr&eacute;, &eacute;pic&eacute; et plein de saveur. Un favori de la famille&nbsp;!</p>
+          <p class="recipe-made-with">Avec <span>Gel&eacute;e de mangue et piment</span></p>
+          <div class="recipe-stats">
+            <span class="recipe-stat cc-like-count" data-post="mango-pepper-glazed-chicken">&#9825; 0</span>
+            <span class="recipe-stat cc-comment-count" data-post="mango-pepper-glazed-chicken">&#128172; 0</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="recipe-card" data-post-id="lavender-jelly-brie">
+        <div class="recipe-card-img jar-bg">
+          <img src="content/SiloImages/Lavender-Silo-NoShadow.png" alt="Gel&eacute;e de lavande" />
+        </div>
+        <div class="recipe-card-body">
+          <span class="recipe-tag">&Eacute;l&eacute;gant</span>
+          <h3>Gel&eacute;e de lavande et Brie</h3>
+          <p>Floral, sucr&eacute; et tellement &eacute;l&eacute;gant. Cette combinaison est parfaite&nbsp;!</p>
+          <p class="recipe-made-with">Avec <span>Gel&eacute;e de lavande et piment</span></p>
+          <div class="recipe-stats">
+            <span class="recipe-stat cc-like-count" data-post="lavender-jelly-brie">&#9825; 0</span>
+            <span class="recipe-stat cc-comment-count" data-post="lavender-jelly-brie">&#128172; 0</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="recipe-card" data-post-id="pineapple-pepper-pork-chops">
+        <div class="recipe-card-img jar-bg">
+          <img src="content/SiloImages/PineappleSilo.png" alt="Gel&eacute;e d&apos;ananas" />
+        </div>
+        <div class="recipe-card-body">
+          <span class="recipe-tag">BBQ</span>
+          <h3>C&ocirc;telettes de porc &agrave; l&apos;ananas</h3>
+          <p>Juteux, acidul&eacute; et d&eacute;licieux. Tellement facile &agrave; pr&eacute;parer.</p>
+          <p class="recipe-made-with">Avec <span>Gel&eacute;e d&apos;ananas et piment</span></p>
+          <div class="recipe-stats">
+            <span class="recipe-stat cc-like-count" data-post="pineapple-pepper-pork-chops">&#9825; 0</span>
+            <span class="recipe-stat cc-comment-count" data-post="pineapple-pepper-pork-chops">&#128172; 0</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+    <div style="text-align:center;margin-top:36px;">
+      <a href="community.html" class="btn btn-outline">Voir toutes les cr&eacute;ations</a>
+    </div>
+  </div>
+</section>
+
+<!-- -- COMMUNAUTE -- -->
+<section class="promo-banner" style="background:var(--cream-dark);color:var(--warm-text);">
+  <div class="promo-banner-inner">
+    <div class="promo-banner-img">
+      <img src="content/GlamShots/JerkMarinadeGlamShot.jpg" alt="Marinade jerk mise en sc&egrave;ne" style="border-radius:var(--radius);box-shadow:var(--shadow-md);" />
+    </div>
+    <div class="promo-banner-text">
+      <p class="eyebrow" style="color:var(--maroon);">Communaut&eacute;</p>
+      <h2 style="color:var(--maroon-dark);">Fait par vous.<br /><em>Aim&eacute; par tous.</em></h2>
+      <p style="color:var(--muted);">Partagez comment vous utilisez Yawdi&apos;s dans votre cuisine&nbsp;! Publiez vos recettes, laissez un avis et inspirez d&apos;autres membres de notre communaut&eacute; grandissante.</p>
+      <a href="community.html" class="btn btn-maroon">Partager votre cr&eacute;ation</a>
+    </div>
+  </div>
+</section>
+
+<!-- -- NOTRE HISTOIRE -- -->
+<section class="about-strip" id="about">
+  <div class="about-strip-inner">
+    <div class="about-strip-img">
+      <img src="Yawdis--scaled_1.jpeg" alt="Histoire de la marque Yawdi's" />
+    </div>
+    <div class="about-strip-text">
+      <p class="eyebrow left">Notre histoire</p>
+      <h2>Saveurs insulaires,<br />fait au Canada.</h2>
+      <p>Yawdi&apos;s est n&eacute;e d&apos;un amour pour la cuisine carib&eacute;enne audacieuse et d&apos;un d&eacute;sir de partager des saveurs insulaires authentiques avec chaque cuisine. Chaque pot est fabriqu&eacute; au Canada avec des ingr&eacute;dients domestiques et import&eacute;s s&eacute;lectionn&eacute;s pour leur saveur et leur qualit&eacute;.</p>
+      <p>De la profondeur fum&eacute;e des vrais piments Scotch Bonnet &agrave; la douceur florale de la lavande, chaque produit est con&ccedil;u pour transformer la cuisine quotidienne en c&eacute;l&eacute;bration.</p>
+      <a href="https://www.yawdi.ca" target="_blank" rel="noopener" class="btn btn-maroon">Visiter notre site complet</a>
+    </div>
+  </div>
+</section>
+
+<!-- -- BANDE DE PIED -- -->
+<div class="footer-bar">
+  <div class="footer-bar-inner">
+    <div class="footer-bar-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Fait au Canada
+    </div>
+    <div class="footer-bar-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Ingr&eacute;dients de qualit&eacute;
+    </div>
+    <div class="footer-bar-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      Fait avec amour
+    </div>
+  </div>
+</div>
+
+<!-- -- PIED DE PAGE -- -->
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="footer-brand footer-col">
+      <span class="footer-brand-name">Yawdi's</span>
+      <p style="font-size:0.88rem;margin-bottom:14px;">Saveurs insulaires pour les repas quotidiens<br />et les rassemblements m&eacute;morables.</p>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/yawdis" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a href="https://www.facebook.com/YAWDIsCa/" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Boutique</h4>
+      <ul>
+        <li><a href="shop.html">Tous les produits</a></li>
+        <li><a href="shop.html#jellies">Gel&eacute;es de piment</a></li>
+        <li><a href="shop.html#jerk">Marinade jerk</a></li>
+        <li><a href="bundle.html">Offre group&eacute;e</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Explorer</h4>
+      <ul>
+        <li><a href="community.html">Communaut&eacute;</a></li>
+        <li><a href="community.html#recipes">Recettes</a></li>
+        <li><a href="story.html">Notre histoire</a></li>
+        <li><a href="index.html">English</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Aide</h4>
+      <ul>
+        <li><a href="contact.html">Nous contacter</a></li>
+        <li><a href="#">Livraison</a></li>
+        <li><a href="#">FAQ</a></li>
+      </ul>
+    </div>
+  </div>
+  <p class="footer-copy">&copy; 2025 Yawdi's. Fait avec amour au Canada.</p>
+</footer>
+
+<script src="cart.js"></script>
+<script>
+(function () {
+  const CC_KEY = 'yawdis-community';
+  function updateRecipeStats() {
+    let data = {};
+    try { data = JSON.parse(localStorage.getItem(CC_KEY) || '{}'); } catch {}
+    document.querySelectorAll('.recipe-card[data-post-id]').forEach(card => {
+      const id   = card.dataset.postId;
+      const post = data[id] || { likes: 0, liked: false, comments: [] };
+      const likeEl = card.querySelector('.cc-like-count');
+      const cmtEl  = card.querySelector('.cc-comment-count');
+      if (likeEl) {
+        likeEl.innerHTML = (post.liked ? '&#9829;' : '&#9825;') + ' ' + post.likes;
+        likeEl.style.color = post.liked ? 'var(--maroon)' : '';
+        likeEl.style.fontWeight = post.liked ? '700' : '';
+      }
+      if (cmtEl) cmtEl.innerHTML = '&#128172; ' + (post.comments ? post.comments.length : 0);
+    });
+  }
+  document.addEventListener('DOMContentLoaded', updateRecipeStats);
+})();
+</script>
+</body>
+</html>

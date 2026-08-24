@@ -1,0 +1,85 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // An "admin" is any signed-in user whose UID has a matching document in
+    // the admins/ collection. This collection is managed entirely from the
+    // Firebase Console (never writable by the app), so granting/revoking
+    // admin access later — e.g. when this site is sold — is just adding or
+    // deleting one document, no rules/code changes required.
+    function isAdmin() {
+      return request.auth != null &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Comments: anyone can submit a new one (always starts "pending").
+    // Only "approved" comments are publicly readable; the admin can read
+    // everything (Pending/Rejected/All tabs) and change status or delete.
+    match /comments/{commentId} {
+      allow create: if request.resource.data.status == 'pending'
+                    && request.resource.data.postId is string
+                    && request.resource.data.name is string
+                    && request.resource.data.text is string
+                    && request.resource.data.text.size() > 0
+                    && request.resource.data.text.size() <= 500
+                    && request.resource.data.name.size() <= 60;
+      allow read: if resource.data.status == 'approved' || isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    // Likes: anyone can read counts; a like/unlike can only move the count
+    // by exactly +/-1 per write, which is what CommunityStore.toggleLike()
+    // does — this blocks a single write from setting an arbitrary count.
+    match /likes/{postId} {
+      allow read: if true;
+      allow create: if request.resource.data.count == 1;
+      allow update: if request.resource.data.count == resource.data.count + 1
+                    || request.resource.data.count == resource.data.count - 1;
+      allow delete: if isAdmin();
+    }
+
+    // Stores: publicly readable (shown on the "Where You Can Find Us" map).
+    // Only the admin can add/edit/delete.
+    match /stores/{storeId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Recipes: publicly readable (shown on the Community page). New recipes
+    // (with the same look/behaviour as the originals) can only be added by
+    // the admin — likes/comments on them still work for everyone via the
+    // comments/likes rules above, keyed by the recipe's document id.
+    // Soft-deleted recipes (deleted: true, used for the admin's Trash/undo
+    // feature) are only visible to the admin, never to the public.
+    match /recipes/{recipeId} {
+      allow read: if resource.data.get('deleted', false) == false || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // Our Story page: narrative sections + press items, publicly readable,
+    // admin-only to add/edit/delete/reorder. Soft-deleted items (Trash) are
+    // only visible to the admin.
+    match /story_sections/{sectionId} {
+      allow read: if resource.data.get('deleted', false) == false || isAdmin();
+      allow write: if isAdmin();
+    }
+    match /press_items/{itemId} {
+      allow read: if resource.data.get('deleted', false) == false || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // The admins list itself: never readable or writable by any client.
+    // Add/remove admins only via the Firebase Console's Firestore Data tab.
+    match /admins/{uid} {
+      allow read, write: if false;
+    }
+
+    // Comment moderation emails: written only by the moderateComment Cloud
+    // Function (Admin SDK bypasses rules) for the Firebase "Trigger Email"
+    // extension to pick up and send. No client may read or write here —
+    // this stops anyone from spoofing admin notification emails.
+    match /mail/{mailId} {
+      allow read, write: if false;
+    }
+  }
+}

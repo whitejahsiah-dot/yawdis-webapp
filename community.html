@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="See how the Yawdi's community uses our products. Share your recipes and creations." />
+  <title>Community | Yawdi's</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Community card click behaviour ── */
+    .community-card { cursor: pointer; }
+    .community-card:focus-visible { outline: 2px solid var(--maroon); outline-offset: 3px; }
+    .cc-like-count, .cc-comment-count { font-size: 0.85rem; }
+    .cc-like-count.liked { color: var(--maroon); font-weight: 700; }
+
+    /* ── Post modal ── */
+    #cc-post-modal { position: fixed; inset: 0; z-index: 1000; display: none; }
+    #cc-post-modal.open { display: block; }
+    .cc-modal-backdrop {
+      position: absolute; inset: 0;
+      background: rgba(44,26,16,0.6);
+      backdrop-filter: blur(3px);
+      animation: yw-fade-in 0.2s ease;
+    }
+    .cc-modal-panel {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(620px, 94vw);
+      max-height: 88vh;
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      animation: cc-in 0.24s cubic-bezier(0.34,1.4,0.64,1);
+    }
+    @keyframes cc-in {
+      from { transform: translate(-50%,-46%); opacity: 0; }
+      to   { transform: translate(-50%,-50%); opacity: 1; }
+    }
+    .cc-modal-img { width: 100%; height: 280px; object-fit: cover; flex-shrink: 0; display: block; }
+    .cc-modal-body { padding: 24px 28px 32px; }
+    .cc-modal-close {
+      position: absolute; top: 12px; right: 12px;
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(0,0,0,0.35); color: #fff;
+      border: none; font-size: 1.15rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; z-index: 2;
+      transition: background 0.15s;
+    }
+    .cc-modal-close:hover { background: rgba(0,0,0,0.6); }
+    .cc-modal-handle { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 5px; }
+    .cc-modal-title { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; color: var(--maroon-dark); margin-bottom: 10px; }
+    .cc-modal-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.65; margin-bottom: 6px; }
+    .cc-modal-made-with { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--maroon); margin-bottom: 18px; }
+    .cc-like-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      margin-bottom: 22px;
+    }
+    .cc-like-btn {
+      background: none; border: 1.5px solid var(--border); border-radius: 999px;
+      padding: 8px 20px; font-size: 0.92rem; cursor: pointer;
+      display: flex; align-items: center; gap: 7px;
+      font-family: var(--font-body); color: var(--warm-text); font-weight: 600;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+    .cc-like-btn:hover { border-color: var(--maroon); color: var(--maroon); }
+    .cc-like-btn.liked { background: var(--maroon); color: #fff; border-color: var(--maroon); }
+    .cc-like-total { font-size: 0.83rem; color: var(--muted); }
+    .cc-comments-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
+      font-family: var(--font-body);
+    }
+    .cc-comment-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+    .cc-comment-item { background: var(--cream); border-radius: var(--radius-sm); padding: 12px 14px; }
+    .cc-comment-name { font-weight: 700; font-size: 0.82rem; color: var(--maroon-dark); margin: 0 0 3px; }
+    .cc-comment-text { font-size: 0.87rem; color: var(--warm-text); line-height: 1.55; margin: 0 0 3px; }
+    .cc-comment-date { font-size: 0.71rem; color: var(--muted); margin: 0; }
+    .cc-no-comments { font-size: 0.87rem; color: var(--muted); font-style: italic; margin-bottom: 16px; }
+    .cc-comment-form { display: flex; flex-direction: column; gap: 10px; }
+    .cc-comment-form input, .cc-comment-form textarea {
+      border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+      padding: 10px 14px; font-size: 0.88rem; font-family: var(--font-body);
+      color: var(--warm-text); background: var(--cream); outline: none; resize: vertical;
+      transition: border-color 0.15s;
+    }
+    .cc-comment-form input:focus, .cc-comment-form textarea:focus { border-color: var(--maroon); }
+    .cc-comment-form textarea { min-height: 82px; }
+    .cc-comment-pending-msg { font-size: 0.83rem; color: var(--maroon); background: var(--cream); border-radius: var(--radius-sm); padding: 9px 12px; margin-bottom: 10px; }
+    .cc-comment-error { font-size: 0.83rem; color: #c0392b; background: #fdf3f2; border: 1px solid #f5c6c0; border-radius: var(--radius-sm); padding: 9px 12px; margin-bottom: 10px; }
+
+    /* ── Recipe content ── */
+    .cc-recipe { margin-bottom: 20px; border-top: 1px solid var(--border); padding-top: 18px; }
+    .cc-recipe-serves { font-size: 0.78rem; font-weight: 600; color: var(--muted); margin: 0 0 6px; }
+    .cc-recipe-intro { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin: 0 0 14px; font-style: italic; }
+    .cc-recipe-section { margin-bottom: 14px; }
+    .cc-recipe-section h4 { font-family: var(--font-body); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--maroon); margin: 0 0 7px; }
+    .cc-recipe-section ul { list-style: disc; padding-left: 18px; margin: 0; }
+    .cc-recipe-section li { font-size: 0.88rem; color: var(--warm-text); line-height: 1.6; margin-bottom: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="community.html" style="color:var(--maroon);">Recipes</a>
+      <a href="story.html">Our Story</a>
+      <a href="find-us.html" title="Where You Can Find Us">Find Us</a>
+    </div>
+    <div class="nav-wordmark">
+      <a href="index.html"><em>Yawdi's</em></a>
+      <div class="nav-underline">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="nav-icons">
+        <a href="#" aria-label="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </a>
+        <a href="#" class="cart-link" aria-label="Cart">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="cart-badge">2</span>
+        </a>
+      </div>
+    </div>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" />
+    <label for="nav-toggle" class="nav-hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </label>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="community-hero">
+  <div class="community-hero-left">
+    <p class="eyebrow left">&#9829; Community</p>
+    <h1>Made by You.<br /><em>Loved by all.</em></h1>
+    <p>Share how you use Yawdi's in your kitchen! Post your recipes, leave a review, and inspire others in our growing community.</p>
+    <a href="#share" class="btn btn-maroon">Share Your Creation</a>
+  </div>
+  <div class="community-hero-right">
+    <img src="content/GlamShots/JerkMarinadeGlamShot.jpg" alt="Jerk Marinade community creation" />
+  </div>
+</section>
+
+<!-- ── COMMUNITY GRID ── -->
+<div class="community-controls">
+  <div class="community-controls-row">
+    <div class="community-tabs">
+      <button class="tab-btn active">All Posts</button>
+      <button class="tab-btn">Recipes</button>
+      <button class="tab-btn">Reviews</button>
+    </div>
+    <select class="sort-select" aria-label="Sort posts">
+      <option>Most Recent</option>
+      <option>Most Liked</option>
+      <option>Most Commented</option>
+    </select>
+  </div>
+</div>
+
+<div class="community-grid-wrap" id="recipes">
+  <div class="community-grid" id="community-grid">
+    <p style="grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 0;">Loading recipes&hellip;</p>
+  </div>
+
+  <div class="load-more-wrap">
+    <button class="btn btn-outline">Load More Posts</button>
+  </div>
+</div>
+
+<!-- ── COMMUNITY CTA ── -->
+<section class="community-cta" id="share">
+  <div class="community-cta-inner">
+    <div class="community-cta-img">
+      <img src="content/GlamShots/Redpepper-jelly_mockup.png" alt="Yawdi's Red Pepper Jelly" />
+    </div>
+    <div class="community-cta-text">
+      <p class="eyebrow left">&#9829; Be Part of Our Community</p>
+      <h2>Your recipe could be featured here!</h2>
+      <p>Show us how you use Yawdi's and inspire others. Tag us on Instagram or submit your creation below.</p>
+      <a href="https://www.instagram.com/yawdis" target="_blank" rel="noopener" class="btn btn-maroon">Share Your Recipe</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER BAR ── -->
+<div class="footer-bar">
+  <div class="footer-bar-inner">
+    <div class="footer-bar-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Made in Canada
+    </div>
+    <div class="footer-bar-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Quality Ingredients
+    </div>
+    <div class="footer-bar-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      Made with Love
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="footer-brand footer-col">
+      <span class="footer-brand-name">Yawdi's</span>
+      <p style="font-size:0.88rem;margin-bottom:14px;">Island flavour for everyday meals<br />and memorable gatherings.</p>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/yawdis" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a href="https://www.facebook.com/YAWDIsCa/" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="shop.html">All Products</a></li>
+        <li><a href="shop.html#jellies">Pepper Jellies</a></li>
+        <li><a href="shop.html#jerk">Jerk Marinade</a></li>
+        <li><a href="bundle.html">Bundle &amp; Save</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <ul>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="#recipes">Recipes</a></li>
+        <li><a href="story.html">Our Story</a></li>
+        <li><a href="index-fr.html">Français</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Help</h4>
+      <ul>
+        <li><a href="contact.html">Contact Us</a></li>
+        <li><a href="#">Shipping Info</a></li>
+        <li><a href="#">FAQ</a></li>
+      </ul>
+    </div>
+  </div>
+  <p class="footer-copy">&copy; 2025 Yawdi's. Made with love in Canada.</p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="cart.js"></script>
+<script>
+// ── Community post interactions ──
+// Likes and comments no longer require an account (CommunityStore lives in cart.js).
+// New comments are stored with status "pending" and only appear publicly once
+// an admin approves them from backend/admin.html.
+
+async function ccUpdateCardCounts() {
+  await Promise.all(Array.from(document.querySelectorAll('[data-post-id]')).map(async card => {
+    const id = card.dataset.postId;
+    const [like, approvedCount] = await Promise.all([
+      CommunityStore.getLikeState(id),
+      CommunityStore.approvedCount(id)
+    ]);
+    const likeEl = card.querySelector('.cc-like-count');
+    const cmtEl  = card.querySelector('.cc-comment-count');
+    if (likeEl) {
+      likeEl.innerHTML = (like.likedByThisDevice ? '&#9829;' : '&#9825;') + ' ' + like.count;
+      likeEl.classList.toggle('liked', !!like.likedByThisDevice);
+    }
+    if (cmtEl) cmtEl.innerHTML = '&#128172; ' + approvedCount;
+  }));
+}
+
+let activePostId = null;
+let communityRecipes = []; // populated from RecipeStore.getAll() on page load
+
+function communityCardHtml(recipe) {
+  return `
+    <article class="community-card" data-post-id="${escHtml(recipe.id)}" role="button" tabindex="0">
+      <div class="community-card-img">
+        <img src="${escHtml(recipe.image)}" alt="${escHtml(recipe.title)}" />
+      </div>
+      <div class="community-card-body">
+        <p class="community-handle">${escHtml(recipe.uploaderName)}</p>
+        <h3>${escHtml(recipe.title)}</h3>
+        <p>${escHtml(recipe.description || '')}</p>
+        ${recipe.madeWith ? `<p class="community-made-with">Made with Yawdi's <span>${escHtml(recipe.madeWith)}</span></p>` : ''}
+        <div class="community-card-footer">
+          <span class="cc-like-count" data-post="${escHtml(recipe.id)}">&#9825; 0</span>
+          <span class="cc-comment-count" data-post="${escHtml(recipe.id)}">&#128172; 0</span>
+        </div>
+      </div>
+    </article>`;
+}
+
+async function loadCommunityGrid() {
+  const grid = document.getElementById('community-grid');
+  try {
+    communityRecipes = await RecipeStore.getAll();
+  } catch (err) {
+    console.error('Failed to load recipes:', err);
+    grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 0;">Couldn\u2019t load recipes right now.</p>';
+    return;
+  }
+  if (!communityRecipes.length) {
+    grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 0;">No recipes yet \u2014 check back soon!</p>';
+    return;
+  }
+  grid.innerHTML = communityRecipes.map(communityCardHtml).join('');
+  await ccUpdateCardCounts();
+}
+
+function ccBuildModal() {
+  if (document.getElementById('cc-post-modal')) return;
+  const el = document.createElement('div');
+  el.id = 'cc-post-modal';
+  el.setAttribute('role', 'dialog');
+  el.setAttribute('aria-modal', 'true');
+  el.innerHTML = `
+    <div class="cc-modal-backdrop" id="cc-modal-backdrop"></div>
+    <div class="cc-modal-panel">
+      <button class="cc-modal-close" id="cc-modal-close" aria-label="Close">&times;</button>
+      <img class="cc-modal-img" id="cc-modal-img" src="" alt="" />
+      <div class="cc-modal-body">
+        <p class="cc-modal-handle" id="cc-modal-handle"></p>
+        <h2 class="cc-modal-title" id="cc-modal-title"></h2>
+        <p class="cc-modal-desc" id="cc-modal-desc"></p>
+        <p class="cc-modal-made-with" id="cc-modal-made-with"></p>
+        <div class="cc-recipe" id="cc-modal-recipe"></div>
+        <div class="cc-like-row">
+          <button class="cc-like-btn" id="cc-like-btn">
+            <span id="cc-heart-icon">&#9825;</span>
+            <span id="cc-like-label">Like</span>
+          </button>
+          <span class="cc-like-total" id="cc-like-total">0 likes</span>
+        </div>
+        <p class="cc-comments-label">Comments</p>
+        <div class="cc-comment-list" id="cc-comment-list"></div>
+        <div id="cc-comment-form-area"></div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(el);
+  document.getElementById('cc-modal-backdrop').addEventListener('click', ccCloseModal);
+  document.getElementById('cc-modal-close').addEventListener('click', ccCloseModal);
+  document.getElementById('cc-like-btn').addEventListener('click', ccToggleLike);
+  // delegated — form is rebuilt each render
+  el.addEventListener('submit', e => { if (e.target.closest('#cc-comment-form')) ccSubmitComment(e); });
+}
+
+function ccOpenModal(postId) {
+  ccBuildModal();
+  activePostId = postId;
+  const recipe = communityRecipes.find(r => r.id === postId);
+  if (!recipe) return;
+  document.getElementById('cc-modal-img').src               = recipe.image || '';
+  document.getElementById('cc-modal-img').alt               = recipe.title || '';
+  document.getElementById('cc-modal-handle').textContent    = recipe.uploaderName || '';
+  document.getElementById('cc-modal-title').textContent     = recipe.title || '';
+  document.getElementById('cc-modal-desc').textContent      = recipe.description || '';
+  document.getElementById('cc-modal-made-with').textContent = recipe.madeWith ? `Made with Yawdi's ${recipe.madeWith}` : '';
+  const recipeEl = document.getElementById('cc-modal-recipe');
+  if (recipeEl) {
+    let html = '';
+    if (recipe.serves) html += `<p class="cc-recipe-serves">${ccEsc(recipe.serves)}</p>`;
+    if (recipe.intro)  html += `<p class="cc-recipe-intro">${ccEsc(recipe.intro)}</p>`;
+    (recipe.sections || []).forEach(sec => {
+      html += `<div class="cc-recipe-section"><h4>${ccEsc(sec.heading)}</h4><ul>${(sec.items || []).map(i => `<li>${ccEsc(i)}</li>`).join('')}</ul></div>`;
+    });
+    recipeEl.innerHTML = html;
+  }
+  document.getElementById('cc-comment-list').innerHTML = '<p class="cc-no-comments">Loading\u2026</p>';
+  ccRenderModal();
+  document.getElementById('cc-post-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function ccCloseModal() {
+  const el = document.getElementById('cc-post-modal');
+  if (el) { el.classList.remove('open'); document.body.style.overflow = ''; }
+  activePostId = null;
+}
+
+async function ccRenderModal() {
+  if (!activePostId) return;
+  const postIdAtStart = activePostId;
+  const [like, comments] = await Promise.all([
+    CommunityStore.getLikeState(activePostId),
+    CommunityStore.approvedComments(activePostId)
+  ]);
+  if (activePostId !== postIdAtStart) return; // user switched posts while this was loading
+  const btn  = document.getElementById('cc-like-btn');
+  document.getElementById('cc-heart-icon').innerHTML    = like.likedByThisDevice ? '&#9829;' : '&#9825;';
+  document.getElementById('cc-like-label').textContent  = like.likedByThisDevice ? 'Liked'   : 'Like';
+  btn.classList.toggle('liked', like.likedByThisDevice);
+  document.getElementById('cc-like-total').textContent  = like.count + (like.count === 1 ? ' like' : ' likes');
+  const list = document.getElementById('cc-comment-list');
+  if (!comments.length) {
+    list.innerHTML = '<p class="cc-no-comments">No comments yet. Be the first!</p>';
+  } else {
+    list.innerHTML = comments.map(c => `
+      <div class="cc-comment-item">
+        <p class="cc-comment-name">${ccEsc(c.name)}</p>
+        <p class="cc-comment-text">${ccEsc(c.text)}</p>
+        <p class="cc-comment-date">${ccEsc(new Date(c.createdAt).toLocaleDateString('en-CA', { year: 'numeric', month: 'short', day: 'numeric' }))}</p>
+      </div>`).join('');
+  }
+  const area = document.getElementById('cc-comment-form-area');
+  if (area) {
+    area.innerHTML = `
+      <p class="cc-comment-pending-msg" id="cc-comment-pending-msg" hidden>Thanks! Your comment has been submitted and will appear once approved.</p>
+      <p class="cc-comment-error" id="cc-comment-error" hidden></p>
+      <form class="cc-comment-form" id="cc-comment-form" novalidate>
+        <input type="text" id="cc-name-input" placeholder="Your name" maxlength="60" required />
+        <textarea id="cc-text-input" placeholder="Leave a comment\u2026" maxlength="500" required></textarea>
+        <button type="submit" class="btn btn-maroon btn-sm" style="align-self:flex-end;">Post Comment</button>
+      </form>`;
+  }
+}
+
+async function ccToggleLike() {
+  if (!activePostId) return;
+  const btn = document.getElementById('cc-like-btn');
+  if (btn) btn.disabled = true;
+  try {
+    await CommunityStore.toggleLike(activePostId);
+    await ccRenderModal();
+    await ccUpdateCardCounts();
+  } catch (err) {
+    console.error('Failed to update like:', err);
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function ccSubmitComment(e) {
+  e.preventDefault();
+  if (!activePostId) return;
+  const name = document.getElementById('cc-name-input').value.trim();
+  const text = document.getElementById('cc-text-input').value.trim();
+  if (!name || !text) return;
+  const form = document.getElementById('cc-comment-form');
+  const msg  = document.getElementById('cc-comment-pending-msg');
+  const errEl = document.getElementById('cc-comment-error');
+  const submitBtn = form ? form.querySelector('[type="submit"]') : null;
+  if (submitBtn) submitBtn.disabled = true;
+  if (errEl) errEl.hidden = true;
+  try {
+    await CommunityStore.addComment(activePostId, name, text);
+    if (form) form.reset();
+    if (msg) msg.hidden = false;
+    await ccUpdateCardCounts();
+  } catch (err) {
+    console.error('Failed to submit comment:', err);
+    if (errEl) { errEl.textContent = 'Something went wrong submitting your comment. Please try again.'; errEl.hidden = false; }
+  } finally {
+    if (submitBtn) submitBtn.disabled = false;
+  }
+}
+
+function ccEsc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadCommunityGrid();
+
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // Card click → open modal (delegated since cards are rendered dynamically)
+  const grid = document.getElementById('community-grid');
+  grid.addEventListener('click', e => {
+    const card = e.target.closest('[data-post-id]');
+    if (card) ccOpenModal(card.dataset.postId);
+  });
+  grid.addEventListener('keydown', e => {
+    const card = e.target.closest('[data-post-id]');
+    if (card && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); ccOpenModal(card.dataset.postId); }
+  });
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') ccCloseModal(); });
+});
+</script>
+
+</body>
+</html>

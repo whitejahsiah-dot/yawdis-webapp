@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Shop all Yawdi's pepper jellies and jerk marinade. Bold Caribbean flavour, made in Canada." />
+  <title>Shop | Yawdi's</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Shop-specific styles ── */
+    .shop-header {
+      background: var(--cream-dark);
+      padding: 56px 32px 48px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .shop-header h1 { margin-bottom: 8px; }
+    .shop-header p { color: var(--muted); max-width: 480px; margin: 0 auto; }
+
+    .shop-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+
+    /* sidebar filter */
+    .shop-sidebar { position: sticky; top: 90px; }
+    .shop-sidebar h3 {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+      font-family: var(--font-body);
+    }
+    .filter-group { margin-bottom: 28px; }
+    .filter-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      padding: 9px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-family: var(--font-body);
+      color: var(--warm-text);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      margin-bottom: 2px;
+      font-weight: 500;
+    }
+    .filter-btn:hover { background: var(--cream-dark); }
+    .filter-btn.active { background: var(--maroon); color: var(--white); font-weight: 600; }
+
+    /* product grid */
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .shop-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .shop-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); }
+    .shop-card-img {
+      overflow: hidden;
+      height: 240px;
+    }
+    .shop-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s;
+    }
+    .shop-card:hover .shop-card-img img { transform: scale(1.05); }
+    .shop-card-body { padding: 20px; }
+    .shop-card-type {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--maroon);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .shop-card-body h3 { margin-bottom: 6px; font-size: 1rem; }
+    .shop-card-body p { font-size: 0.83rem; color: var(--muted); margin-bottom: 14px; line-height: 1.5; }
+    .shop-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .shop-card-price { font-weight: 700; font-size: 1rem; color: var(--maroon-dark); }
+    .shop-card-size { font-size: 0.75rem; color: var(--muted); margin-left: 4px; font-weight: 400; }
+
+    /* product detail side panels */
+    .shop-card-pairs {
+      border-top: 1px solid var(--border);
+      margin-top: 14px;
+      padding-top: 12px;
+    }
+    .shop-card-pairs span {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 6px;
+    }
+    .pair-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .pair-tag {
+      background: var(--cream-dark);
+      color: var(--warm-text);
+      font-size: 0.72rem;
+      padding: 3px 9px;
+      border-radius: 999px;
+    }
+
+    /* nutrition / barcode expandable */
+    .yw-nutri-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      background: none;
+      border: none;
+      border-top: 1px solid var(--border);
+      margin-top: 14px;
+      padding: 12px 0 0;
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--maroon);
+      cursor: pointer;
+    }
+    .yw-nutri-toggle svg { transition: transform 0.2s; flex-shrink: 0; }
+    .yw-nutri-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+    .yw-nutri-panel {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.22s ease;
+    }
+    .yw-nutri-panel.open { grid-template-rows: 1fr; }
+    .yw-nutri-panel-inner { overflow: hidden; }
+    .yw-nutri-facts { padding: 12px 2px 4px; }
+    .yw-nutri-facts h4 {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 6px; font-family: var(--font-body);
+    }
+    .yw-nutri-serving { font-size: 0.75rem; color: var(--muted); margin-bottom: 8px; }
+    .yw-nutri-table { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+    .yw-nutri-table td { font-size: 0.8rem; padding: 3px 0; border-bottom: 1px dashed var(--border); }
+    .yw-nutri-table td:last-child { text-align: right; font-weight: 600; color: var(--warm-text); }
+    .yw-barcode-wrap { display: flex; align-items: center; gap: 10px; }
+    .yw-barcode-bars { height: 34px; flex-shrink: 0; }
+    .yw-barcode-number { font-size: 0.78rem; letter-spacing: 0.06em; color: var(--warm-text); font-variant-numeric: tabular-nums; }
+
+    /* bundle CTA strip */
+    .shop-bundle-strip {
+      background: var(--maroon);
+      color: var(--white);
+      text-align: center;
+      padding: 36px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .shop-bundle-strip p { font-size: 1.05rem; font-weight: 600; margin: 0; }
+    .shop-bundle-strip strong { font-family: var(--font-display); font-size: 1.15rem; }
+
+    @media (max-width: 900px) {
+      .shop-layout { grid-template-columns: 1fr; }
+      .shop-sidebar { position: static; }
+      .filter-group { display: flex; flex-wrap: wrap; gap: 6px; }
+      .filter-btn { width: auto; display: inline-block; }
+      .shop-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 540px) {
+      .shop-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <a href="index.html">Home</a>
+      <a href="shop.html" style="color:var(--maroon);">Shop</a>
+      <a href="community.html">Recipes</a>
+      <a href="story.html">Our Story</a>
+      <a href="find-us.html" title="Where You Can Find Us">Find Us</a>
+    </div>
+    <div class="nav-wordmark">
+      <a href="index.html"><em>Yawdi's</em></a>
+      <div class="nav-underline">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="nav-icons">
+        <a href="#" aria-label="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </a>
+        <a href="#" class="cart-link" aria-label="Cart">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="cart-badge">2</span>
+        </a>
+        <a href="index-fr.html" style="font-size:0.78rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">FR</a>
+      </div>
+    </div>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" />
+    <label for="nav-toggle" class="nav-hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </label>
+  </div>
+</nav>
+
+<!-- ── PAGE HEADER ── -->
+<div class="shop-header">
+  <p class="eyebrow">Island Flavour Pantry</p>
+  <h1>Shop All Products</h1>
+  <p>Bold Caribbean flavour, made in Canada. One jar transforms any meal.</p>
+</div>
+
+<!-- ── BUNDLE STRIP ── -->
+<div class="shop-bundle-strip">
+  <p>&#127873; <strong>Buy 4, Get Free Shipping!</strong> Stock up and save — no code needed.</p>
+  <a href="bundle.html" class="btn btn-white btn-sm">Build a Bundle</a>
+</div>
+
+<!-- ── SHOP LAYOUT ── -->
+<div class="shop-layout">
+
+  <!-- sidebar -->
+  <aside class="shop-sidebar">
+    <div class="filter-group">
+      <h3>Category</h3>
+      <button class="filter-btn active" onclick="filterProducts('all', this)">All Products</button>
+      <button class="filter-btn" onclick="filterProducts('jelly', this)">Pepper Jellies</button>
+      <button class="filter-btn" onclick="filterProducts('marinade', this)">Marinades</button>
+    </div>
+    <div class="filter-group">
+      <h3>Use For</h3>
+      <button class="filter-btn" onclick="filterProducts('cheese', this)">Cheese Boards</button>
+      <button class="filter-btn" onclick="filterProducts('grilling', this)">Grilling</button>
+      <button class="filter-btn" onclick="filterProducts('gifting', this)">Gifting</button>
+    </div>
+  </aside>
+
+  <!-- product grid -->
+  <div class="shop-grid" id="shop-grid">
+
+    <article class="shop-card" id="mango" data-type="jelly" data-use="cheese gifting">
+      <div class="shop-card-img">
+        <img src="content/FullLabels/Mango.png" alt="Mango Pepper Jelly" />
+      </div>
+      <div class="shop-card-body">
+        <span class="shop-card-type">Pepper Jelly</span>
+        <h3>Mango Pepper Jelly</h3>
+        <div class="shop-card-footer">
+          <div>
+            <span class="shop-card-price">$9.49</span>
+            <span class="shop-card-size">250 mL</span>
+          </div>
+          <button class="btn btn-maroon btn-sm" data-cart-id="mango">Add to Cart</button>
+        </div>
+        <div class="shop-card-pairs">
+          <span>Pairs well with</span>
+          <div class="pair-tags" data-pairs-for="mango"></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="shop-card" id="red-pepper" data-type="jelly" data-use="cheese grilling gifting">
+      <div class="shop-card-img">
+        <img src="content/FullLabels/RedPepper.png" alt="Red Pepper Jelly" />
+      </div>
+      <div class="shop-card-body">
+        <span class="shop-card-type">Pepper Jelly</span>
+        <h3>Red Pepper Jelly</h3>
+        <div class="shop-card-footer">
+          <div>
+            <span class="shop-card-price">$8.99</span>
+            <span class="shop-card-size">250 mL</span>
+          </div>
+          <button class="btn btn-maroon btn-sm" data-cart-id="red-pepper">Add to Cart</button>
+        </div>
+        <div class="shop-card-pairs">
+          <span>Pairs well with</span>
+          <div class="pair-tags" data-pairs-for="red-pepper"></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="shop-card" id="jerk" data-type="marinade" data-use="grilling gifting">
+      <div class="shop-card-img">
+        <img src="content/FullLabels/jerk.png" alt="Jerk Marinade" />
+      </div>
+      <div class="shop-card-body">
+        <span class="shop-card-type">Marinade</span>
+        <h3>Jerk Marinade</h3>
+        <div class="shop-card-footer">
+          <div>
+            <span class="shop-card-price">$8.49</span>
+            <span class="shop-card-size">250 mL</span>
+          </div>
+          <button class="btn btn-maroon btn-sm" data-cart-id="jerk">Add to Cart</button>
+        </div>
+        <div class="shop-card-pairs">
+          <span>Pairs well with</span>
+          <div class="pair-tags" data-pairs-for="jerk"></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="shop-card" id="lavender" data-type="jelly" data-use="cheese gifting">
+      <div class="shop-card-img">
+        <img src="content/FullLabels/Lavender.png" alt="Lavender Pepper Jelly" />
+      </div>
+      <div class="shop-card-body">
+        <span class="shop-card-type">Pepper Jelly</span>
+        <h3>Lavender Pepper Jelly</h3>
+        <div class="shop-card-footer">
+          <div>
+            <span class="shop-card-price">$9.49</span>
+            <span class="shop-card-size">250 mL</span>
+          </div>
+          <button class="btn btn-maroon btn-sm" data-cart-id="lavender">Add to Cart</button>
+        </div>
+        <div class="shop-card-pairs">
+          <span>Pairs well with</span>
+          <div class="pair-tags" data-pairs-for="lavender"></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="shop-card" id="pineapple" data-type="jelly" data-use="cheese grilling gifting">
+      <div class="shop-card-img">
+        <img src="content/FullLabels/Pineapple.png" alt="Pineapple Pepper Jelly" />
+      </div>
+      <div class="shop-card-body">
+        <span class="shop-card-type">Pepper Jelly</span>
+        <h3>Pineapple Pepper Jelly</h3>
+        <div class="shop-card-footer">
+          <div>
+            <span class="shop-card-price">$8.99</span>
+            <span class="shop-card-size">250 mL</span>
+          </div>
+          <button class="btn btn-maroon btn-sm" data-cart-id="pineapple">Add to Cart</button>
+        </div>
+        <div class="shop-card-pairs">
+          <span>Pairs well with</span>
+          <div class="pair-tags" data-pairs-for="pineapple"></div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</div>
+
+<!-- ── FOOTER BAR ── -->
+<div class="footer-bar">
+  <div class="footer-bar-inner">
+    <div class="footer-bar-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Made in Canada
+    </div>
+    <div class="footer-bar-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Quality Ingredients
+    </div>
+    <div class="footer-bar-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      Made with Love
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="footer-brand footer-col">
+      <span class="footer-brand-name">Yawdi's</span>
+      <p style="font-size:0.88rem;margin-bottom:14px;">Island flavour for everyday meals<br />and memorable gatherings.</p>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/yawdis" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a href="https://www.facebook.com/YAWDIsCa/" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="shop.html">All Products</a></li>
+        <li><a href="shop.html#jellies">Pepper Jellies</a></li>
+        <li><a href="shop.html#jerk">Jerk Marinade</a></li>
+        <li><a href="bundle.html">Bundle &amp; Save</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <ul>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="community.html#recipes">Recipes</a></li>
+        <li><a href="story.html">Our Story</a></li>
+        <li><a href="index-fr.html">Français</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Help</h4>
+      <ul>
+        <li><a href="contact.html">Contact Us</a></li>
+        <li><a href="#">Shipping Info</a></li>
+        <li><a href="#">FAQ</a></li>
+      </ul>
+    </div>
+  </div>
+  <p class="footer-copy">&copy; 2025 Yawdi's. Made with love in Canada.</p>
+</footer>
+
+<script src="cart.js"></script>
+<script>
+  function filterProducts(type, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.shop-card').forEach(card => {
+      const matchType = type === 'all' || card.dataset.type === type;
+      const matchUse  = type === 'all' || !['cheese','grilling','gifting'].includes(type) || (card.dataset.use && card.dataset.use.includes(type));
+      card.style.display = (matchType || matchUse) ? '' : 'none';
+    });
+  }
+  /* scroll to product if hash present */
+  if (window.location.hash) {
+    const el = document.querySelector(window.location.hash);
+    if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+  }
+
+  // ── Expandable Nutritional Facts & Barcode (data-driven from PRODUCTS in cart.js) ──
+  function barcodeBarsSvg(digits) {
+    const clean = String(digits).replace(/\D/g, '') || '0';
+    let bars = '';
+    let x = 0;
+    for (let i = 0; i < clean.length; i++) {
+      const w = 1 + (Number(clean[i]) % 3); // deterministic pseudo-bar width per digit
+      if (i % 2 === 0) bars += `<rect x="${x}" y="0" width="${w}" height="32" fill="var(--warm-text)"/>`;
+      x += w + 1;
+    }
+    return `<svg class="yw-barcode-bars" viewBox="0 0 ${x} 32" width="${Math.min(x * 2, 130)}" height="34" aria-hidden="true">${bars}</svg>`;
+  }
+
+  function buildNutritionPanels() {
+    document.querySelectorAll('.shop-card[id]').forEach(card => {
+      const product = PRODUCTS.find(p => p.id === card.id);
+      const pairsBox = card.querySelector('.shop-card-pairs');
+      if (!product || !product.nutrition || !pairsBox) return;
+      const n = product.nutrition;
+      const uid = `nutri-${product.id}`;
+      const toggle = document.createElement('button');
+      toggle.type = 'button';
+      toggle.className = 'yw-nutri-toggle';
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-controls', uid);
+      toggle.innerHTML = `Nutritional Facts &amp; Barcode <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>`;
+      const panel = document.createElement('div');
+      panel.className = 'yw-nutri-panel';
+      panel.id = uid;
+      panel.innerHTML = `
+        <div class="yw-nutri-panel-inner">
+          <div class="yw-nutri-facts">
+            <h4>Nutrition Facts</h4>
+            <p class="yw-nutri-serving">Per ${escHtml(n.servingSize)} · about ${n.servingsPerContainer} servings per jar</p>
+            <table class="yw-nutri-table">
+              <tr><td>Calories</td><td>${n.calories}</td></tr>
+              <tr><td>Fat</td><td>${n.fat} g</td></tr>
+              <tr><td>Carbohydrates</td><td>${n.carbs} g</td></tr>
+              <tr><td>Sugars</td><td>${n.sugar} g</td></tr>
+              <tr><td>Protein</td><td>${n.protein} g</td></tr>
+              <tr><td>Sodium</td><td>${n.sodium} mg</td></tr>
+            </table>
+            <h4>Barcode</h4>
+            <div class="yw-barcode-wrap">
+              ${barcodeBarsSvg(product.barcode)}
+              <span class="yw-barcode-number">${escHtml(product.barcode)}</span>
+            </div>
+          </div>
+        </div>`;
+      toggle.addEventListener('click', () => {
+        const open = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', String(!open));
+        panel.classList.toggle('open', !open);
+      });
+      pairsBox.parentNode.insertBefore(toggle, pairsBox);
+      pairsBox.parentNode.insertBefore(panel, pairsBox);
+    });
+  }
+
+  // ── "Pairs Well With" tags (data-driven from PRODUCTS.pairs, box itself is never removed) ──
+  function renderPairTags() {
+    document.querySelectorAll('[data-pairs-for]').forEach(container => {
+      const product = PRODUCTS.find(p => p.id === container.dataset.pairsFor);
+      if (!product || !product.pairs) return;
+      container.innerHTML = product.pairs.map(tag => `<span class="pair-tag">${escHtml(tag)}</span>`).join('');
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    buildNutritionPanels();
+    renderPairTags();
+  });
+</script>
+
+</body>
+</html>

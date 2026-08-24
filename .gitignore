@@ -1,0 +1,19 @@
+.venv/
+node_modules/
+dist/
+build/
+.env
+.env.*
+!.env.example
+firebase-debug.log
+*.log
+
+# Local editor and OS files
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+
+# Generated Firebase/deployment artifacts
+.firebase/
+.vercel/

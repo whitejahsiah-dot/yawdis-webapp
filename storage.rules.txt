@@ -1,0 +1,41 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // An "admin" is any signed-in user whose UID has a matching document in
+    // the Firestore admins/ collection — the exact same check used by
+    // firestore.rules.txt, reused here via Storage's cross-service
+    // firestore.exists() function so there is only one place (the admins/
+    // collection in Firestore Console) that controls who can upload.
+    function isAdmin() {
+      return request.auth != null &&
+        firestore.exists(/databases/(default)/documents/admins/$(request.auth.uid));
+    }
+
+    // Recipe images, uploaded from the Recipe form in backend/admin.html.
+    // create/update are checked against the new file (type/size); delete
+    // has no request.resource (there's no new file), so it's split out.
+    match /recipe-images/{fileName} {
+      allow read: if true;
+      allow create, update: if isAdmin()
+                  && request.resource.size < 5 * 1024 * 1024
+                  && request.resource.contentType.matches('image/.*');
+      allow delete: if isAdmin();
+    }
+
+    // Our Story section/press images, uploaded from the Story forms in
+    // backend/admin.html.
+    match /story-media/{fileName} {
+      allow read: if true;
+      allow create, update: if isAdmin()
+                  && request.resource.size < 5 * 1024 * 1024
+                  && request.resource.contentType.matches('image/.*');
+      allow delete: if isAdmin();
+    }
+
+    // Everything else: no access by default.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

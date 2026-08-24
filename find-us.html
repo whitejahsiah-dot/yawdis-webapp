@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Find Yawdi's products in stores near you. See store locations, product availability, and the aisle to look in." />
+  <title>Where You Can Find Us | Yawdi's</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    .find-us-header {
+      background: var(--cream-dark);
+      padding: 56px 32px 48px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .find-us-header h1 { margin-bottom: 8px; }
+    .find-us-header p { color: var(--muted); max-width: 520px; margin: 0 auto; }
+
+    .find-us-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 32px 80px;
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    .find-us-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 560px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .find-us-store-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .find-us-store-card:hover, .find-us-store-card.active {
+      border-color: var(--maroon);
+      box-shadow: var(--shadow-sm);
+    }
+    .find-us-store-name { font-weight: 700; color: var(--maroon-dark); font-size: 0.94rem; margin-bottom: 3px; }
+    .find-us-store-address { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; }
+    .find-us-store-products { display: flex; flex-direction: column; gap: 3px; }
+    .find-us-store-product { font-size: 0.78rem; color: var(--warm-text); }
+    .find-us-store-product strong { color: var(--maroon); }
+
+    .find-us-map-panel {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      background: var(--cream-dark);
+      min-height: 560px;
+    }
+    #find-us-map { width: 100%; height: 560px; }
+    .find-us-map-fallback {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center; text-align: center;
+      padding: 40px; color: var(--muted); font-size: 0.9rem; line-height: 1.7;
+    }
+    .find-us-map-fallback strong { color: var(--maroon-dark); display: block; margin-bottom: 8px; font-size: 1.05rem; }
+
+    /* info window content (Google injects this into its own container, styled minimally) */
+    .gm-store-info { font-family: var(--font-body); max-width: 220px; }
+    .gm-store-info h4 { font-family: var(--font-display); font-size: 1rem; color: var(--maroon-dark); margin-bottom: 4px; }
+    .gm-store-info p { font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; }
+    .gm-store-info .gm-product-row { font-size: 0.8rem; margin-bottom: 3px; }
+    .gm-store-info .gm-product-row strong { color: var(--maroon); }
+
+    @media (max-width: 900px) {
+      .find-us-layout { grid-template-columns: 1fr; }
+      .find-us-map-panel, #find-us-map { min-height: 320px; height: 320px; }
+      .find-us-list { max-height: none; order: 2; }
+      .find-us-map-panel { order: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="community.html">Recipes</a>
+      <a href="story.html">Our Story</a>
+      <a href="find-us.html" style="color:var(--maroon);" title="Where You Can Find Us">Find Us</a>
+    </div>
+    <div class="nav-wordmark">
+      <a href="index.html"><em>Yawdi's</em></a>
+      <div class="nav-underline"><span></span><span></span><span></span></div>
+    </div>
+    <div class="nav-right">
+      <div class="nav-icons">
+        <a href="#" aria-label="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </a>
+        <a href="#" class="cart-link" aria-label="Cart">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="cart-badge">0</span>
+        </a>
+        <a href="index-fr.html" style="font-size:0.78rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">FR</a>
+      </div>
+    </div>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" />
+    <label for="nav-toggle" class="nav-hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </label>
+  </div>
+</nav>
+
+<!-- ── PAGE HEADER ── -->
+<div class="find-us-header">
+  <p class="eyebrow">Retail Locator</p>
+  <h1>Where You Can Find Us</h1>
+  <p>Yawdi's is stocked in stores across Canada. Find a location near you, and see exactly which aisle to look in.</p>
+</div>
+
+<!-- ── LOCATOR LAYOUT ── -->
+<div class="find-us-layout">
+  <div class="find-us-list" id="find-us-list"></div>
+  <div class="find-us-map-panel">
+    <div id="find-us-map"></div>
+  </div>
+</div>
+
+<!-- ── FOOTER BAR ── -->
+<div class="footer-bar">
+  <div class="footer-bar-inner">
+    <div class="footer-bar-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Made in Canada
+    </div>
+    <div class="footer-bar-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Quality Ingredients
+    </div>
+    <div class="footer-bar-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      Made with Love
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="footer-brand footer-col">
+      <span class="footer-brand-name">Yawdi's</span>
+      <p style="font-size:0.88rem;margin-bottom:14px;">Island flavour for everyday meals<br />and memorable gatherings.</p>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/yawdis" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a href="https://www.facebook.com/YAWDIsCa/" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="shop.html">All Products</a></li>
+        <li><a href="shop.html#jellies">Pepper Jellies</a></li>
+        <li><a href="shop.html#jerk">Jerk Marinade</a></li>
+        <li><a href="bundle.html">Bundle &amp; Save</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <ul>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="community.html#recipes">Recipes</a></li>
+        <li><a href="story.html">Our Story</a></li>
+        <li><a href="find-us.html">Where You Can Find Us</a></li>
+        <li><a href="index-fr.html">Français</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Help</h4>
+      <ul>
+        <li><a href="contact.html">Contact Us</a></li>
+        <li><a href="#">Shipping Info</a></li>
+        <li><a href="#">FAQ</a></li>
+      </ul>
+    </div>
+  </div>
+  <p class="footer-copy">&copy; 2025 Yawdi's. Made with love in Canada.</p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="cart.js"></script>
+<script src="stores-data.js"></script>
+<script src="maps-config.js"></script>
+<script>
+let map, infoWindow, markers = [];
+
+function productLabel(entry) {
+  const product = PRODUCTS.find(p => p.id === entry.productId);
+  return `<div class="gm-product-row"><strong>${escHtml(product ? product.name : entry.productId)}</strong> &mdash; ${escHtml(entry.aisle)}</div>`;
+}
+
+function storeInfoHtml(store) {
+  return `
+    <div class="gm-store-info">
+      <h4>${escHtml(store.name)}</h4>
+      <p>${escHtml(store.address)}</p>
+      ${store.products.map(productLabel).join('')}
+    </div>`;
+}
+
+function renderStoreList() {
+  const list = document.getElementById('find-us-list');
+  list.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;">Loading stores\u2026</p>';
+  return StoresStore.getAll().then(stores => {
+    list.innerHTML = stores.map(store => `
+      <div class="find-us-store-card" data-store-id="${escHtml(store.id)}" tabindex="0" role="button">
+        <p class="find-us-store-name">${escHtml(store.name)}</p>
+        <p class="find-us-store-address">${escHtml(store.address)}</p>
+        <div class="find-us-store-products">
+          ${(store.products || []).map(entry => {
+            const product = PRODUCTS.find(p => p.id === entry.productId);
+            return `<span class="find-us-store-product"><strong>${escHtml(product ? product.name : entry.productId)}</strong> — ${escHtml(entry.aisle)}</span>`;
+          }).join('')}
+        </div>
+      </div>`).join('') || '<p style="color:var(--muted);font-size:0.85rem;">No stores listed yet.</p>';
+
+    list.addEventListener('click', e => {
+      const card = e.target.closest('.find-us-store-card');
+      if (card) focusStore(card.dataset.storeId);
+    });
+    list.addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      const card = e.target.closest('.find-us-store-card');
+      if (card) focusStore(card.dataset.storeId);
+    });
+  }).catch(err => {
+    console.error('Failed to load stores:', err);
+    list.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;">Couldn\u2019t load store locations right now.</p>';
+  });
+}
+
+function focusStore(storeId) {
+  document.querySelectorAll('.find-us-store-card').forEach(c => c.classList.toggle('active', c.dataset.storeId === storeId));
+  const marker = markers.find(m => m.storeId === storeId);
+  if (!marker || !map) return;
+  map.panTo(marker.getPosition());
+  map.setZoom(13);
+  google.maps.event.trigger(marker, 'click');
+}
+
+async function initMap() {
+  const center = { lat: 45.0, lng: -76.0 };
+  map = new google.maps.Map(document.getElementById('find-us-map'), {
+    center, zoom: 6,
+    mapTypeControl: false, streetViewControl: false, fullscreenControl: true
+  });
+  infoWindow = new google.maps.InfoWindow();
+
+  const stores = await StoresStore.getAll();
+  markers = stores.map(store => {
+    const marker = new google.maps.Marker({
+      position: { lat: store.lat, lng: store.lng },
+      map, title: store.name
+    });
+    marker.storeId = store.id;
+    marker.addListener('click', () => {
+      infoWindow.setContent(storeInfoHtml(store));
+      infoWindow.open(map, marker);
+      document.querySelectorAll('.find-us-store-card').forEach(c => c.classList.toggle('active', c.dataset.storeId === store.id));
+    });
+    return marker;
+  });
+}
+
+function initFallback() {
+  const panel = document.querySelector('.find-us-map-panel');
+  panel.innerHTML = `
+    <div class="find-us-map-fallback">
+      <div>
+        <strong>Map coming soon</strong>
+        A Google Maps API key hasn't been configured yet. Add one in <code>maps-config.js</code> to enable the live map — see the setup instructions in README.md.
+      </div>
+    </div>`;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderStoreList();
+
+  const key = window.YAWDIS_MAPS_CONFIG && window.YAWDIS_MAPS_CONFIG.apiKey;
+  if (!key || key === 'YOUR_GOOGLE_MAPS_API_KEY') {
+    initFallback();
+    return;
+  }
+  const script = document.createElement('script');
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}&callback=initMap`;
+  script.async = true;
+  script.onerror = initFallback;
+  document.head.appendChild(script);
+});
+</script>
+
+</body>
+</html>

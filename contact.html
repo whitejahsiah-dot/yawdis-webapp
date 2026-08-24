@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Get in touch with Yawdi's — questions, wholesale inquiries, press, or just to say hello." />
+  <title>Contact Us | Yawdi's</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    .contact-hero {
+      background: var(--maroon-dark);
+      color: var(--white);
+      text-align: center;
+      padding: 72px 32px 64px;
+    }
+    .contact-hero .eyebrow { color: var(--gold); }
+    .contact-hero .eyebrow::before,
+    .contact-hero .eyebrow::after { background: var(--gold); }
+    .contact-hero h1 { color: var(--white); margin-bottom: 14px; }
+    .contact-hero p { color: rgba(255,255,255,0.72); max-width: 480px; margin: 0 auto; font-size: 1.05rem; }
+
+    .contact-body {
+      background: var(--cream);
+      padding: 80px 32px;
+    }
+    .contact-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 56px;
+      align-items: start;
+    }
+
+    /* ── Form ── */
+    .contact-form-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      padding: 36px 36px 40px;
+    }
+    .contact-form-card h2 {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      color: var(--maroon-dark);
+      margin-bottom: 24px;
+    }
+    .cf-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+    .cf-field label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--warm-text);
+      letter-spacing: 0.04em;
+    }
+    .cf-field input,
+    .cf-field select,
+    .cf-field textarea {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-family: var(--font-body);
+      font-size: 0.93rem;
+      color: var(--warm-text);
+      background: var(--cream);
+      transition: border-color 0.15s;
+      outline: none;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .cf-field input:focus,
+    .cf-field select:focus,
+    .cf-field textarea:focus { border-color: var(--maroon); background: var(--white); }
+    .cf-field textarea { resize: vertical; min-height: 130px; }
+    .cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .cf-submit { width: 100%; justify-content: center; margin-top: 8px; }
+    .cf-success {
+      display: none;
+      background: rgba(45,122,45,0.09);
+      border: 1px solid rgba(45,122,45,0.25);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      font-size: 0.9rem;
+      color: #2d7a2d;
+      font-weight: 600;
+      text-align: center;
+      margin-top: 16px;
+    }
+    .cf-note {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    /* ── Info panel ── */
+    .contact-info { display: flex; flex-direction: column; gap: 28px; }
+    .ci-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      padding: 24px 26px;
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+    }
+    .ci-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--cream-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--maroon);
+    }
+    .ci-text h4 { font-size: 0.88rem; font-weight: 700; color: var(--maroon-dark); margin-bottom: 4px; }
+    .ci-text p { font-size: 0.84rem; color: var(--muted); line-height: 1.6; margin: 0; }
+    .ci-text a { color: var(--maroon); text-decoration: none; }
+    .ci-text a:hover { text-decoration: underline; }
+
+    .contact-social { display: flex; gap: 12px; margin-top: 4px; }
+    .contact-social a {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: var(--cream-dark);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--maroon-dark);
+      transition: background 0.15s, color 0.15s;
+    }
+    .contact-social a:hover { background: var(--maroon); color: var(--white); }
+
+    @media (max-width: 860px) {
+      .contact-inner { grid-template-columns: 1fr; }
+      .contact-body { padding: 52px 20px; }
+      .contact-form-card { padding: 26px 22px 30px; }
+      .cf-row { grid-template-columns: 1fr; }
+      .contact-hero { padding: 52px 20px 44px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="community.html">Recipes</a>
+      <a href="story.html">Our Story</a>
+      <a href="find-us.html" title="Where You Can Find Us">Find Us</a>
+    </div>
+    <div class="nav-wordmark">
+      <a href="index.html"><em>Yawdi's</em></a>
+      <div class="nav-underline">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="nav-icons">
+        <a href="#" aria-label="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </a>
+        <a href="#" class="cart-link" aria-label="Cart">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="cart-badge">0</span>
+        </a>
+        <a href="index-fr.html" style="font-size:0.78rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">FR</a>
+      </div>
+    </div>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" />
+    <label for="nav-toggle" class="nav-hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </label>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="contact-hero">
+  <p class="eyebrow">&#9829; We'd Love to Hear From You</p>
+  <h1>Contact Us</h1>
+  <p>Questions about an order, wholesale inquiries, press, or just want to say hello — we're here.</p>
+</div>
+
+<!-- ── BODY ── -->
+<section class="contact-body">
+  <div class="contact-inner">
+
+    <!-- Contact Form -->
+    <div class="contact-form-card">
+      <h2>Send Us a Message</h2>
+      <!-- Replace YOUR_FORM_ID with your Formspree form ID at formspree.io -->
+      <form id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" novalidate>
+        <div class="cf-row">
+          <div class="cf-field">
+            <label for="cf-name">Name *</label>
+            <input type="text" id="cf-name" name="name" placeholder="Your name" required maxlength="80" autocomplete="name" />
+          </div>
+          <div class="cf-field">
+            <label for="cf-email">Email *</label>
+            <input type="email" id="cf-email" name="email" placeholder="you@example.com" required maxlength="120" autocomplete="email" />
+          </div>
+        </div>
+        <div class="cf-field">
+          <label for="cf-subject">Subject</label>
+          <select id="cf-subject" name="subject">
+            <option value="">— Select a topic —</option>
+            <option value="Order question">Order question</option>
+            <option value="Wholesale / retail inquiry">Wholesale / retail inquiry</option>
+            <option value="Press inquiry">Press inquiry</option>
+            <option value="Stockist question">Stockist question</option>
+            <option value="General">General</option>
+          </select>
+        </div>
+        <div class="cf-field">
+          <label for="cf-message">Message *</label>
+          <textarea id="cf-message" name="message" placeholder="How can we help?" required maxlength="2000"></textarea>
+        </div>
+        <button type="submit" class="btn btn-maroon cf-submit">Send Message</button>
+        <div class="cf-success" id="cf-success">&#10003; Thanks! We'll get back to you soon.</div>
+        <p class="cf-note">We typically respond within 1–2 business days.</p>
+      </form>
+    </div>
+
+    <!-- Info Cards -->
+    <div class="contact-info">
+
+      <div class="ci-card">
+        <div class="ci-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div class="ci-text">
+          <h4>Email</h4>
+          <p><a href="mailto:info@yawdi.ca">info@yawdi.ca</a></p>
+        </div>
+      </div>
+
+      <div class="ci-card">
+        <div class="ci-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div class="ci-text">
+          <h4>Based In</h4>
+          <p>Toronto, Ontario, Canada</p>
+        </div>
+      </div>
+
+      <div class="ci-card">
+        <div class="ci-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="ci-text">
+          <h4>Response Time</h4>
+          <p>We reply within 1–2 business days.</p>
+        </div>
+      </div>
+
+      <div class="ci-card">
+        <div class="ci-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+        </div>
+        <div class="ci-text">
+          <h4>Follow Us</h4>
+          <div class="contact-social">
+            <a href="https://www.instagram.com/yawdis" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a href="https://www.facebook.com/YAWDIsCa/" target="_blank" rel="noopener" aria-label="Facebook">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER BAR ── -->
+<div class="footer-bar">
+  <div class="footer-bar-inner">
+    <div class="footer-bar-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Made in Canada
+    </div>
+    <div class="footer-bar-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Quality Ingredients
+    </div>
+    <div class="footer-bar-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      Made with Love
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="footer-brand footer-col">
+      <span class="footer-brand-name">Yawdi's</span>
+      <p style="font-size:0.88rem;margin-bottom:14px;">Island flavour for everyday meals<br />and memorable gatherings.</p>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/yawdis" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a href="https://www.facebook.com/YAWDIsCa/" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="shop.html">All Products</a></li>
+        <li><a href="shop.html#jellies">Pepper Jellies</a></li>
+        <li><a href="shop.html#jerk">Jerk Marinade</a></li>
+        <li><a href="bundle.html">Bundle &amp; Save</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <ul>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="community.html#recipes">Recipes</a></li>
+        <li><a href="story.html">Our Story</a></li>
+        <li><a href="index-fr.html">Français</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Help</h4>
+      <ul>
+        <li><a href="contact.html" style="color:var(--maroon);">Contact Us</a></li>
+        <li><a href="#">Shipping Info</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="https://www.yawdi.ca/press" target="_blank" rel="noopener">Press</a></li>
+      </ul>
+    </div>
+  </div>
+  <p class="footer-copy">&copy; 2025 Yawdi's. Made with love in Canada.</p>
+</footer>
+
+<script src="cart.js"></script>
+<script>
+(function () {
+  const form = document.getElementById('contact-form');
+  const success = document.getElementById('cf-success');
+  if (!form) return;
+  form.addEventListener('submit', async e => {
+    const action = form.getAttribute('action');
+    // fall back to mailto if Formspree ID hasn't been configured
+    if (!action || action.includes('YOUR_FORM_ID')) {
+      e.preventDefault();
+      const name    = document.getElementById('cf-name').value.trim();
+      const email   = document.getElementById('cf-email').value.trim();
+      const subject = document.getElementById('cf-subject').value;
+      const message = document.getElementById('cf-message').value.trim();
+      if (!name || !email || !message) return;
+      window.location.href = `mailto:info@yawdi.ca?subject=${encodeURIComponent(subject || 'Website enquiry')}&body=${encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\n' + message)}`;
+      return;
+    }
+    e.preventDefault();
+    const data = new FormData(form);
+    try {
+      const res = await fetch(action, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+      if (res.ok) {
+        form.reset();
+        success.style.display = 'block';
+      }
+    } catch {}
+  });
+})();
+</script>
+</body>
+</html>

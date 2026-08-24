@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="The story behind Yawdi's — how a passion for travel, family, and bold flavour built Canada's most exciting condiment brand." />
+  <title>Our Story | Yawdi's</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Story page ── */
+    .story-hero {
+      background: var(--maroon-dark);
+      color: var(--white);
+      text-align: center;
+      padding: 72px 32px 64px;
+    }
+    .story-hero .eyebrow { color: var(--gold); }
+    .story-hero .eyebrow::before,
+    .story-hero .eyebrow::after { background: var(--gold); }
+    .story-hero h1 { color: var(--white); margin-bottom: 16px; }
+    .story-hero p { color: rgba(255,255,255,0.72); max-width: 520px; margin: 0 auto; font-size: 1.05rem; }
+
+    .story-section {
+      padding: 80px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    .story-section:last-of-type { border-bottom: none; }
+    .story-section:nth-child(even) { background: var(--cream-dark); }
+    .story-section:nth-child(odd)  { background: var(--cream); }
+
+    .story-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .story-section.reverse .story-inner { direction: rtl; }
+    .story-section.reverse .story-inner > * { direction: ltr; }
+
+    .story-img {
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+    .story-img img {
+      width: 100%;
+      height: 420px;
+      object-fit: cover;
+      display: block;
+    }
+    .story-img.logo-img {
+      background: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      height: 420px;
+      box-sizing: border-box;
+    }
+    .story-img.logo-img img {
+      height: auto;
+      max-height: 280px;
+      object-fit: contain;
+    }
+    .story-embed-wrap { position: relative; width: 100%; height: 420px; }
+    .story-embed-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; display: block; }
+
+    .story-text .eyebrow { justify-content: flex-start; }
+    .story-text .eyebrow::before { display: none; }
+    .story-text h2 { margin-bottom: 20px; }
+    .story-text p {
+      color: var(--muted);
+      margin-bottom: 16px;
+      font-size: 0.97rem;
+      line-height: 1.75;
+    }
+    .story-text p:last-child { margin-bottom: 0; }
+
+    .story-quote {
+      border-left: 3px solid var(--gold);
+      padding: 14px 20px;
+      margin: 24px 0;
+      background: rgba(200,168,75,0.08);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .story-quote p {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.08rem;
+      color: var(--maroon-dark) !important;
+      margin: 0 !important;
+    }
+
+    @media (max-width: 768px) {
+      .story-inner { grid-template-columns: 1fr; gap: 32px; }
+      .story-section.reverse .story-inner { direction: ltr; }
+      .story-img img, .story-img.logo-img { height: 280px; }
+      .story-embed-wrap { height: 280px; }
+      .story-hero { padding: 52px 20px 44px; }
+      .story-section { padding: 52px 20px; }
+    }
+
+    /* ── Hero press link ── */
+    .story-press-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 22px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(200,168,75,0.45);
+      padding-bottom: 2px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .story-press-link:hover { color: #e0b94a; border-color: rgba(224,185,74,0.7); }
+
+    /* ── Press grid ── */
+    .press-section-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .press-section-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .press-section-header h2 { margin-bottom: 0; }
+    .press-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+    .press-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .press-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+    .press-card-img-link {
+      display: block;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .press-card-img-link img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s;
+    }
+    .press-card:hover .press-card-img-link img { transform: scale(1.03); }
+    .press-video-thumb {
+      height: 220px;
+      background: var(--maroon-dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      color: rgba(255,255,255,0.75);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .press-card:hover .press-video-thumb { background: #3a0a0a; }
+    .press-play-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: var(--maroon-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+    }
+    .press-card:hover .press-play-btn { transform: scale(1.1); }
+    .press-card-body {
+      padding: 20px 22px 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .press-outlet {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--maroon);
+    }
+    .press-card-body h3 {
+      font-size: 0.97rem;
+      font-family: var(--font-display);
+      color: var(--maroon-dark);
+      margin: 0;
+      line-height: 1.4;
+    }
+    .press-card-body h3 a { color: inherit; text-decoration: none; }
+    .press-card-body h3 a:hover { color: var(--maroon); }
+    .press-card-body p { font-size: 0.84rem; color: var(--muted); line-height: 1.65; margin: 0; }
+    .press-video-wrap { position: relative; width: 100%; aspect-ratio: 16/9; flex-shrink: 0; }
+    .press-video-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; display: block; }
+    .press-spotify-wrap { flex-shrink: 0; }
+    .press-spotify-wrap iframe { width: 100%; height: 232px; border: none; display: block; }
+    @media (max-width: 900px) { .press-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 580px) { .press-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="community.html">Recipes</a>
+      <a href="story.html" style="color:var(--maroon);">Our Story</a>
+      <a href="find-us.html" title="Where You Can Find Us">Find Us</a>
+    </div>
+    <div class="nav-wordmark">
+      <a href="index.html"><em>Yawdi's</em></a>
+      <div class="nav-underline">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="nav-icons">
+        <a href="#" aria-label="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </a>
+        <a href="#" class="cart-link" aria-label="Cart">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="cart-badge">0</span>
+        </a>
+        <a href="index-fr.html" style="font-size:0.78rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">FR</a>
+      </div>
+    </div>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" />
+    <label for="nav-toggle" class="nav-hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </label>
+  </div>
+</nav>
+
+<!-- ── PAGE HERO ── -->
+<div class="story-hero">
+  <p class="eyebrow">&#9829; The Heart Behind the Jar</p>
+  <h1>Our Story</h1>
+  <p>From a Jamaican kitchen to Canadian tables &mdash; how one family's love of bold flavour became a brand.</p>
+  <a href="#press" class="story-press-link">Our Press &darr;</a>
+</div>
+
+<!-- ── STORY SECTIONS ( editable in backend/admin.html) ── -->
+<div id="story-sections-container">
+  <section class="story-section"><div class="story-inner"><p style="grid-column:1/-1;text-align:center;color:var(--muted);">Loading&hellip;</p></div></section>
+</div>
+
+<!-- ── PRESS SECTION ── -->
+<section class="story-section" id="press">
+  <div class="press-section-inner">
+    <div class="press-section-header">
+      <p class="eyebrow">As Seen In</p>
+      <h2>Our Press</h2>
+    </div>
+    <div class="press-grid" id="press-grid">
+      <p style="grid-column:1/-1;text-align:center;color:var(--muted);">Loading&hellip;</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER BAR ── -->
+<div class="footer-bar">
+  <div class="footer-bar-inner">
+    <div class="footer-bar-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Made in Canada
+    </div>
+    <div class="footer-bar-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Quality Ingredients
+    </div>
+    <div class="footer-bar-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      Made with Love
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="footer-brand footer-col">
+      <span class="footer-brand-name">Yawdi's</span>
+      <p style="font-size:0.88rem;margin-bottom:14px;">Island flavour for everyday meals<br />and memorable gatherings.</p>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/yawdis" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a href="https://www.facebook.com/YAWDIsCa/" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="shop.html">All Products</a></li>
+        <li><a href="shop.html#jellies">Pepper Jellies</a></li>
+        <li><a href="shop.html#jerk">Jerk Marinade</a></li>
+        <li><a href="bundle.html">Bundle &amp; Save</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <ul>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="community.html#recipes">Recipes</a></li>
+        <li><a href="story.html">Our Story</a></li>
+        <li><a href="index-fr.html">Fran&ccedil;ais</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Help</h4>
+      <ul>
+        <li><a href="contact.html">Contact Us</a></li>
+        <li><a href="#">Shipping Info</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="https://www.yawdi.ca/press" target="_blank" rel="noopener">Press</a></li>
+      </ul>
+    </div>
+  </div>
+  <p class="footer-copy">&copy; 2025 Yawdi's. Made with love in Canada.</p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="cart.js"></script>
+<script>
+function storyMediaHtml(section) {
+  if (section.mediaType === 'video') {
+    return `<div class="story-embed-wrap"><iframe src="${escHtml(section.mediaUrl)}" title="${escHtml(section.mediaAlt || section.heading)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>`;
+  }
+  if (section.mediaType === 'audio') {
+    return `<div class="story-embed-wrap"><iframe src="${escHtml(section.mediaUrl)}" title="${escHtml(section.mediaAlt || section.heading)}" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>`;
+  }
+  return `<img src="${escHtml(section.mediaUrl)}" alt="${escHtml(section.mediaAlt || section.heading)}" />`;
+}
+
+function storySectionHtml(section) {
+  return `
+    <section class="story-section${section.reverse ? ' reverse' : ''}">
+      <div class="story-inner">
+        <div class="story-img${section.logoStyle ? ' logo-img' : ''}">
+          ${storyMediaHtml(section)}
+        </div>
+        <div class="story-text">
+          ${section.eyebrow ? `<p class="eyebrow left">${escHtml(section.eyebrow)}</p>` : ''}
+          <h2>${escHtml(section.heading)}</h2>
+          ${(section.paragraphs || []).map(p => `<p>${escHtml(p)}</p>`).join('')}
+          ${section.quote ? `<div class="story-quote"><p>${escHtml(section.quote)}</p></div>` : ''}
+          ${section.ctaText && section.ctaLink ? `<a href="${escHtml(section.ctaLink)}" class="btn btn-maroon" style="margin-top:8px;">${escHtml(section.ctaText)}</a>` : ''}
+        </div>
+      </div>
+    </section>`;
+}
+
+async function renderStorySections() {
+  const container = document.getElementById('story-sections-container');
+  try {
+    const sections = await StoryStore.getSections();
+    container.innerHTML = sections.length ? sections.map(storySectionHtml).join('') : '';
+  } catch (err) {
+    console.error('Failed to load story sections:', err);
+    container.innerHTML = '';
+  }
+}
+
+function pressMediaHtml(item) {
+  if (item.mediaType === 'video') {
+    return `<div class="press-video-wrap"><iframe src="${escHtml(item.mediaUrl)}" title="${escHtml(item.outlet)} \u2014 ${escHtml(item.title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>`;
+  }
+  if (item.mediaType === 'audio') {
+    return `<div class="press-spotify-wrap"><iframe src="${escHtml(item.mediaUrl)}" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="${escHtml(item.outlet)} \u2014 ${escHtml(item.title)}"></iframe></div>`;
+  }
+  const img = `<img src="${escHtml(item.mediaUrl)}" alt="${escHtml(item.outlet)}" />`;
+  return item.link ? `<a href="${escHtml(item.link)}" target="_blank" rel="noopener" class="press-card-img-link">${img}</a>` : img;
+}
+
+function pressCardHtml(item) {
+  const titleHtml = item.link
+    ? `<a href="${escHtml(item.link)}" target="_blank" rel="noopener">${escHtml(item.title)}</a>`
+    : escHtml(item.title);
+  return `
+    <article class="press-card">
+      ${pressMediaHtml(item)}
+      <div class="press-card-body">
+        <span class="press-outlet">${escHtml(item.outlet)}</span>
+        <h3>${titleHtml}</h3>
+        <p>${escHtml(item.description || '')}</p>
+      </div>
+    </article>`;
+}
+
+async function renderPressGrid() {
+  const grid = document.getElementById('press-grid');
+  try {
+    const items = await StoryStore.getPressItems();
+    grid.innerHTML = items.length ? items.map(pressCardHtml).join('') : '<p style="grid-column:1/-1;text-align:center;color:var(--muted);">No press coverage yet.</p>';
+  } catch (err) {
+    console.error('Failed to load press items:', err);
+    grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--muted);">Couldn\u2019t load press coverage right now.</p>';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderStorySections();
+  renderPressGrid();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Moderation Console</title>
+  <style>
+    :root {
+      --bg:        #0a0e14;
+      --bg-panel:  #10161f;
+      --bg-card:   #141b26;
+      --border:    #232d3b;
+      --blue:      #2f7dfa;
+      --blue-dim:  #1c4f9e;
+      --text:      #dbe4f0;
+      --muted:     #7d8ba0;
+      --amber:     #e8b74f;
+      --green:     #45c17a;
+      --red:       #ea5a5a;
+      --radius:    8px;
+      --font: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0; background: var(--bg); color: var(--text);
+      font-family: var(--font); min-height: 100vh;
+    }
+    a { color: var(--blue); }
+
+    .console-topbar {
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 28px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .console-brand {
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--mono); font-size: 0.88rem; letter-spacing: 0.03em; color: var(--muted);
+    }
+    .console-brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 8px var(--blue); }
+
+    .console-wrap { max-width: 980px; margin: 0 auto; padding: 44px 24px 90px; }
+
+    /* gate */
+    .gate { max-width: 380px; margin: 100px auto; text-align: center; }
+    .gate-icon {
+      width: 52px; height: 52px; margin: 0 auto 18px; border-radius: 50%;
+      background: var(--bg-card); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .gate h1 { font-size: 1.3rem; margin: 0 0 8px; font-weight: 600; }
+    .gate p { color: var(--muted); font-size: 0.86rem; margin: 0 0 24px; line-height: 1.6; }
+    .gate form { display: flex; flex-direction: column; gap: 12px; text-align: left; }
+    .gate label { font-size: 0.74rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .gate input {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 11px 14px; font-size: 0.94rem; color: var(--text); font-family: var(--mono); outline: none;
+    }
+    .gate input:focus { border-color: var(--blue); }
+    .gate-error { color: var(--red); font-size: 0.82rem; min-height: 1.2em; }
+    .gate-btn {
+      background: var(--blue); color: #fff; border: none; border-radius: var(--radius);
+      padding: 11px 16px; font-size: 0.9rem; font-weight: 600; cursor: pointer; margin-top: 4px;
+      transition: background 0.15s;
+    }
+    .gate-btn:hover { background: var(--blue-dim); }
+
+    /* console header */
+    .console-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; gap: 16px; flex-wrap: wrap; }
+    .console-header h1 { font-size: 1.4rem; font-weight: 600; margin: 0 0 4px; }
+    .console-header p { color: var(--muted); font-size: 0.86rem; margin: 0; }
+    .btn-ghost {
+      background: transparent; border: 1px solid var(--border); color: var(--muted);
+      border-radius: var(--radius); padding: 8px 16px; font-size: 0.82rem; cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-ghost:hover { border-color: var(--blue); color: var(--text); }
+
+    .console-note {
+      background: var(--bg-panel); border: 1px solid var(--border); border-left: 3px solid var(--blue);
+      border-radius: var(--radius); padding: 12px 16px; font-size: 0.8rem; color: var(--muted);
+      line-height: 1.6; margin-bottom: 26px;
+    }
+    .console-note strong { color: var(--text); }
+
+    /* tabs */
+    .console-tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+    .console-tab {
+      background: var(--bg-panel); border: 1px solid var(--border); color: var(--muted);
+      border-radius: 999px; padding: 7px 16px; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .console-tab.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+    .console-tab:not(.active):hover { border-color: var(--blue); color: var(--text); }
+
+    /* comment cards */
+    .console-list { display: flex; flex-direction: column; gap: 12px; }
+    .console-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 16px 20px; display: flex; flex-direction: column; gap: 8px;
+    }
+    .console-card-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .console-name { font-weight: 600; color: var(--text); }
+    .console-post { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .console-text { font-size: 0.9rem; color: var(--text); line-height: 1.6; white-space: pre-wrap; }
+    .console-meta { font-size: 0.72rem; color: var(--muted); font-family: var(--mono); }
+    .status-pill { font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; padding: 3px 10px; border-radius: 999px; }
+    .status-pending  { background: rgba(232,183,79,0.15); color: var(--amber); border: 1px solid rgba(232,183,79,0.35); }
+    .status-approved { background: rgba(69,193,122,0.15); color: var(--green); border: 1px solid rgba(69,193,122,0.35); }
+    .status-rejected { background: rgba(234,90,90,0.15); color: var(--red); border: 1px solid rgba(234,90,90,0.35); }
+    .console-actions { display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
+    .action-btn {
+      border-radius: var(--radius); padding: 7px 14px; font-size: 0.78rem; font-weight: 600;
+      cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text);
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .action-approve { border-color: rgba(69,193,122,0.4); color: var(--green); }
+    .action-approve:hover { background: rgba(69,193,122,0.12); }
+    .action-reject { border-color: rgba(232,183,79,0.4); color: var(--amber); }
+    .action-reject:hover { background: rgba(232,183,79,0.12); }
+    .action-delete { border-color: rgba(234,90,90,0.4); color: var(--red); }
+    .action-delete:hover { background: rgba(234,90,90,0.12); }
+
+    .console-empty { text-align: center; color: var(--muted); padding: 70px 0; font-size: 0.9rem; }
+
+    /* AI moderation info (comments only) */
+    .ai-badge {
+      display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--muted);
+      font-family: var(--mono); background: var(--bg-panel); border: 1px solid var(--border);
+      border-radius: 999px; padding: 3px 10px; width: fit-content;
+    }
+    .ai-badge.ai-rejected { color: var(--red); border-color: rgba(234,90,90,0.35); }
+    .ai-badge.ai-pending  { color: var(--amber); border-color: rgba(232,183,79,0.35); }
+
+    /* section switcher (Comments / Stores) */
+    .section-tabs { display: flex; gap: 8px; margin-bottom: 26px; border-bottom: 1px solid var(--border); }
+    .section-tab {
+      background: none; border: none; color: var(--muted); cursor: pointer;
+      padding: 10px 4px; margin-right: 18px; font-size: 0.9rem; font-weight: 600;
+      border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s;
+    }
+    .section-tab.active { color: var(--text); border-color: var(--blue); }
+    .section-tab:not(.active):hover { color: var(--text); }
+
+    /* store cards */
+    .store-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 16px 20px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;
+    }
+    .store-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .store-name { font-weight: 600; color: var(--text); font-size: 0.98rem; }
+    .store-address { font-size: 0.82rem; color: var(--muted); }
+    .store-coords { font-size: 0.72rem; color: var(--muted); font-family: var(--mono); }
+    .store-products { display: flex; flex-direction: column; gap: 3px; margin-top: 4px; }
+    .store-product-row { font-size: 0.82rem; color: var(--text); }
+    .store-product-row strong { color: var(--blue); }
+    .store-empty-products { font-size: 0.8rem; color: var(--muted); font-style: italic; }
+
+    /* store form */
+    .store-form-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 20px; margin-bottom: 20px;
+    }
+    .store-form-title { font-size: 0.95rem; font-weight: 600; margin: 0 0 14px; }
+    .form-row { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+    .form-row label { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .form-row input, .form-row select {
+      background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 9px 12px; font-size: 0.88rem; color: var(--text); font-family: var(--font); outline: none;
+    }
+    .form-row input:focus, .form-row select:focus { border-color: var(--blue); }
+    .form-row-pair { display: flex; gap: 12px; }
+    .form-row-pair .form-row { flex: 1; }
+    .form-hint { font-size: 0.74rem; color: var(--muted); line-height: 1.5; }
+    .product-row {
+      display: flex; gap: 8px; align-items: flex-end; margin-bottom: 10px;
+    }
+    .product-row .form-row { margin-bottom: 0; }
+    .product-row select { min-width: 170px; }
+    .product-row input { flex: 1; }
+    .remove-product-row {
+      background: transparent; border: 1px solid var(--border); color: var(--red);
+      border-radius: var(--radius); padding: 9px 12px; cursor: pointer; font-size: 0.8rem;
+    }
+    .remove-product-row:hover { background: rgba(234,90,90,0.12); }
+    .add-product-row {
+      background: transparent; border: 1px dashed var(--border); color: var(--muted);
+      border-radius: var(--radius); padding: 8px 14px; cursor: pointer; font-size: 0.8rem; margin-bottom: 16px;
+    }
+    .add-product-row:hover { border-color: var(--blue); color: var(--text); }
+    .form-actions { display: flex; gap: 10px; }
+    .btn-primary {
+      background: var(--blue); color: #fff; border: none; border-radius: var(--radius);
+      padding: 9px 18px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+    }
+    .btn-primary:hover { background: var(--blue-dim); }
+    .store-actions { display: flex; gap: 8px; margin-top: 4px; }
+
+    /* image upload row */
+    .image-upload-row { display: flex; gap: 8px; align-items: center; }
+    .image-upload-row input[type="text"] { flex: 1; }
+    .upload-status { font-size: 0.74rem; color: var(--muted); margin-top: 4px; min-height: 1.2em; }
+    .upload-status.error { color: var(--red); }
+    .upload-status.success { color: var(--green); }
+  </style>
+</head>
+<body>
+
+<div class="console-topbar">
+  <div class="console-brand"><span class="dot"></span> MODERATION CONSOLE</div>
+</div>
+
+<div class="console-wrap">
+
+  <!-- ── LOGIN GATE (Firebase Authentication) ── -->
+  <div class="gate" id="gate">
+    <div class="gate-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2f7dfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <h1 id="gate-title">Restricted Access</h1>
+    <p id="gate-sub">Sign in with your admin account to continue.</p>
+    <form id="gate-form" novalidate>
+      <p class="gate-error"></p>
+      <label for="admin-email">Email</label>
+      <input type="email" id="admin-email" autocomplete="username" required />
+      <label for="admin-password">Password</label>
+      <input type="password" id="admin-password" autocomplete="current-password" required />
+      <button type="submit" class="gate-btn">Sign In</button>
+    </form>
+  </div>
+
+  <!-- ── MODERATION PANEL (hidden until unlocked) ── -->
+  <div id="panel" hidden>
+    <div class="console-header">
+      <div>
+        <h1 id="panel-title">Comment Queue</h1>
+        <p id="panel-subtitle">Review, approve, or reject submitted comments before they go public.</p>
+      </div>
+      <button class="btn-ghost" id="lock-btn">Lock Session</button>
+    </div>
+
+    <div class="section-tabs" id="section-tabs">
+      <button class="section-tab active" data-section="comments">Comments</button>
+      <button class="section-tab" data-section="recipes">Recipes</button>
+      <button class="section-tab" data-section="stores">Stores</button>
+      <button class="section-tab" data-section="story">Story Page</button>
+    </div>
+
+    <!-- ── COMMENTS VIEW ── -->
+    <div id="comments-view">
+      <div class="console-note">
+        <strong>Shared data:</strong> comments are stored in Firestore, so they're visible to and moderated the same way
+        regardless of which device or network you're on.
+      </div>
+      <div class="console-tabs" id="tabs">
+        <button class="console-tab active" data-status="pending">Pending</button>
+        <button class="console-tab" data-status="approved">Approved</button>
+        <button class="console-tab" data-status="rejected">Rejected</button>
+        <button class="console-tab" data-status="all">All</button>
+      </div>
+      <div class="console-list" id="comment-list"></div>
+    </div>
+
+    <!-- ── STORES VIEW ── -->
+    <div id="stores-view" hidden>
+      <div class="console-note">
+        <strong>Shared data:</strong> stores are stored in Firestore and read directly by find-us.html — changes made
+        here appear for every visitor, on any device or network, with no code edits required.
+      </div>
+      <div style="display:flex; gap:10px; margin-bottom:18px;">
+        <button class="btn-ghost" id="add-store-btn">+ Add Store</button>
+        <button class="btn-ghost" id="seed-stores-btn" hidden>Load sample stores</button>
+      </div>
+      <div id="store-form-area"></div>
+      <div class="console-list" id="store-list"></div>
+    </div>
+
+    <!-- ── RECIPES VIEW ── -->
+    <div id="recipes-view" hidden>
+      <div class="console-note">
+        <strong>Shared data:</strong> recipes are stored in Firestore and read directly by community.html — new recipes
+        get the exact same card, like, and comment behaviour as the originals.
+      </div>
+      <div style="display:flex; gap:10px; margin-bottom:18px;">
+        <button class="btn-ghost" id="add-recipe-btn">+ Add Recipe</button>
+        <button class="btn-ghost" id="seed-recipes-btn" hidden>Load sample recipes</button>
+      </div>
+      <div class="console-tabs" id="recipe-view-tabs">
+        <button class="console-tab active" data-mode="active">Active</button>
+        <button class="console-tab" data-mode="trash">Trash</button>
+      </div>
+      <div id="recipe-form-area"></div>
+      <div class="console-list" id="recipe-list"></div>
+    </div>
+
+    <!-- ── STORY PAGE VIEW ── -->
+    <div id="story-view" hidden>
+      <div class="console-note">
+        <strong>Shared data:</strong> these sections and press items are stored in Firestore and rendered directly on
+        story.html — editing here updates the live page for every visitor, without changing its design.
+      </div>
+      <button class="btn-ghost" id="seed-story-btn" style="margin-bottom:18px;" hidden>Load sample story content</button>
+
+      <h3 style="font-size:1rem;font-weight:600;margin:0 0 12px;">Narrative Sections</h3>
+      <button class="btn-ghost" id="add-section-btn" style="margin-bottom:18px;">+ Add Section</button>
+      <div class="console-tabs" id="section-view-tabs">
+        <button class="console-tab active" data-mode="active">Active</button>
+        <button class="console-tab" data-mode="trash">Trash</button>
+      </div>
+      <div id="section-form-area"></div>
+      <div class="console-list" id="section-list" style="margin-bottom:32px;"></div>
+
+      <h3 style="font-size:1rem;font-weight:600;margin:0 0 12px;">Press Items</h3>
+      <button class="btn-ghost" id="add-press-btn" style="margin-bottom:18px;">+ Add Press Item</button>
+      <div class="console-tabs" id="press-view-tabs">
+        <button class="console-tab active" data-mode="active">Active</button>
+        <button class="console-tab" data-mode="trash">Trash</button>
+      </div>
+      <div id="press-form-area"></div>
+      <div class="console-list" id="press-list"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-storage-compat.js"></script>
+<script src="../firebase-config.js"></script>
+<script src="../cart.js"></script>
+<script src="../stores-data.js"></script>
+<script src="../recipes-data.js"></script>
+<script src="../story-data.js"></script>
+<script>
+function showPanel() {
+  document.getElementById('gate').hidden = true;
+  document.getElementById('panel').hidden = false;
+  renderList();
+  renderStores();
+}
+
+function showGate() {
+  document.getElementById('panel').hidden = true;
+  document.getElementById('gate').hidden = false;
+}
+
+async function handleGateSubmit(e) {
+  e.preventDefault();
+  const form = e.target;
+  const errEl = form.querySelector('.gate-error');
+  const setErr = msg => { errEl.textContent = msg; };
+  const email = document.getElementById('admin-email').value.trim();
+  const password = document.getElementById('admin-password').value;
+  const submitBtn = form.querySelector('[type="submit"]');
+  submitBtn.disabled = true;
+  setErr('');
+  try {
+    await AdminAuth.signIn(email, password);
+    // showPanel() runs via the onAuthStateChanged listener below
+  } catch (err) {
+    console.error('Sign-in failed:', err);
+    setErr('Incorrect email or password.');
+  } finally {
+    submitBtn.disabled = false;
+  }
+}
+
+function lockConsole() {
+  AdminAuth.signOut();
+}
+
+const SECTION_TITLES = {
+  comments: ['Comment Queue', 'Review, approve, or reject submitted comments before they go public.'],
+  recipes:  ['Community Recipes', 'Add, edit, or remove the recipes shown on the Community page.'],
+  stores:   ['Store Locations', 'Add, edit, or remove the stores shown on the "Where You Can Find Us" map.'],
+  story:    ['Our Story Page', 'Add or edit narrative sections and press items shown on the Our Story page.']
+};
+
+function switchSection(section) {
+  document.querySelectorAll('.section-tab').forEach(b => b.classList.toggle('active', b.dataset.section === section));
+  ['comments', 'recipes', 'stores', 'story'].forEach(name => {
+    document.getElementById(`${name}-view`).hidden = section !== name;
+  });
+  const [title, subtitle] = SECTION_TITLES[section];
+  document.getElementById('panel-title').textContent = title;
+  document.getElementById('panel-subtitle').textContent = subtitle;
+  if (section === 'stores')  { closeStoreForm(); renderStores(); }
+  if (section === 'recipes') { closeRecipeForm(); renderRecipes(); }
+  if (section === 'story')   { closeSectionForm(); closePressForm(); renderSections(); renderPressItems(); }
+}
+
+let activeTab = 'pending';
+
+async function renderList() {
+  const list = document.getElementById('comment-list');
+  list.innerHTML = `<p class="console-empty">Loading\u2026</p>`;
+  let all;
+  try {
+    all = await CommunityStore.allComments();
+  } catch (err) {
+    console.error('Failed to load comments:', err);
+    list.innerHTML = `<p class="console-empty">Couldn\u2019t load comments. Make sure Firestore security rules are set up (see firestore.rules.txt).</p>`;
+    return;
+  }
+  const filtered = activeTab === 'all' ? all : all.filter(c => c.status === activeTab);
+
+  if (!filtered.length) {
+    list.innerHTML = `<p class="console-empty">No ${activeTab === 'all' ? '' : activeTab} comments to show.</p>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(c => {
+    const postTitle = COMMUNITY_POST_TITLES[c.postId] || c.postId;
+    const date = new Date(c.createdAt).toLocaleString('en-CA', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    return `
+      <div class="console-card" data-id="${escHtml(c.id)}">
+        <div class="console-card-top">
+          <div>
+            <span class="console-name">${escHtml(c.name)}</span>
+            &nbsp;&middot;&nbsp;
+            <span class="console-post">${escHtml(postTitle)}</span>
+          </div>
+          <span class="status-pill status-${c.status}">${c.status}</span>
+        </div>
+        <p class="console-text">${escHtml(c.text)}</p>
+        ${(c.aiCategory && c.aiCategory !== 'NONE') ? `<div class="ai-badge ai-${c.status}">AI: ${escHtml(c.aiCategory)} — ${Math.round((c.aiConfidence || 0) * 100)}% — ${escHtml(c.aiReason || '')}</div>` : ''}
+        <p class="console-meta">${escHtml(date)}</p>
+        <div class="console-actions">
+          ${c.status !== 'approved' ? `<button class="action-btn action-approve" data-action="approve">Approve</button>` : ''}
+          ${c.status !== 'rejected' ? `<button class="action-btn action-reject" data-action="reject">Reject</button>` : ''}
+          <button class="action-btn action-delete" data-action="delete">Delete</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── Stores view ──
+
+function productOptionsHtml(selectedId) {
+  return PRODUCTS.map(p => `<option value="${escHtml(p.id)}" ${p.id === selectedId ? 'selected' : ''}>${escHtml(p.name)}</option>`).join('');
+}
+
+function productRowHtml(entry) {
+  entry = entry || { productId: '', aisle: '' };
+  return `
+    <div class="product-row">
+      <div class="form-row">
+        <label>Product</label>
+        <select class="product-select">${productOptionsHtml(entry.productId)}</select>
+      </div>
+      <div class="form-row">
+        <label>Aisle / location note</label>
+        <input type="text" class="aisle-input" placeholder="e.g. Aisle 7 \u2014 International Foods" value="${escHtml(entry.aisle)}" />
+      </div>
+      <button type="button" class="remove-product-row" title="Remove product">&times;</button>
+    </div>`;
+}
+
+let editingStoreId = null;
+
+function openStoreForm(store) {
+  editingStoreId = store ? store.id : null;
+  const area = document.getElementById('store-form-area');
+  const products = store && store.products && store.products.length ? store.products : [{ productId: '', aisle: '' }];
+  area.innerHTML = `
+    <div class="store-form-card">
+      <h3 class="store-form-title">${store ? 'Edit Store' : 'Add Store'}</h3>
+      <form id="store-form" novalidate>
+        <div class="form-row">
+          <label for="store-name">Store name</label>
+          <input type="text" id="store-name" required value="${store ? escHtml(store.name) : ''}" placeholder="e.g. Walmart \u2014 Kanata" />
+        </div>
+        <div class="form-row">
+          <label for="store-address">Address</label>
+          <input type="text" id="store-address" required value="${store ? escHtml(store.address) : ''}" placeholder="Street, City, Province, Postal Code" />
+        </div>
+        <div class="form-row-pair">
+          <div class="form-row">
+            <label for="store-lat">Latitude</label>
+            <input type="number" step="any" id="store-lat" required value="${store ? store.lat : ''}" placeholder="45.4215" />
+          </div>
+          <div class="form-row">
+            <label for="store-lng">Longitude</label>
+            <input type="number" step="any" id="store-lng" required value="${store ? store.lng : ''}" placeholder="-75.6972" />
+          </div>
+        </div>
+        <p class="form-hint">Tip: search the address on <a href="https://www.google.com/maps" target="_blank" rel="noopener">Google Maps</a>, right-click the exact spot, and click the coordinates shown at the top to copy them.</p>
+        <label style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;display:block;margin:16px 0 8px;">Products available here</label>
+        <div id="product-rows">${products.map(productRowHtml).join('')}</div>
+        <button type="button" class="add-product-row" id="add-product-row-btn">+ Add product</button>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Save Store</button>
+          <button type="button" class="btn-ghost" id="cancel-store-form">Cancel</button>
+        </div>
+      </form>
+    </div>`;
+
+  document.getElementById('add-product-row-btn').addEventListener('click', () => {
+    document.getElementById('product-rows').insertAdjacentHTML('beforeend', productRowHtml());
+  });
+  document.getElementById('product-rows').addEventListener('click', e => {
+    const btn = e.target.closest('.remove-product-row');
+    if (!btn) return;
+    const rows = document.querySelectorAll('.product-row');
+    if (rows.length > 1) btn.closest('.product-row').remove();
+  });
+  document.getElementById('cancel-store-form').addEventListener('click', closeStoreForm);
+  document.getElementById('store-form').addEventListener('submit', handleStoreFormSubmit);
+  area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closeStoreForm() {
+  editingStoreId = null;
+  const area = document.getElementById('store-form-area');
+  if (area) area.innerHTML = '';
+}
+
+function handleStoreFormSubmit(e) {
+  e.preventDefault();
+  const name = document.getElementById('store-name').value.trim();
+  const address = document.getElementById('store-address').value.trim();
+  const lat = parseFloat(document.getElementById('store-lat').value);
+  const lng = parseFloat(document.getElementById('store-lng').value);
+  if (!name || !address || Number.isNaN(lat) || Number.isNaN(lng)) return;
+
+  const products = Array.from(document.querySelectorAll('.product-row')).map(row => ({
+    productId: row.querySelector('.product-select').value,
+    aisle: row.querySelector('.aisle-input').value.trim()
+  })).filter(p => p.productId && p.aisle);
+
+  const record = { name, address, lat, lng, products };
+  const submitBtn = e.target.querySelector('[type="submit"]');
+  submitBtn.disabled = true;
+  (editingStoreId ? StoresStore.update(editingStoreId, record) : StoresStore.add(record))
+    .then(() => { closeStoreForm(); renderStores(); })
+    .catch(err => {
+      console.error('Failed to save store:', err);
+      alert('Could not save this store. Make sure Firestore security rules are set up and you are signed in.');
+      submitBtn.disabled = false;
+    });
+}
+
+async function renderStores() {
+  const list = document.getElementById('store-list');
+  const seedBtn = document.getElementById('seed-stores-btn');
+  list.innerHTML = `<p class="console-empty">Loading&hellip;</p>`;
+  let stores;
+  try {
+    stores = await StoresStore.getAll();
+  } catch (err) {
+    console.error('Failed to load stores:', err);
+    list.innerHTML = `<p class="console-empty">Couldn\u2019t load stores. Make sure Firestore security rules are set up (see firestore.rules.txt).</p>`;
+    return;
+  }
+  if (seedBtn) seedBtn.hidden = stores.length > 0;
+  if (!stores.length) {
+    list.innerHTML = `<p class="console-empty">No stores yet. Click "+ Add Store" to add your first location, or "Load sample stores" to start from the placeholder examples.</p>`;
+    return;
+  }
+  list.innerHTML = stores.map(store => `
+    <div class="store-card" data-id="${escHtml(store.id)}">
+      <div class="store-card-top">
+        <div>
+          <div class="store-name">${escHtml(store.name)}</div>
+          <div class="store-address">${escHtml(store.address)}</div>
+          <div class="store-coords">${store.lat}, ${store.lng}</div>
+        </div>
+      </div>
+      <div class="store-products">
+        ${store.products && store.products.length ? store.products.map(entry => {
+          const product = PRODUCTS.find(p => p.id === entry.productId);
+          return `<div class="store-product-row"><strong>${escHtml(product ? product.name : entry.productId)}</strong> \u2014 ${escHtml(entry.aisle)}</div>`;
+        }).join('') : '<p class="store-empty-products">No products linked yet.</p>'}
+      </div>
+      <div class="store-actions">
+        <button class="action-btn" data-action="edit">Edit</button>
+        <button class="action-btn action-delete" data-action="delete">Delete</button>
+      </div>
+    </div>`).join('');
+}
+
+// ── Recipes view ──
+
+let editingRecipeId = null;
+let recipeViewMode = 'active';
+
+function recipeSectionRowHtml(section) {
+  section = section || { heading: '', items: [] };
+  return `
+    <div class="product-row" style="align-items:flex-start;">
+      <div class="form-row" style="flex:1;">
+        <label>Section heading</label>
+        <input type="text" class="section-heading-input" placeholder="e.g. Ingredients" value="${escHtml(section.heading || '')}" />
+      </div>
+      <div class="form-row" style="flex:2;">
+        <label>Items (one per line)</label>
+        <textarea class="section-items-input" rows="3" style="background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);padding:9px 12px;font-size:0.88rem;color:var(--text);font-family:var(--font);">${escHtml((section.items || []).join('\n'))}</textarea>
+      </div>
+      <button type="button" class="remove-product-row" title="Remove section">&times;</button>
+    </div>`;
+}
+
+// Wires an "Upload" button + hidden file input to actually upload to Firebase
+// Storage and drop the resulting URL into a plain text URL field, reused by
+// the recipe/section/press forms below.
+function wireImageUpload(uploadBtnId, fileInputId, urlInputId, statusId, folder) {
+  const uploadBtn = document.getElementById(uploadBtnId);
+  const fileInput = document.getElementById(fileInputId);
+  const urlInput = document.getElementById(urlInputId);
+  const statusEl = document.getElementById(statusId);
+  if (!uploadBtn || !fileInput || !urlInput) return;
+  uploadBtn.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', async () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+    if (statusEl) { statusEl.textContent = 'Uploading\u2026'; statusEl.className = 'upload-status'; }
+    uploadBtn.disabled = true;
+    try {
+      const url = await MediaUpload.uploadImage(file, folder);
+      urlInput.value = url;
+      if (statusEl) { statusEl.textContent = 'Uploaded!'; statusEl.className = 'upload-status success'; }
+    } catch (err) {
+      console.error('Upload failed:', err);
+      if (statusEl) { statusEl.textContent = err.message || 'Upload failed. Make sure Firebase Storage is set up and you are signed in.'; statusEl.className = 'upload-status error'; }
+    } finally {
+      uploadBtn.disabled = false;
+      fileInput.value = '';
+    }
+  });
+}
+
+// Only images/GIFs can be uploaded as files; video/audio stay as embed
+// links, so hide the Upload button whenever a non-image media type is picked.
+function wireUploadVisibility(mediaTypeSelectId, uploadBtnId) {
+  const select = document.getElementById(mediaTypeSelectId);
+  const uploadBtn = document.getElementById(uploadBtnId);
+  if (!select || !uploadBtn) return;
+  const sync = () => { uploadBtn.style.display = select.value === 'image' ? '' : 'none'; };
+  select.addEventListener('change', sync);
+  sync();
+}
+
+function openRecipeForm(recipe) {
+  editingRecipeId = recipe ? recipe.id : null;
+  const area = document.getElementById('recipe-form-area');
+  const sections = recipe && recipe.sections && recipe.sections.length ? recipe.sections : [{ heading: 'Ingredients', items: [] }];
+  area.innerHTML = `
+    <div class="store-form-card">
+      <h3 class="store-form-title">${recipe ? 'Edit Recipe' : 'Add Recipe'}</h3>
+      <form id="recipe-form" novalidate>
+        <div class="form-row">
+          <label for="recipe-uploader">Uploader name</label>
+          <input type="text" id="recipe-uploader" required value="${recipe ? escHtml(recipe.uploaderName) : ''}" placeholder="e.g. Veneise George" />
+        </div>
+        <div class="form-row">
+          <label for="recipe-title">Recipe name</label>
+          <input type="text" id="recipe-title" required value="${recipe ? escHtml(recipe.title) : ''}" placeholder="e.g. Jerk Chicken Tacos" />
+        </div>
+        <div class="form-row">
+          <label for="recipe-image">Image</label>
+          <div class="image-upload-row">
+            <input type="text" id="recipe-image" required value="${recipe ? escHtml(recipe.image) : ''}" placeholder="content/GlamShots/example.jpg or https://..." />
+            <button type="button" class="btn-ghost" id="recipe-image-upload-btn">Upload</button>
+          </div>
+          <input type="file" id="recipe-image-file" accept="image/*" hidden />
+          <p class="upload-status" id="recipe-image-upload-status"></p>
+        </div>
+        <div class="form-row">
+          <label for="recipe-description">Quick description (shown on the card)</label>
+          <input type="text" id="recipe-description" required value="${recipe ? escHtml(recipe.description || '') : ''}" placeholder="One sentence describing the recipe" />
+        </div>
+        <div class="form-row">
+          <label for="recipe-madewith">Made with (optional)</label>
+          <input type="text" id="recipe-madewith" value="${recipe ? escHtml(recipe.madeWith || '') : ''}" placeholder="e.g. Jerk Marinade" />
+        </div>
+        <div class="form-row-pair">
+          <div class="form-row">
+            <label for="recipe-serves">Serves (optional)</label>
+            <input type="text" id="recipe-serves" value="${recipe ? escHtml(recipe.serves || '') : ''}" placeholder="e.g. Serves 4–6" />
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="recipe-intro">Intro (optional)</label>
+          <input type="text" id="recipe-intro" value="${recipe ? escHtml(recipe.intro || '') : ''}" placeholder="Short intro shown above the sections" />
+        </div>
+        <label style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;display:block;margin:16px 0 8px;">Recipe sections (e.g. Ingredients, Directions)</label>
+        <div id="recipe-section-rows">${sections.map(recipeSectionRowHtml).join('')}</div>
+        <button type="button" class="add-product-row" id="add-section-row-btn">+ Add section</button>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Save Recipe</button>
+          <button type="button" class="btn-ghost" id="cancel-recipe-form">Cancel</button>
+        </div>
+      </form>
+    </div>`;
+
+  document.getElementById('add-section-row-btn').addEventListener('click', () => {
+    document.getElementById('recipe-section-rows').insertAdjacentHTML('beforeend', recipeSectionRowHtml());
+  });
+  document.getElementById('recipe-section-rows').addEventListener('click', e => {
+    const btn = e.target.closest('.remove-product-row');
+    if (!btn) return;
+    const rows = document.querySelectorAll('#recipe-section-rows .product-row');
+    if (rows.length > 1) btn.closest('.product-row').remove();
+  });
+  document.getElementById('cancel-recipe-form').addEventListener('click', closeRecipeForm);
+  document.getElementById('recipe-form').addEventListener('submit', handleRecipeFormSubmit);
+  wireImageUpload('recipe-image-upload-btn', 'recipe-image-file', 'recipe-image', 'recipe-image-upload-status', 'recipe-images');
+  area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closeRecipeForm() {
+  editingRecipeId = null;
+  const area = document.getElementById('recipe-form-area');
+  if (area) area.innerHTML = '';
+}
+
+function handleRecipeFormSubmit(e) {
+  e.preventDefault();
+  const uploaderName = document.getElementById('recipe-uploader').value.trim();
+  const title = document.getElementById('recipe-title').value.trim();
+  const image = document.getElementById('recipe-image').value.trim();
+  const description = document.getElementById('recipe-description').value.trim();
+  const madeWith = document.getElementById('recipe-madewith').value.trim();
+  const serves = document.getElementById('recipe-serves').value.trim();
+  const intro = document.getElementById('recipe-intro').value.trim();
+  if (!uploaderName || !title || !image || !description) return;
+
+  const sections = Array.from(document.querySelectorAll('#recipe-section-rows .product-row')).map(row => ({
+    heading: row.querySelector('.section-heading-input').value.trim(),
+    items: row.querySelector('.section-items-input').value.split('\n').map(s => s.trim()).filter(Boolean)
+  })).filter(sec => sec.heading && sec.items.length);
+
+  const record = { uploaderName, title, image, description, madeWith, serves, intro, sections };
+  const submitBtn = e.target.querySelector('[type="submit"]');
+  submitBtn.disabled = true;
+  (editingRecipeId ? RecipeStore.update(editingRecipeId, record) : RecipeStore.add(record))
+    .then(() => { closeRecipeForm(); renderRecipes(); })
+    .catch(err => {
+      console.error('Failed to save recipe:', err);
+      alert('Could not save this recipe. Make sure Firestore security rules are set up and you are signed in.');
+      submitBtn.disabled = false;
+    });
+}
+
+async function renderRecipes() {
+  const list = document.getElementById('recipe-list');
+  const seedBtn = document.getElementById('seed-recipes-btn');
+  list.innerHTML = `<p class="console-empty">Loading&hellip;</p>`;
+  let recipes;
+  try {
+    recipes = recipeViewMode === 'trash' ? await RecipeStore.getTrash() : await RecipeStore.getAll();
+  } catch (err) {
+    console.error('Failed to load recipes:', err);
+    list.innerHTML = `<p class="console-empty">Couldn\u2019t load recipes. Make sure Firestore security rules are set up (see firestore.rules.txt).</p>`;
+    return;
+  }
+  if (seedBtn) seedBtn.hidden = recipeViewMode === 'trash' || recipes.length > 0;
+  if (!recipes.length) {
+    list.innerHTML = recipeViewMode === 'trash'
+      ? `<p class="console-empty">Trash is empty.</p>`
+      : `<p class="console-empty">No recipes yet. Click "+ Add Recipe" to add your first one, or "Load sample recipes" to start from the originals.</p>`;
+    return;
+  }
+  list.innerHTML = recipes.map(recipe => `
+    <div class="store-card" data-id="${escHtml(recipe.id)}">
+      <div class="store-card-top">
+        <div>
+          <div class="store-name">${escHtml(recipe.title)}</div>
+          <div class="store-address">By ${escHtml(recipe.uploaderName)}</div>
+          <div class="store-coords">${escHtml(recipe.description || '')}</div>
+        </div>
+      </div>
+      <div class="store-actions">
+        ${recipeViewMode === 'trash' ? `
+          <button class="action-btn action-approve" data-action="restore">Restore</button>
+          <button class="action-btn action-delete" data-action="permanent-delete">Delete Forever</button>
+        ` : `
+          <button class="action-btn" data-action="edit">Edit</button>
+          ${recipe.previousVersion ? `<button class="action-btn" data-action="undo">Undo Last Edit</button>` : ''}
+          <button class="action-btn action-delete" data-action="delete">Delete</button>
+        `}
+      </div>
+    </div>`).join('');
+}
+
+// ── Story page view (narrative sections + press items) ──
+
+let editingSectionId = null;
+let editingPressId = null;
+let sectionViewMode = 'active';
+let pressViewMode = 'active';
+
+function openSectionForm(section) {
+  editingSectionId = section ? section.id : null;
+  const area = document.getElementById('section-form-area');
+  const paragraphs = section && section.paragraphs ? section.paragraphs.join('\n') : '';
+  area.innerHTML = `
+    <div class="store-form-card">
+      <h3 class="store-form-title">${section ? 'Edit Section' : 'Add Section'}</h3>
+      <form id="section-form" novalidate>
+        <div class="form-row-pair">
+          <div class="form-row">
+            <label for="section-order">Order (lower shows first)</label>
+            <input type="number" id="section-order" required value="${section ? section.order : 99}" />
+          </div>
+          <div class="form-row">
+            <label for="section-eyebrow">Eyebrow label</label>
+            <input type="text" id="section-eyebrow" value="${section ? escHtml(section.eyebrow || '') : ''}" placeholder="e.g. Founder" />
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="section-heading">Heading</label>
+          <input type="text" id="section-heading" required value="${section ? escHtml(section.heading || '') : ''}" placeholder="e.g. Our Leadership…" />
+        </div>
+        <div class="form-row">
+          <label for="section-paragraphs">Paragraphs (one per line)</label>
+          <textarea id="section-paragraphs" rows="5" style="background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);padding:9px 12px;font-size:0.88rem;color:var(--text);font-family:var(--font);">${escHtml(paragraphs)}</textarea>
+        </div>
+        <div class="form-row">
+          <label for="section-quote">Pull-quote (optional)</label>
+          <input type="text" id="section-quote" value="${section ? escHtml(section.quote || '') : ''}" />
+        </div>
+        <div class="form-row-pair">
+          <div class="form-row">
+            <label for="section-cta-text">Button text (optional)</label>
+            <input type="text" id="section-cta-text" value="${section ? escHtml(section.ctaText || '') : ''}" placeholder="e.g. Shop the Collection" />
+          </div>
+          <div class="form-row">
+            <label for="section-cta-link">Button link (optional)</label>
+            <input type="text" id="section-cta-link" value="${section ? escHtml(section.ctaLink || '') : ''}" placeholder="e.g. shop.html" />
+          </div>
+        </div>
+        <div class="form-row-pair">
+          <div class="form-row">
+            <label for="section-media-type">Media type</label>
+            <select id="section-media-type">
+              <option value="image" ${(!section || section.mediaType === 'image') ? 'selected' : ''}>Image or GIF</option>
+              <option value="video" ${section && section.mediaType === 'video' ? 'selected' : ''}>Video (embed link)</option>
+              <option value="audio" ${section && section.mediaType === 'audio' ? 'selected' : ''}>Audio (embed link)</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="section-media-url">Media URL</label>
+            <div class="image-upload-row">
+              <input type="text" id="section-media-url" required value="${section ? escHtml(section.mediaUrl || '') : ''}" placeholder="Image path/URL, or embed URL for video/audio" />
+              <button type="button" class="btn-ghost" id="section-image-upload-btn">Upload</button>
+            </div>
+            <input type="file" id="section-image-file" accept="image/*" hidden />
+            <p class="upload-status" id="section-image-upload-status"></p>
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="section-media-alt">Media alt text</label>
+          <input type="text" id="section-media-alt" value="${section ? escHtml(section.mediaAlt || '') : ''}" placeholder="Describe the image for accessibility" />
+        </div>
+        <div class="form-row-pair">
+          <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--text);text-transform:none;font-weight:400;">
+            <input type="checkbox" id="section-reverse" ${section && section.reverse ? 'checked' : ''} style="width:auto;" /> Flip layout (media on right)
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--text);text-transform:none;font-weight:400;">
+            <input type="checkbox" id="section-logo-style" ${section && section.logoStyle ? 'checked' : ''} style="width:auto;" /> Center media on white background (for logos)
+          </label>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Save Section</button>
+          <button type="button" class="btn-ghost" id="cancel-section-form">Cancel</button>
+        </div>
+      </form>
+    </div>`;
+  document.getElementById('cancel-section-form').addEventListener('click', closeSectionForm);
+  document.getElementById('section-form').addEventListener('submit', handleSectionFormSubmit);
+  wireImageUpload('section-image-upload-btn', 'section-image-file', 'section-media-url', 'section-image-upload-status', 'story-media');
+  wireUploadVisibility('section-media-type', 'section-image-upload-btn');
+  area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closeSectionForm() {
+  editingSectionId = null;
+  const area = document.getElementById('section-form-area');
+  if (area) area.innerHTML = '';
+}
+
+function handleSectionFormSubmit(e) {
+  e.preventDefault();
+  const order = parseInt(document.getElementById('section-order').value, 10) || 99;
+  const eyebrow = document.getElementById('section-eyebrow').value.trim();
+  const heading = document.getElementById('section-heading').value.trim();
+  const paragraphs = document.getElementById('section-paragraphs').value.split('\n').map(s => s.trim()).filter(Boolean);
+  const quote = document.getElementById('section-quote').value.trim();
+  const ctaText = document.getElementById('section-cta-text').value.trim();
+  const ctaLink = document.getElementById('section-cta-link').value.trim();
+  const mediaType = document.getElementById('section-media-type').value;
+  const mediaUrl = document.getElementById('section-media-url').value.trim();
+  const mediaAlt = document.getElementById('section-media-alt').value.trim();
+  const reverse = document.getElementById('section-reverse').checked;
+  const logoStyle = document.getElementById('section-logo-style').checked;
+  if (!heading || !mediaUrl) return;
+
+  const record = { order, eyebrow, heading, paragraphs, quote, ctaText, ctaLink, mediaType, mediaUrl, mediaAlt, reverse, logoStyle };
+  const submitBtn = e.target.querySelector('[type="submit"]');
+  submitBtn.disabled = true;
+  (editingSectionId ? StoryStore.updateSection(editingSectionId, record) : StoryStore.addSection(record))
+    .then(() => { closeSectionForm(); renderSections(); })
+    .catch(err => {
+      console.error('Failed to save section:', err);
+      alert('Could not save this section. Make sure Firestore security rules are set up and you are signed in.');
+      submitBtn.disabled = false;
+    });
+}
+
+async function renderSections() {
+  const list = document.getElementById('section-list');
+  const seedBtn = document.getElementById('seed-story-btn');
+  list.innerHTML = `<p class="console-empty">Loading&hellip;</p>`;
+  let sections;
+  try {
+    sections = sectionViewMode === 'trash' ? await StoryStore.getSectionsTrash() : await StoryStore.getSections();
+  } catch (err) {
+    console.error('Failed to load sections:', err);
+    list.innerHTML = `<p class="console-empty">Couldn\u2019t load sections. Make sure Firestore security rules are set up (see firestore.rules.txt).</p>`;
+    return;
+  }
+  if (seedBtn && sectionViewMode === 'active') {
+    const pressItems = await StoryStore.getPressItems().catch(() => []);
+    seedBtn.hidden = sections.length > 0 || pressItems.length > 0;
+  }
+  if (!sections.length) {
+    list.innerHTML = sectionViewMode === 'trash' ? `<p class="console-empty">Trash is empty.</p>` : `<p class="console-empty">No sections yet.</p>`;
+    return;
+  }
+  list.innerHTML = sections.map(section => `
+    <div class="store-card" data-id="${escHtml(section.id)}">
+      <div class="store-card-top">
+        <div>
+          <div class="store-name">#${section.order} \u2014 ${escHtml(section.heading)}</div>
+          <div class="store-address">${escHtml(section.eyebrow || '')}</div>
+        </div>
+      </div>
+      <div class="store-actions">
+        ${sectionViewMode === 'trash' ? `
+          <button class="action-btn action-approve" data-action="restore">Restore</button>
+          <button class="action-btn action-delete" data-action="permanent-delete">Delete Forever</button>
+        ` : `
+          <button class="action-btn" data-action="edit">Edit</button>
+          ${section.previousVersion ? `<button class="action-btn" data-action="undo">Undo Last Edit</button>` : ''}
+          <button class="action-btn action-delete" data-action="delete">Delete</button>
+        `}
+      </div>
+    </div>`).join('');
+}
+
+function openPressForm(item) {
+  editingPressId = item ? item.id : null;
+  const area = document.getElementById('press-form-area');
+  area.innerHTML = `
+    <div class="store-form-card">
+      <h3 class="store-form-title">${item ? 'Edit Press Item' : 'Add Press Item'}</h3>
+      <form id="press-form" novalidate>
+        <div class="form-row-pair">
+          <div class="form-row">
+            <label for="press-order">Order</label>
+            <input type="number" id="press-order" required value="${item ? item.order : 99}" />
+          </div>
+          <div class="form-row">
+            <label for="press-outlet">Outlet name</label>
+            <input type="text" id="press-outlet" required value="${item ? escHtml(item.outlet) : ''}" placeholder="e.g. Culinaire Magazine" />
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="press-title">Title</label>
+          <input type="text" id="press-title" required value="${item ? escHtml(item.title) : ''}" />
+        </div>
+        <div class="form-row">
+          <label for="press-link">Article/episode link</label>
+          <input type="text" id="press-link" value="${item ? escHtml(item.link || '') : ''}" placeholder="https://..." />
+        </div>
+        <div class="form-row">
+          <label for="press-description">Description</label>
+          <textarea id="press-description" rows="3" style="background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);padding:9px 12px;font-size:0.88rem;color:var(--text);font-family:var(--font);">${item ? escHtml(item.description || '') : ''}</textarea>
+        </div>
+        <div class="form-row-pair">
+          <div class="form-row">
+            <label for="press-media-type">Media type</label>
+            <select id="press-media-type">
+              <option value="image" ${(!item || item.mediaType === 'image') ? 'selected' : ''}>Image</option>
+              <option value="video" ${item && item.mediaType === 'video' ? 'selected' : ''}>Video (embed link)</option>
+              <option value="audio" ${item && item.mediaType === 'audio' ? 'selected' : ''}>Audio (embed link)</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="press-media-url">Media URL</label>
+            <div class="image-upload-row">
+              <input type="text" id="press-media-url" required value="${item ? escHtml(item.mediaUrl || '') : ''}" />
+              <button type="button" class="btn-ghost" id="press-image-upload-btn">Upload</button>
+            </div>
+            <input type="file" id="press-image-file" accept="image/*" hidden />
+            <p class="upload-status" id="press-image-upload-status"></p>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Save Press Item</button>
+          <button type="button" class="btn-ghost" id="cancel-press-form">Cancel</button>
+        </div>
+      </form>
+    </div>`;
+  document.getElementById('cancel-press-form').addEventListener('click', closePressForm);
+  document.getElementById('press-form').addEventListener('submit', handlePressFormSubmit);
+  wireImageUpload('press-image-upload-btn', 'press-image-file', 'press-media-url', 'press-image-upload-status', 'story-media');
+  wireUploadVisibility('press-media-type', 'press-image-upload-btn');
+  area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closePressForm() {
+  editingPressId = null;
+  const area = document.getElementById('press-form-area');
+  if (area) area.innerHTML = '';
+}
+
+function handlePressFormSubmit(e) {
+  e.preventDefault();
+  const order = parseInt(document.getElementById('press-order').value, 10) || 99;
+  const outlet = document.getElementById('press-outlet').value.trim();
+  const title = document.getElementById('press-title').value.trim();
+  const link = document.getElementById('press-link').value.trim();
+  const description = document.getElementById('press-description').value.trim();
+  const mediaType = document.getElementById('press-media-type').value;
+  const mediaUrl = document.getElementById('press-media-url').value.trim();
+  if (!outlet || !title || !mediaUrl) return;
+
+  const record = { order, outlet, title, link, description, mediaType, mediaUrl };
+  const submitBtn = e.target.querySelector('[type="submit"]');
+  submitBtn.disabled = true;
+  (editingPressId ? StoryStore.updatePressItem(editingPressId, record) : StoryStore.addPressItem(record))
+    .then(() => { closePressForm(); renderPressItems(); })
+    .catch(err => {
+      console.error('Failed to save press item:', err);
+      alert('Could not save this press item. Make sure Firestore security rules are set up and you are signed in.');
+      submitBtn.disabled = false;
+    });
+}
+
+async function renderPressItems() {
+  const list = document.getElementById('press-list');
+  let items;
+  try {
+    items = pressViewMode === 'trash' ? await StoryStore.getPressItemsTrash() : await StoryStore.getPressItems();
+  } catch (err) {
+    console.error('Failed to load press items:', err);
+    list.innerHTML = `<p class="console-empty">Couldn\u2019t load press items. Make sure Firestore security rules are set up (see firestore.rules.txt).</p>`;
+    return;
+  }
+  if (!items.length) {
+    list.innerHTML = pressViewMode === 'trash' ? `<p class="console-empty">Trash is empty.</p>` : `<p class="console-empty">No press items yet.</p>`;
+    return;
+  }
+  list.innerHTML = items.map(item => `
+    <div class="store-card" data-id="${escHtml(item.id)}">
+      <div class="store-card-top">
+        <div>
+          <div class="store-name">#${item.order} \u2014 ${escHtml(item.outlet)}</div>
+          <div class="store-address">${escHtml(item.title)}</div>
+        </div>
+      </div>
+      <div class="store-actions">
+        ${pressViewMode === 'trash' ? `
+          <button class="action-btn action-approve" data-action="restore">Restore</button>
+          <button class="action-btn action-delete" data-action="permanent-delete">Delete Forever</button>
+        ` : `
+          <button class="action-btn" data-action="edit">Edit</button>
+          ${item.previousVersion ? `<button class="action-btn" data-action="undo">Undo Last Edit</button>` : ''}
+          <button class="action-btn action-delete" data-action="delete">Delete</button>
+        `}
+      </div>
+    </div>`).join('');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  AdminAuth.onChange(user => { if (user) showPanel(); else showGate(); });
+
+  document.getElementById('gate-form').addEventListener('submit', handleGateSubmit);
+  document.getElementById('lock-btn').addEventListener('click', lockConsole);
+
+  document.getElementById('tabs').addEventListener('click', e => {
+    const btn = e.target.closest('.console-tab');
+    if (!btn) return;
+    document.querySelectorAll('.console-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeTab = btn.dataset.status;
+    renderList();
+  });
+
+  document.getElementById('comment-list').addEventListener('click', async e => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    btn.disabled = true;
+    const id = btn.closest('.console-card').dataset.id;
+    try {
+      if (btn.dataset.action === 'approve') await CommunityStore.setStatus(id, 'approved');
+      if (btn.dataset.action === 'reject')  await CommunityStore.setStatus(id, 'rejected');
+      if (btn.dataset.action === 'delete')  await CommunityStore.deleteComment(id);
+      await renderList();
+    } catch (err) {
+      console.error('Failed to update comment:', err);
+      btn.disabled = false;
+    }
+  });
+
+  document.getElementById('section-tabs').addEventListener('click', e => {
+    const btn = e.target.closest('.section-tab');
+    if (!btn) return;
+    switchSection(btn.dataset.section);
+  });
+
+  document.getElementById('add-store-btn').addEventListener('click', () => openStoreForm(null));
+
+  document.getElementById('seed-stores-btn').addEventListener('click', async e => {
+    e.target.disabled = true;
+    try {
+      await StoresStore.seedIfEmpty();
+      await renderStores();
+    } catch (err) {
+      console.error('Failed to load sample stores:', err);
+      alert('Could not load sample stores. Make sure Firestore security rules are set up and you are signed in.');
+    } finally {
+      e.target.disabled = false;
+    }
+  });
+
+  document.getElementById('store-list').addEventListener('click', async e => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const id = btn.closest('.store-card').dataset.id;
+    if (btn.dataset.action === 'edit') {
+      btn.disabled = true;
+      try { openStoreForm(await StoresStore.get(id)); } finally { btn.disabled = false; }
+    }
+    if (btn.dataset.action === 'delete') {
+      if (!confirm('Delete this store? This cannot be undone.')) return;
+      btn.disabled = true;
+      try {
+        await StoresStore.delete(id);
+        await renderStores();
+      } catch (err) {
+        console.error('Failed to delete store:', err);
+        btn.disabled = false;
+      }
+    }
+  });
+
+  document.getElementById('add-recipe-btn').addEventListener('click', () => openRecipeForm(null));
+
+  document.getElementById('recipe-view-tabs').addEventListener('click', e => {
+    const btn = e.target.closest('.console-tab');
+    if (!btn) return;
+    document.querySelectorAll('#recipe-view-tabs .console-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    recipeViewMode = btn.dataset.mode;
+    closeRecipeForm();
+    renderRecipes();
+  });
+
+  document.getElementById('seed-recipes-btn').addEventListener('click', async e => {
+    e.target.disabled = true;
+    try {
+      await RecipeStore.seedIfEmpty();
+      await renderRecipes();
+    } catch (err) {
+      console.error('Failed to load sample recipes:', err);
+      alert('Could not load sample recipes. Make sure Firestore security rules are set up and you are signed in.');
+    } finally {
+      e.target.disabled = false;
+    }
+  });
+
+  document.getElementById('recipe-list').addEventListener('click', async e => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const id = btn.closest('.store-card').dataset.id;
+    if (btn.dataset.action === 'edit') {
+      btn.disabled = true;
+      try { openRecipeForm(await RecipeStore.get(id)); } finally { btn.disabled = false; }
+    }
+    if (btn.dataset.action === 'undo') {
+      btn.disabled = true;
+      try { await RecipeStore.undoEdit(id); await renderRecipes(); } catch (err) { console.error('Failed to undo edit:', err); btn.disabled = false; }
+    }
+    if (btn.dataset.action === 'delete') {
+      if (!confirm('Move this recipe to Trash? You can restore it later.')) return;
+      btn.disabled = true;
+      try {
+        await RecipeStore.delete(id);
+        await renderRecipes();
+      } catch (err) {
+        console.error('Failed to delete recipe:', err);
+        btn.disabled = false;
+      }
+    }
+    if (btn.dataset.action === 'restore') {
+      btn.disabled = true;
+      try { await RecipeStore.restore(id); await renderRecipes(); } catch (err) { console.error('Failed to restore recipe:', err); btn.disabled = false; }
+    }
+    if (btn.dataset.action === 'permanent-delete') {
+      if (!confirm('Permanently delete this recipe? This cannot be undone.')) return;
+      btn.disabled = true;
+      try { await RecipeStore.permanentDelete(id); await renderRecipes(); } catch (err) { console.error('Failed to permanently delete recipe:', err); btn.disabled = false; }
+    }
+  });
+
+  document.getElementById('seed-story-btn').addEventListener('click', async e => {
+    e.target.disabled = true;
+    try {
+      await StoryStore.seedIfEmpty();
+      await renderSections();
+      await renderPressItems();
+    } catch (err) {
+      console.error('Failed to load sample story content:', err);
+      alert('Could not load sample story content. Make sure Firestore security rules are set up and you are signed in.');
+    } finally {
+      e.target.disabled = false;
+    }
+  });
+
+  document.getElementById('add-section-btn').addEventListener('click', () => openSectionForm(null));
+
+  document.getElementById('section-view-tabs').addEventListener('click', e => {
+    const btn = e.target.closest('.console-tab');
+    if (!btn) return;
+    document.querySelectorAll('#section-view-tabs .console-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    sectionViewMode = btn.dataset.mode;
+    closeSectionForm();
+    renderSections();
+  });
+
+  document.getElementById('section-list').addEventListener('click', async e => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const id = btn.closest('.store-card').dataset.id;
+    if (btn.dataset.action === 'edit') {
+      btn.disabled = true;
+      try { openSectionForm(await StoryStore.getSection(id)); } finally { btn.disabled = false; }
+    }
+    if (btn.dataset.action === 'undo') {
+      btn.disabled = true;
+      try { await StoryStore.undoSectionEdit(id); await renderSections(); } catch (err) { console.error('Failed to undo edit:', err); btn.disabled = false; }
+    }
+    if (btn.dataset.action === 'delete') {
+      if (!confirm('Move this section to Trash? You can restore it later.')) return;
+      btn.disabled = true;
+      try {
+        await StoryStore.deleteSection(id);
+        await renderSections();
+      } catch (err) {
+        console.error('Failed to delete section:', err);
+        btn.disabled = false;
+      }
+    }
+    if (btn.dataset.action === 'restore') {
+      btn.disabled = true;
+      try { await StoryStore.restoreSection(id); await renderSections(); } catch (err) { console.error('Failed to restore section:', err); btn.disabled = false; }
+    }
+    if (btn.dataset.action === 'permanent-delete') {
+      if (!confirm('Permanently delete this section? This cannot be undone.')) return;
+      btn.disabled = true;
+      try { await StoryStore.permanentDeleteSection(id); await renderSections(); } catch (err) { console.error('Failed to permanently delete section:', err); btn.disabled = false; }
+    }
+  });
+
+  document.getElementById('add-press-btn').addEventListener('click', () => openPressForm(null));
+
+  document.getElementById('press-view-tabs').addEventListener('click', e => {
+    const btn = e.target.closest('.console-tab');
+    if (!btn) return;
+    document.querySelectorAll('#press-view-tabs .console-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    pressViewMode = btn.dataset.mode;
+    closePressForm();
+    renderPressItems();
+  });
+
+  document.getElementById('press-list').addEventListener('click', async e => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const id = btn.closest('.store-card').dataset.id;
+    if (btn.dataset.action === 'edit') {
+      btn.disabled = true;
+      try { openPressForm(await StoryStore.getPressItem(id)); } finally { btn.disabled = false; }
+    }
+    if (btn.dataset.action === 'undo') {
+      btn.disabled = true;
+      try { await StoryStore.undoPressItemEdit(id); await renderPressItems(); } catch (err) { console.error('Failed to undo edit:', err); btn.disabled = false; }
+    }
+    if (btn.dataset.action === 'delete') {
+      if (!confirm('Move this press item to Trash? You can restore it later.')) return;
+      btn.disabled = true;
+      try {
+        await StoryStore.deletePressItem(id);
+        await renderPressItems();
+      } catch (err) {
+        console.error('Failed to delete press item:', err);
+        btn.disabled = false;
+      }
+    }
+    if (btn.dataset.action === 'restore') {
+      btn.disabled = true;
+      try { await StoryStore.restorePressItem(id); await renderPressItems(); } catch (err) { console.error('Failed to restore press item:', err); btn.disabled = false; }
+    }
+    if (btn.dataset.action === 'permanent-delete') {
+      if (!confirm('Permanently delete this press item? This cannot be undone.')) return;
+      btn.disabled = true;
+      try { await StoryStore.permanentDeletePressItem(id); await renderPressItems(); } catch (err) { console.error('Failed to permanently delete press item:', err); btn.disabled = false; }
+    }
+  });
+});
+</script>
+
+</body>
+</html>
