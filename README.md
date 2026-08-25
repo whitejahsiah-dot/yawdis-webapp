@@ -199,7 +199,7 @@ The public pages are plain HTML, CSS, and JavaScript, so there is no front-end b
 - Firebase Authentication protects the admin sign-in.
 - Firestore Security Rules allow public reads where appropriate but restrict content management to users listed in the `admins` collection.
 - Firebase Storage stores uploaded recipe and story images, with file type, size, and admin checks in `storage.rules.txt`.
-- The `moderateComment` Cloud Function sends new comments through OpenAI moderation, then marks them `approved`, `pending`, or `rejected`. Comments that require human review are handled in `backend/admin.html`.
+- The `moderateComment` Cloud Function sends new comments through OpenAI moderation, then marks them `approved`, `pending`, or `rejected`. The current strict policy automatically rejects any comment flagged by OpenAI; unflagged borderline scores are held for human review in `backend/admin.html`.
 
 The cart, browser account/session data, marketing email list, and this browser's liked-state guard still use `localStorage`. They are intentionally separate from the shared Firestore content system.
 

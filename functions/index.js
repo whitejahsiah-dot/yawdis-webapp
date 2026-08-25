@@ -23,8 +23,9 @@ const OPENAI_API_KEY = defineSecret('OPENAI_API_KEY');
 // Set with: firebase functions:secrets:set ADMIN_NOTIFICATION_EMAIL
 const ADMIN_NOTIFICATION_EMAIL = defineSecret('ADMIN_NOTIFICATION_EMAIL');
 
-const REJECT_THRESHOLD = 0.75;
-const REVIEW_THRESHOLD = 0.3;
+// Strict moderation policy: any comment flagged by OpenAI is rejected.
+// Unflagged comments with a meaningful category score stay pending for review.
+const REVIEW_THRESHOLD = 0.15;
 
 // Human-readable explanation shown to the admin for whichever OpenAI
 // moderation category scored highest.
@@ -69,8 +70,8 @@ async function classifyComment(text, apiKey) {
   }
 
   let status;
-  if (result.flagged && topScore >= REJECT_THRESHOLD) status = 'rejected';
-  else if (result.flagged || topScore >= REVIEW_THRESHOLD) status = 'pending';
+  if (result.flagged) status = 'rejected';
+  else if (topScore >= REVIEW_THRESHOLD) status = 'pending';
   else status = 'approved';
 
   // Only attribute a specific category when something was actually flagged
