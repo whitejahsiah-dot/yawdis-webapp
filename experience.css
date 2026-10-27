@@ -1,0 +1,389 @@
+/* ─────────────────────────────────────────────
+   Yawdi's — experience layer
+   Sits on top of styles.css. Visual refinements + the
+   resting states that experience.js animates from.
+   ───────────────────────────────────────────── */
+
+:root {
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --radius: 20px;
+  --shadow-sm: 0 1px 2px rgba(44,26,16,0.04), 0 6px 20px rgba(44,26,16,0.06);
+  --shadow-md: 0 2px 4px rgba(44,26,16,0.05), 0 18px 44px rgba(44,26,16,0.12);
+}
+
+/* ── Page-to-page transitions (cross-document View Transitions; browsers without it just navigate) ── */
+@view-transition { navigation: auto; }
+.site-nav { view-transition-name: site-nav; }
+::view-transition-old(root) { animation: xp-page-out 0.28s var(--ease-out) both; }
+::view-transition-new(root) { animation: xp-page-in 0.5s var(--ease-out) both; }
+@keyframes xp-page-out { to { opacity: 0; transform: translateY(-12px); } }
+@keyframes xp-page-in { from { opacity: 0; transform: translateY(18px); } }
+
+/* ── Subtle paper grain for warmth ── */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── Scroll progress hairline ── */
+.xp-progress {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  z-index: 400;
+  background: var(--gold);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  pointer-events: none;
+}
+
+/* ── Nav: glassy, compacts on scroll ── */
+.site-nav {
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: saturate(1.4) blur(14px);
+  -webkit-backdrop-filter: saturate(1.4) blur(14px);
+  transition: box-shadow 0.3s, background 0.3s;
+}
+.site-nav .nav-inner { transition: height 0.3s var(--ease-out); }
+.site-nav.is-scrolled { box-shadow: 0 6px 24px rgba(44,26,16,0.08); background: rgba(255,255,255,0.9); }
+.site-nav.is-scrolled .nav-inner { height: 58px; }
+.nav-left a { position: relative; padding: 6px 0; }
+.nav-left a::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0.35s var(--ease-out);
+}
+.nav-left a:hover::after,
+.nav-left a[aria-current="page"]::after { transform: scaleX(1); }
+.nav-left a[aria-current="page"] { color: var(--maroon); }
+.nav-wordmark .nav-underline span { transition: width 0.4s var(--ease-out); }
+.nav-wordmark:hover .nav-underline span:nth-child(2) { width: 28px; }
+
+/* ── Buttons: softer, pill shaped ── */
+.btn { border-radius: 999px; transition: transform 0.25s var(--ease-out), box-shadow 0.25s, background 0.2s, color 0.2s; }
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0) scale(0.97); }
+.btn-maroon { box-shadow: 0 8px 20px rgba(107,25,25,0.22); }
+
+/* ── Cards: lighter shadows, consistent lift ── */
+.product-tile, .recipe-card, .shop-card, .community-card, .press-card {
+  border-radius: var(--radius);
+  transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+}
+.product-tile:hover, .recipe-card:hover, .shop-card:hover, .community-card:hover, .press-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
+}
+.product-tile-img img, .shop-card-img img, .recipe-card-img img { transition: transform 0.6s var(--ease-out); }
+.product-tile:hover .product-tile-img img,
+.shop-card:hover .shop-card-img img,
+.recipe-card:hover .recipe-card-img img { transform: translateY(-6px) rotate(-3deg) scale(1.05); }
+
+/* ── Home hero: warm glow behind the jars, jars breathe ── */
+.hero-home {
+  background:
+    radial-gradient(60% 70% at 78% 62%, rgba(255,250,240,0.95) 0%, rgba(255,250,240,0) 70%),
+    var(--cream-dark);
+  min-height: min(88vh, 760px);
+}
+.hero-home-text h1 { font-size: clamp(2.6rem, 5.6vw, 4.6rem); letter-spacing: -0.015em; }
+.hero-home-images { height: min(80vh, 640px); }
+.hero-home-images::before {
+  content: "";
+  position: absolute;
+  width: min(78%, 480px);
+  aspect-ratio: 1;
+  left: 50%;
+  bottom: 12%;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(200,168,75,0.22) 0%, rgba(200,168,75,0) 68%);
+}
+/* Centre the main jar without transform so JS can own transform */
+.hero-jar-main { left: 0; right: 0; margin-inline: auto; transform: none; width: min(440px, 66%); }
+.hero-jar-left, .hero-jar-right { width: min(270px, 40%); }
+.xp-motion .hero-home-images img { animation: xp-breathe 6s ease-in-out infinite; }
+.xp-motion .hero-jar-left  { animation-delay: -2s !important; }
+.xp-motion .hero-jar-right { animation-delay: -4s !important; }
+@keyframes xp-breathe { 50% { translate: 0 -10px; } }
+
+/* ── Hero jar carousel (replaces the three static jars once JS is running) ── */
+.hero-home-images.xp-has-carousel > img { display: none; }
+.xp-carousel {
+  position: absolute;
+  inset: 0 0 92px;
+  touch-action: pan-y;
+  cursor: grab;
+  outline: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.xp-carousel.is-dragging { cursor: grabbing; }
+.xp-carousel:focus-visible { box-shadow: inset 0 0 0 2px var(--gold); border-radius: var(--radius); }
+.xp-slide {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  margin-inline: auto;
+  width: min(400px, 56%);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: inherit;
+  transform-origin: 50% 100%;
+  will-change: transform, opacity;
+}
+.hero-home-images .xp-slide img {
+  position: static;
+  display: block;
+  width: 100%;
+  pointer-events: none;
+  filter: drop-shadow(0 24px 40px rgba(44,26,16,0.22));
+}
+html.xp .hero-home-images .xp-slide img { opacity: 1; }
+.xp-carousel-label {
+  position: absolute;
+  left: 0; right: 0; bottom: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  z-index: 5;
+}
+.xp-carousel-name {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--maroon-dark);
+}
+.xp-carousel-name:hover { color: var(--maroon); text-decoration: underline; text-underline-offset: 4px; }
+.xp-dots { display: flex; gap: 8px; }
+.xp-dots button {
+  width: 8px; height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(107,25,25,0.22);
+  cursor: pointer;
+  transition: width 0.35s var(--ease-out), background 0.35s;
+}
+.xp-dots button[aria-current="true"] { width: 24px; background: var(--maroon); }
+
+/* ── Bundle feature icons: hand-drawn line icons in place of emojis ── */
+html.xp .bf-icon { font-size: 0; } /* keep the emoji from flashing before the icon swaps in */
+.bf-icon .xp-ico { width: 28px; height: 28px; overflow: visible; fill: none; stroke: var(--maroon); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.bf-icon .xp-ico :is(path, circle) { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.1s var(--ease-out); }
+.bf-icon.is-drawn .xp-ico :is(path, circle) { stroke-dashoffset: 0; }
+.bf-icon .xp-ico :is(path, circle):nth-child(2) { transition-delay: 0.12s; }
+.bf-icon .xp-ico :is(path, circle):nth-child(3) { transition-delay: 0.24s; }
+.bf-icon .xp-ico :is(path, circle):nth-child(4) { transition-delay: 0.36s; }
+.bf-icon .xp-ico-b :is(path, circle) { transition-delay: 0.3s; }
+.xp-ico g { transform-box: fill-box; transform-origin: 50% 100%; transition: transform 0.5s var(--ease-out); }
+.bundle-feature:hover .xp-ico-jars .xp-ico-a { transform: translateY(-2px) rotate(-6deg); }
+.bundle-feature:hover .xp-ico-jars .xp-ico-b { transform: translateY(-1px) rotate(5deg); }
+.bundle-feature:hover .xp-ico-truck .xp-ico-a { transform: translateX(3px); }
+.bundle-feature:hover .xp-ico-gift .xp-ico-a { transform: translateY(-3px) rotate(-4deg); }
+.bundle-feature:hover .xp-ico-leaf .xp-ico-a { transform: rotate(10deg); }
+.bundle-feature { transition: border-color 0.3s, box-shadow 0.4s var(--ease-out); }
+.bundle-feature:hover { border-color: rgba(200,168,75,0.6); box-shadow: var(--shadow-sm); }
+
+/* ── Inline line icons that replace emojis in text ── */
+.xp-glyph {
+  display: inline-block;
+  width: 1.1em;
+  height: 1.1em;
+  vertical-align: -0.18em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.xp-glyph.is-filled { fill: currentColor; }
+.eyebrow .xp-glyph { width: 1.25em; height: 1.25em; color: var(--gold); stroke-width: 2; }
+.xp-glyph-heart.is-filled { animation: xp-pop 0.4s var(--ease-out); }
+@keyframes xp-pop { 40% { transform: scale(1.35); } }
+
+/* ── Recipes + press: compact swipe rows on tablets and phones instead of tall stacks ── */
+@media (max-width: 1024px) {
+  .recipe-row, .press-section-inner .press-grid { /* story.html's own <style> sets .press-grid to grid, so out-rank it */
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 20px;
+    margin-inline: -20px;
+    padding: 6px 20px 18px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .recipe-row::-webkit-scrollbar, .press-grid::-webkit-scrollbar { display: none; }
+  .recipe-row .recipe-card { flex: 0 0 min(42%, 300px); scroll-snap-align: start; }
+  .press-grid .press-card { flex: 0 0 min(46%, 340px); scroll-snap-align: start; }
+  .recipe-row .recipe-card:hover, .press-grid .press-card:hover { transform: none; }
+  .press-grid > p { flex: 1 0 100%; } /* "Loading…" / empty message */
+}
+@media (max-width: 640px) {
+  .recipe-row .recipe-card { flex-basis: 76%; }
+  .recipe-row .recipe-card-img { height: 128px; }
+  .recipe-row .recipe-card-img.jar-bg img { height: 100px; }
+  .recipe-row .recipe-card-body { padding: 14px 16px 16px; }
+  .press-grid .press-card { flex-basis: 82%; }
+  .press-grid .press-card-img-link img, .press-grid .press-video-thumb { height: 150px; }
+  .press-grid .press-spotify-wrap iframe { height: 152px; }
+  .press-grid .press-card-body { padding: 14px 16px 18px; }
+  .recipe-row .recipe-card-body > p, .press-grid .press-card-body p {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .press-grid .press-card-body p { -webkit-line-clamp: 3; }
+}
+@media (max-width: 1024px) and (pointer: fine) {
+  .recipe-row, .press-section-inner .press-grid { cursor: grab; }
+  .recipe-row.is-dragging, .press-section-inner .press-grid.is-dragging { cursor: grabbing; scroll-snap-type: none; user-select: none; }
+}
+.xp-row-dots { display: none; justify-content: center; gap: 8px; margin-top: 4px; }
+@media (max-width: 1024px) { .xp-row-dots { display: flex; } }
+.xp-row-dots button {
+  width: 8px; height: 8px; padding: 0; border: 0; border-radius: 999px; cursor: pointer;
+  background: rgba(107,25,25,0.22);
+  transition: width 0.35s var(--ease-out), background 0.35s;
+}
+.xp-row-dots button[aria-current="true"] { width: 24px; background: var(--maroon); }
+
+/* ── Find Us: search, near-me and flavour filter ── */
+.xp-finder { max-width: 1200px; margin: 0 auto; padding: 32px 32px 0; }
+.xp-finder-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.xp-finder svg { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.xp-finder-search {
+  flex: 1 1 260px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 18px;
+  height: 48px;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.xp-finder-search:focus-within { border-color: var(--maroon); box-shadow: 0 0 0 4px rgba(107,25,25,0.08); }
+.xp-finder-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; font: inherit; font-size: 0.95rem; color: var(--warm-text); }
+.xp-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.xp-finder-locate {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 20px;
+  border: 1.5px solid var(--maroon);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--maroon);
+  font: 600 0.88rem var(--font-body);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.xp-finder-locate:hover, .xp-finder-locate.is-on { background: var(--maroon); color: var(--white); }
+.xp-finder-locate:disabled { opacity: 0.7; cursor: progress; }
+.xp-finder-chips { display: flex; gap: 8px; margin-top: 16px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+.xp-finder-chips::-webkit-scrollbar { display: none; }
+.xp-chip {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--warm-text);
+  font: 600 0.84rem var(--font-body);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+.xp-chip img { width: 22px; height: 28px; object-fit: contain; margin-left: -4px; transition: transform 0.3s var(--ease-out); }
+.xp-chip:hover { border-color: rgba(107,25,25,0.4); }
+.xp-chip:hover img { transform: translateY(-2px) rotate(-6deg); }
+.xp-chip[aria-pressed="true"] { background: var(--maroon); border-color: var(--maroon); color: var(--white); }
+.xp-finder-status { margin-top: 12px; font-size: 0.82rem; color: var(--muted); min-height: 1.3em; }
+.find-us-layout { padding-top: 20px; }
+.find-us-store-card[hidden] { display: none !important; }
+.find-us-store-product.is-match { color: var(--maroon); background: rgba(200,168,75,0.18); border-radius: 6px; padding: 2px 6px; margin-left: -6px; }
+.xp-distance {
+  float: right;
+  margin-left: 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--maroon);
+  background: var(--cream-dark);
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+.xp-finder-empty { text-align: center; padding: 28px 12px; color: var(--muted); font-size: 0.9rem; }
+.xp-finder-empty .btn { margin-top: 12px; }
+@media (max-width: 768px) {
+  .xp-finder { padding: 24px 20px 0; }
+  .xp-finder-locate { flex: 1 1 100%; justify-content: center; }
+}
+
+/* ── Masked line reveal for page headlines ── */
+.xp-line { display: block; overflow: hidden; padding-bottom: 0.06em; margin-bottom: -0.06em; }
+.xp-line > span { display: inline-block; }
+
+/* ── Image frames used by the reveal ── */
+.xp-frame { overflow: hidden; }
+
+/* ── Value bar becomes a slow marquee ── */
+.footer-bar.xp-marquee { overflow: hidden; padding-left: 0; padding-right: 0; }
+.footer-bar.xp-marquee .footer-bar-inner {
+  max-width: none;
+  width: max-content;
+  flex-direction: row; /* styles.css stacks these on phones */
+  justify-content: flex-start;
+  gap: 0;
+  animation: xp-marquee 40s linear infinite;
+}
+.footer-bar.xp-marquee .footer-bar-item { flex: none; padding-right: 72px; white-space: nowrap; }
+@media (max-width: 768px) { .footer-bar.xp-marquee .footer-bar-item { padding-right: 40px; } }
+.footer-bar.xp-marquee:hover .footer-bar-inner { animation-play-state: paused; }
+@keyframes xp-marquee { to { transform: translateX(-50%); } }
+
+/* ── Fly-to-cart clone ── */
+.xp-flyer {
+  position: fixed;
+  z-index: 1000;
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 10px 14px rgba(44,26,16,0.25));
+}
+
+/* ── Resting states: only while the motion layer is (about to be) active ── */
+html.xp [data-xp],
+html.xp .hero-home-images img { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  html.xp [data-xp] { opacity: 1; }
+  html.xp .hero-home-images img { opacity: 1; }
+  html.xp .hero-jar-left, html.xp .hero-jar-right { opacity: 0.88; }
+  .footer-bar.xp-marquee .footer-bar-inner { animation: none; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+  .bf-icon .xp-ico :is(path, circle) { stroke-dashoffset: 0; transition: none; }
+}

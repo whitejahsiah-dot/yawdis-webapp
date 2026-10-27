@@ -292,6 +292,22 @@
         </div>
       </div>
 
+      <div class="store-form-card" style="max-width:560px;">
+        <h3 class="store-form-title">Product Handle Cheat-Sheet</h3>
+        <div class="form-hint" style="margin-bottom:12px;">When adding a new product to Shopify, copy its handle below into <code>shopify-config.js</code> so it appears on the site.</div>
+        <table style="width:100%;font-size:0.82rem;border-collapse:collapse;">
+          <thead>
+            <tr style="border-bottom:1px solid var(--border);text-align:left;">
+              <th style="padding:8px 4px;color:var(--muted);font-weight:600;">Product</th>
+              <th style="padding:8px 4px;color:var(--muted);font-weight:600;">Shopify Handle</th>
+              <th style="padding:8px 4px;color:var(--muted);font-weight:600;">Config Key</th>
+            </tr>
+          </thead>
+          <tbody id="handle-cheatsheet-body">
+            <tr><td colspan="3" style="padding:12px 4px;color:var(--muted);font-style:italic;">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- ── COMMENTS VIEW ── -->
@@ -1442,6 +1458,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('save-banner-btn').addEventListener('click', saveBannerSettings);
     document.getElementById('save-threshold-btn').addEventListener('click', saveThresholdWithReminder);
+
+    // Handle cheat-sheet
+    const tbody = document.getElementById('handle-cheatsheet-body');
+    if (window.YAWDIS_SHOPIFY && window.YAWDIS_SHOPIFY.products) {
+      const rows = Object.entries(window.YAWDIS_SHOPIFY.products).map(([key, meta]) => {
+        const name = key.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase());
+        return `<tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:8px 4px;">${escHtml(name)}</td>
+          <td style="padding:8px 4px;font-family:var(--mono);font-size:0.78rem;">${escHtml(meta.handle)}</td>
+          <td style="padding:8px 4px;font-family:var(--mono);font-size:0.78rem;color:var(--blue);">${escHtml(key)}</td>
+        </tr>`;
+      });
+      tbody.innerHTML = rows.join('');
+    } else {
+      tbody.innerHTML = '<tr><td colspan="3" style="padding:12px 4px;color:var(--muted);font-style:italic;">No Shopify config found.</td></tr>';
+    }
   }
 
   async function loadSettingsFromFirestore() {

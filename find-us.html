@@ -6,6 +6,12 @@
   <meta name="description" content="Find Yawdi's products in stores near you. See store locations, product availability, and the aisle to look in." />
   <title>Where You Can Find Us | Yawdi's</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="experience.css" />
+  <script>
+    // Hide reveal targets until the motion layer is ready; give up after 2.5s so content never stays hidden.
+    document.documentElement.classList.add('xp');
+    setTimeout(function () { if (!window.__xp) document.documentElement.classList.remove('xp'); }, 2500);
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -313,5 +319,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 <script src="announcement.js"></script>
 
+<script type="module" src="experience.js"></script>
 </body>
 </html>

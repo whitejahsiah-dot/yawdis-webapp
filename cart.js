@@ -722,16 +722,20 @@ async function pwHash(password) {
 // ── Init ──
 
 document.addEventListener('DOMContentLoaded', () => {
+  // When shopify-cart.js is on the page it owns the cart drawer, badge and add-to-cart buttons
+  const shopifyCart = !!window.YawdisCart;
   CartState.load();
-  updateBadge();
+  if (!shopifyCart) updateBadge();
 
   document.querySelectorAll('[aria-label="Search"], [aria-label="Rechercher"]').forEach(el => {
     el.addEventListener('click', e => { e.preventDefault(); openSearch(); });
   });
 
-  document.querySelectorAll('.cart-link').forEach(el => {
-    el.addEventListener('click', e => { e.preventDefault(); openCart(); });
-  });
+  if (!shopifyCart) {
+    document.querySelectorAll('.cart-link').forEach(el => {
+      el.addEventListener('click', e => { e.preventDefault(); openCart(); });
+    });
+  }
 
   // Mobile hamburger — reveals nav-left as a dropdown (checkbox has no CSS-only sibling target)
   const navToggle = document.getElementById('nav-toggle');
@@ -745,6 +749,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Delegated handler for all [data-cart-id] buttons across the page
   document.addEventListener('click', e => {
+    if (shopifyCart) return;
     const btn = e.target.closest('[data-cart-id]');
     if (!btn) return;
     e.preventDefault();
@@ -752,6 +757,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { closeSearch(); closeCart(); }
+    if (e.key === 'Escape') { closeSearch(); shopifyCart ? window.YawdisCart.closeDrawer() : closeCart(); }
   });
 });

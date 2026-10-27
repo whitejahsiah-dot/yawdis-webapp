@@ -6,6 +6,12 @@
   <meta name="description" content="Buy 4 Yawdi's jars and get FREE shipping. Build your bundle today." />
   <title>Bundle &amp; Save | Yawdi's</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="experience.css" />
+  <script>
+    // Hide reveal targets until the motion layer is ready; give up after 2.5s so content never stays hidden.
+    document.documentElement.classList.add('xp');
+    setTimeout(function () { if (!window.__xp) document.documentElement.classList.remove('xp'); }, 2500);
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -388,32 +394,41 @@
   }
 
   function addToCart(products) {
+    // Map bundle product IDs to Shopify product keys
+    const productKeyMap = {
+      'mango': 'mango',
+      'red-pepper': 'redPepper',
+      'jerk': 'jerk',
+      'lavender': 'lavender',
+      'pineapple': 'pineapple'
+    };
+
     let added = false;
+    const promises = [];
+
     products.forEach(p => {
       const qty = bundleQtys[p.id] || 0;
       if (!qty) return;
-      const existing = CartState.items.find(i => i.id === p.id);
-      if (existing) {
-        existing.qty += qty;
-      } else {
-        CartState.items.push({ id: p.id, name: p.name, price: p.price, size: p.size, img: p.img, qty });
-      }
+      const key = productKeyMap[p.id];
+      if (!key) return;
+      // Use YawdisCart to add to Shopify cart
+      promises.push(YawdisCart.addToCart(key, qty));
       added = true;
     });
+
     if (!added) return;
-    CartState.save();
-    // update badge and cart drawer once after all items are added
-    const count = CartState.count();
-    document.querySelectorAll('.cart-badge').forEach(b => {
-      b.textContent = count;
-      b.style.display = count === 0 ? 'none' : '';
+
+    Promise.all(promises).then(() => {
+      const btn = document.getElementById('bundle-add-cart');
+      const orig = btn.textContent;
+      btn.textContent = '\u2713 Added to Cart!';
+      btn.classList.add('btn-added');
+      setTimeout(() => { btn.textContent = orig; btn.classList.remove('btn-added'); }, 1500);
+      YawdisCart.openDrawer();
+    }).catch(err => {
+      console.error('Error adding bundle to cart:', err);
+      alert('Error adding to cart. Please try again.');
     });
-    const btn = document.getElementById('bundle-add-cart');
-    const orig = btn.textContent;
-    btn.textContent = '\u2713 Added to Cart!';
-    btn.classList.add('btn-added');
-    setTimeout(() => { btn.textContent = orig; btn.classList.remove('btn-added'); }, 1500);
-    openCart();
   }
 
   document.addEventListener('DOMContentLoaded', init);
@@ -433,5 +448,11 @@
   updateBundleHeroText();
 })();
 </script>
+
+<!-- Shopify Integration -->
+<script src="https://sdks.shopifycdn.com/js-buy-sdk/v2/latest/index.umd.min.js"></script>
+<script src="shopify-config.js"></script>
+<script src="shopify-cart.js"></script>
+<script type="module" src="experience.js"></script>
 </body>
 </html>
