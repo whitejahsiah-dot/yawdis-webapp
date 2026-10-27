@@ -283,17 +283,15 @@
 </div>
 
 <!-- ── MERCH SECTION ── -->
-<section class="merch-section" id="merch-section" style="background:var(--cream-dark);border-top:1px solid var(--border);padding:64px 32px 80px;">
-  <div style="max-width:1200px;margin:0 auto;">
-    <div style="text-align:center;margin-bottom:40px;">
-      <p class="eyebrow">Merch</p>
-      <h2>Rep the brand.</h2>
-      <p style="color:var(--muted);max-width:480px;margin:10px auto 0;">Clothing, gift boxes, and more — Yawdi's merch for the true fans.</p>
+<section class="merch-section" id="merch-section">
+  <div class="merch-inner">
+    <div class="merch-header">
+      <p class="eyebrow">Beyond the Jar</p>
+      <h2>Rep the brand. <em>Gift the flavour.</em></h2>
+      <p>Yawdi's tees for the true fans, and gift boxes packed with island heat.</p>
     </div>
-    <div class="shop-grid" id="merch-grid" style="grid-template-columns:repeat(2,1fr);max-width:800px;margin:0 auto;">
-      <div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--muted);">
-        <p>Loading merch…</p>
-      </div>
+    <div class="merch-grid" id="merch-grid">
+      <p class="merch-loading">Loading merch…</p>
     </div>
   </div>
 </section>
@@ -378,8 +376,10 @@
     lavender:  { silo: 'content/FullLabels/Lavender.png',   type: 'jelly',    use: ['cheese','gifting'],  pairs: ['Lamb chops','Cheesecake','Ice cream','Crackers'] },
     pineapple: { silo: 'content/FullLabels/Pineapple.png',  type: 'jelly',    use: ['cheese','grilling','gifting'], pairs: ['Chicken tenders','Ham','Samosas','Pork chops'] },
     giftCard:  { silo: null, type: 'giftcard', use: ['gifting'], pairs: ['Birthdays','Holidays','Thank You'] },
-    merch:     { silo: null, type: 'merch',    use: ['gifting'], pairs: [] },
-    giftBox:   { silo: null, type: 'giftbox',  use: ['gifting'], pairs: [] }
+    merch:     { silo: null, type: 'merch',    use: ['gifting'], pairs: [],
+                 name: "Yawdi's Tee", label: 'Apparel', blurb: 'Soft everyday tee with the Yawdi’s script. Wear the flavour.' },
+    giftBox:   { silo: null, type: 'giftbox',  use: ['gifting'], pairs: [],
+                 name: 'Custom Gift Box', label: 'Gifting', blurb: 'Pick the flavours, we pack the box. Made for hosts, holidays and thank-yous.' }
   };
 
   function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -436,6 +436,30 @@
       </article>`;
   }
 
+  // Merch and gift boxes are lifestyle items, so they get photo-led feature tiles instead of jar cards
+  function renderMerchCard(product, key, meta) {
+    const prices = product.variants.map(v => parseFloat(v.price.amount ?? v.price));
+    const min = Math.min(...prices);
+    const priceLabel = (new Set(prices).size > 1 ? 'From ' : '') + `$${min.toFixed(2)}`;
+    const name = meta.name || product.title.replace(/^YAWDI'?S\s*/i, '');
+    const img = product.images && product.images[0]
+      ? `<img src="${product.images[0].src}" alt="${escHtml(name)}" loading="lazy" />`
+      : '';
+    return `
+      <article class="merch-card" id="${escHtml(key)}" data-handle="${escHtml(product.handle)}">
+        ${img}
+        <div class="merch-card-body">
+          <span class="merch-card-label">${escHtml(meta.label || '')}</span>
+          <h3>${escHtml(name)}</h3>
+          ${meta.blurb ? `<p>${escHtml(meta.blurb)}</p>` : ''}
+          <div class="merch-card-footer">
+            <span class="merch-card-price">${priceLabel}</span>
+            <button class="btn btn-sm merch-card-btn" data-cart-id="${escHtml(key)}">Add to Cart</button>
+          </div>
+        </div>
+      </article>`;
+  }
+
   async function loadShopifyProducts() {
     const cfg = window.YAWDIS_SHOPIFY;
     if (!cfg || !cfg.storefrontAccessToken || cfg.storefrontAccessToken.startsWith('PASTE_')) {
@@ -467,11 +491,10 @@
         const [key, meta] = entry;
         const local = LOCAL_META[key] || {};
 
-        const cardHtml = renderProductCard(product, key, local);
         if (local.type === 'merch' || local.type === 'giftbox') {
-          merchItems.push(cardHtml);
+          merchItems.push(renderMerchCard(product, key, local));
         } else {
-          shopItems.push(cardHtml);
+          shopItems.push(renderProductCard(product, key, local));
         }
       });
 
