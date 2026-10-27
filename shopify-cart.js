@@ -60,6 +60,7 @@
 
   function openDrawer() {
     renderCart();
+    refreshPrices().then(changed => { if (changed) renderCart(); });
     document.getElementById("cart-overlay").hidden = false;
     document.getElementById("cart-drawer").classList.add("open");
     document.getElementById("cart-drawer").setAttribute("aria-hidden", "false");
@@ -192,6 +193,38 @@
     else items.push({ ...v, qty });
     saveCart(items);
     openDrawer();
+  }
+
+  // ── price refresh: carts are saved in the browser, so re-read each item's price from Shopify ──
+  // when the drawer opens; a price fixed in Shopify then shows up in carts that already hold it.
+  const VARIANT_PRICES = `query($ids: [ID!]!) {
+    nodes(ids: $ids) { ... on ProductVariant { id price { amount } } }
+  }`;
+
+  async function refreshPrices() {
+    const items = loadCart();
+    if (!configured || !items.length) return false;
+    try {
+      const res = await fetch(`https://${cfg.domain}/api/2025-07/graphql.json`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Shopify-Storefront-Access-Token": cfg.storefrontAccessToken },
+        body: JSON.stringify({ query: VARIANT_PRICES, variables: { ids: items.map(i => i.variantId) } })
+      });
+      const nodes = ((await res.json()).data || {}).nodes || [];
+      const current = Object.fromEntries(nodes.filter(Boolean).map(n => [n.id, parseFloat(n.price.amount)]));
+      let changed = false;
+      // Re-read the cart in case it changed while the request was in flight
+      const latest = loadCart();
+      latest.forEach(item => {
+        const price = current[item.variantId];
+        if (price !== undefined && price !== item.price) { item.price = price; changed = true; }
+      });
+      if (changed) saveCart(latest);
+      return changed;
+    } catch (err) {
+      console.warn("[Yawdi's] price refresh failed:", err);
+      return false;
+    }
   }
 
   // ── checkout handoff ──
