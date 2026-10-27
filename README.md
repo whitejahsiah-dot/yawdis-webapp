@@ -9,7 +9,6 @@ Full-featured static storefront for Yawdi's Canadian condiment brand. No framewo
 | File | Purpose |
 |---|---|
 | `index.html` | English homepage |
-| `index-fr.html` | French homepage (mirrors index.html) |
 | `shop.html` | Full product listing |
 | `bundle.html` | Interactive bundle builder |
 | `community.html` | Community recipe wall |
@@ -101,11 +100,6 @@ Full-featured static storefront for Yawdi's Canadian condiment brand. No framewo
   - Bet On Yourself Podcast (embedded Spotify player — listeners can play without leaving the page)
   - Loblaw (image + article link)
 
-### 🇫🇷 French Page (`index-fr.html`)
-- Full French translation of the homepage
-- All interactive features work identically (French aria-labels wired in `cart.js`)
-- Links to the same product pages and community
-
 ---
 
 ## Product Catalogue
@@ -128,7 +122,6 @@ Product images are in `content/Full Labels/`.
 
 ```
 index.html          — English homepage
-index-fr.html       — French homepage
 shop.html           — Shop page
 bundle.html         — Bundle builder
 community.html      — Community recipes
