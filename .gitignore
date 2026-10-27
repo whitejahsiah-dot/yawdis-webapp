@@ -19,3 +19,6 @@ Desktop.ini
 .vercel/
 # Full-size source images kept locally, never deployed
 originals/
+
+# Wrangler (Cloudflare) local cache
+.wrangler/

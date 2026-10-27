@@ -1,0 +1,29 @@
+# Files in the repo that Cloudflare must not publish on the website (gitignore syntax).
+
+# Version control, tooling and local-only folders
+.git
+.gitignore
+.assetsignore
+wrangler.jsonc
+.wrangler
+.claude
+.venv
+node_modules
+originals
+
+# Firebase project config and server-side code (deployed separately with the Firebase CLI)
+.firebaserc
+firebase.json
+firebase-functions
+firestore.rules.txt
+storage.rules.txt
+
+# Internal notes and scripts
+README.md
+Website ideas.doc
+plan_extract.txt
+extract_doc.py
+
+# Local demos that aren't part of the live site
+index-3d-demo.html
+hero-3d-demo.js
