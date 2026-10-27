@@ -282,12 +282,6 @@
   </div>
 </div>
 
-<!-- ── PRODUCT DETAILS POP-UP (filled by openProductDetails) ── -->
-<dialog class="pd-dialog" id="pd-dialog" aria-labelledby="pd-title">
-  <button class="pd-close" type="button" aria-label="Close product details">&times;</button>
-  <div class="pd-layout" id="pd-content"></div>
-</dialog>
-
 <!-- ── MERCH SECTION ── -->
 <section class="merch-section" id="merch-section">
   <div class="merch-inner">
@@ -388,47 +382,6 @@
                  name: 'Custom Gift Box', label: 'Gifting', blurb: 'Pick the flavours, we pack the box. Made for hosts, holidays and thank-yous.' }
   };
 
-  // Product details shown in the pop-up, copied from the printed jar labels (content/FullLabels).
-  // Nutrition values are per 1 tbsp (15 mL), exactly as on each label.
-  const LABEL_INFO = {
-    mango: {
-      tagline: 'Tropical sweet heat',
-      usage: 'Enjoy sweet tropical heat. Pair with cheese, drizzle on chicken or fish, or add to desserts for a spicy twist.',
-      ingredients: 'Sugars (sugar, mango puree), Water, Vinegar, Scotch bonnet peppers, Citric acid, Pectin, Sea salt.',
-      mayContain: 'Mustard, Milk, Wheat, Egg, Fish, Tree nuts, Sesame, Sulphites & Soy.',
-      nutrition: { calories: 45, fat: '0 g', saturated: '0 g', trans: '0 g', carbs: '12 g', fibre: '0 g', sugars: '11 g', protein: '0 g', cholesterol: '0 mg', sodium: '10 mg' }
-    },
-    redPepper: {
-      tagline: 'Sweet pepper heat',
-      usage: 'Classic sweet pepper heat. Spread on sandwiches, serve with cheese, or glaze meats.',
-      ingredients: 'Sugar, Red bell peppers, Water, Vinegar, Scotch bonnet peppers, Pectin, Citric acid, Sea salt.',
-      mayContain: 'Mustard, Milk, Wheat, Egg, Fish, Tree nuts, Sesame, Sulphites & Soy.',
-      nutrition: { calories: 45, fat: '0 g', saturated: '0 g', trans: '0 g', carbs: '5 g', fibre: '0 g', sugars: '11 g', protein: '0 g', cholesterol: '0 mg', sodium: '5 mg' }
-    },
-    pineapple: {
-      tagline: 'Bright island heat',
-      usage: 'Bright island sweet-heat. Spread on cheeseboards, toss into stir-fries, or glaze ham and pork roast.',
-      ingredients: 'Sugar, Water, Crushed Pineapple (Pineapple, Ascorbic Acid), Vinegar, Scotch Bonnet Peppers, Citric Acid, Pectin, Sea Salt.',
-      mayContain: 'Mustard, Milk, Tree nuts, Fish, Sesame, Soy, Wheat, Eggs & Sulphites.',
-      nutrition: { calories: 45, fat: '0 g', saturated: '0 g', trans: '0 g', carbs: '0 g', fibre: '0 g', sugars: '12 g', protein: '0 g', cholesterol: '0 mg', sodium: '10 mg' }
-    },
-    lavender: {
-      tagline: 'Floral heat with a twist',
-      usage: 'Floral heat with a twist. Try with cheddar, lamb, salmon, or as a cheesecake topping.',
-      ingredients: 'Sugar, Water, Vinegar, Scotch bonnet peppers, Pectin, Citric acid, Sea salt, Lavender oil.',
-      mayContain: 'Mustard, Milk, Wheat, Egg, Fish, Tree nuts, Sesame, Sulphites & Soy.',
-      nutrition: { calories: 50, fat: '0 g', saturated: '0 g', trans: '0 g', carbs: '12 g', fibre: '0 g', sugars: '12 g', protein: '0 g', cholesterol: '0 mg', sodium: '5 mg' }
-    },
-    jerk: {
-      tagline: 'Ready to use, highly concentrated',
-      usage: 'Add bold, smoky jerk flavour in minutes. Use 2 tbsp per pound of chicken, pork, beef, seafood or veggies. Ready to use, no marinating required.',
-      ingredients: 'Water, Spices, Onions, Vinegar, Sea Salt, Canola Oil, Green Onions, Fancy Molasses, Soy Sauce (Water, Wheat, Soybeans, Salt, Alcohol, Vinegar, Lactic Acid), Scotch Bonnet Peppers, Garlic Powder, Herbs.',
-      contains: 'Soy.',
-      mayContain: 'Mustard, Milk, Wheat, Egg, Fish, Tree Nuts, Sesame, Soy & Sulphites.',
-      nutrition: { calories: 25, fat: '1.5 g', saturated: '0 g', trans: '0 g', carbs: '3 g', fibre: '1 g', sugars: '1 g', protein: '0.3 g', cholesterol: '0 mg', sodium: '560 mg' }
-    }
-  };
-
   function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
   function productImageHtml(product, key, meta) {
@@ -474,7 +427,7 @@
       : '';
 
     return `
-      <article class="shop-card shop-card-clickable" id="${escHtml(key)}" tabindex="0" aria-label="${escHtml(title)}: view details" data-type="${escHtml(typeLabel)}" data-use="${escHtml(useAttr)}" data-handle="${escHtml(product.handle)}">
+      <article class="shop-card" id="${escHtml(key)}" data-type="${escHtml(typeLabel)}" data-use="${escHtml(useAttr)}" data-handle="${escHtml(product.handle)}">
         <div class="shop-card-img">
           ${productImageHtml(product, key, meta)}
         </div>
@@ -518,94 +471,6 @@
       </article>`;
   }
 
-  // ── Product details pop-up: click (or Enter on) a shop card ──
-  const PRODUCT_DATA = {}; // config key → Shopify product, filled by loadShopifyProducts
-  const pdDialog = document.getElementById('pd-dialog');
-
-  // Shopify's CDN resizes on request; its originals are up to ~5000px wide
-  function sizedImg(src, width) {
-    if (!/cdn\.shopify\.com/.test(src)) return src;
-    const url = new URL(src);
-    url.searchParams.set('width', width);
-    return url.toString();
-  }
-
-  function openProductDetails(key) {
-    const product = PRODUCT_DATA[key];
-    if (!product) return;
-    const meta = LOCAL_META[key] || {};
-    const info = LABEL_INFO[key];
-    const title = product.title.replace(/^YAWDI'?S\s*/i, '');
-    const images = [meta.silo, ...(product.images || []).map(i => i.src)].filter(Boolean);
-    const price = parseFloat(product.variants[0].price.amount ?? product.variants[0].price);
-    const options = product.variants.length > 1
-      ? `<div class="variant-picker" role="radiogroup" aria-label="Choose an amount">${product.variants.map((v, i) => `
-          <label class="variant-pill">
-            <input type="radio" name="pd-variant" data-variant-id="${escHtml(v.id)}" data-price="${parseFloat(v.price.amount ?? v.price).toFixed(2)}"${i === 0 ? ' checked' : ''} />
-            <span>${escHtml(v.title.replace(/^CA/, ''))}</span>
-          </label>`).join('')}</div>`
-      : '';
-    const n = info && info.nutrition;
-    const row = (label, value, indent) => `<tr${indent ? ' class="pd-sub"' : ''}><td>${label}</td><td>${value}</td></tr>`;
-
-    document.getElementById('pd-content').innerHTML = `
-      <div class="pd-gallery">
-        <div class="pd-main-img"><img id="pd-main-img" src="${sizedImg(images[0] || '', 1000)}" alt="${escHtml(title)}" /></div>
-        ${images.length > 1 ? `<div class="pd-thumbs">${images.map((src, i) => `
-          <button type="button" class="pd-thumb${i === 0 ? ' active' : ''}" data-src="${sizedImg(src, 1000)}" aria-label="View photo ${i + 1}"><img src="${sizedImg(src, 160)}" alt="" /></button>`).join('')}</div>` : ''}
-      </div>
-      <article class="pd-info shop-card" data-key="${escHtml(key)}">
-        ${info ? `<span class="shop-card-type">${escHtml(info.tagline)}</span>` : ''}
-        <h2 id="pd-title">${escHtml(title)}</h2>
-        <div class="pd-price"><span class="shop-card-price">$${price.toFixed(2)}</span>${info ? '<span class="shop-card-size">250 mL</span>' : ''}</div>
-        ${options}
-        <p class="pd-desc">${escHtml(product.description || '')}</p>
-        ${info ? `<p class="pd-usage">${escHtml(info.usage)}</p>` : ''}
-        <button class="btn btn-maroon pd-add" data-cart-id="${escHtml(key)}">Add to Cart</button>
-        ${meta.pairs && meta.pairs.length && info ? `<div class="shop-card-pairs"><span>Pairs well with</span><div class="pair-tags">${meta.pairs.map(p => `<span class="pair-tag">${escHtml(p)}</span>`).join('')}</div></div>` : ''}
-        ${info ? `
-        <details class="pd-section" open>
-          <summary>Ingredients</summary>
-          <p>${escHtml(info.ingredients)}</p>
-          ${info.contains ? `<p><strong>Contains:</strong> ${escHtml(info.contains)}</p>` : ''}
-          <p><strong>May contain:</strong> ${escHtml(info.mayContain)}</p>
-        </details>
-        <details class="pd-section">
-          <summary>Nutrition Facts</summary>
-          <p class="pd-serving">Per 1 tbsp (15 mL)</p>
-          <table class="pd-nutrition">
-            ${row('<strong>Calories</strong>', `<strong>${n.calories}</strong>`)}
-            ${row('Fat', n.fat)}${row('Saturated', n.saturated, true)}${row('Trans', n.trans, true)}
-            ${row('Carbohydrate', n.carbs)}${row('Fibre', n.fibre, true)}${row('Sugars', n.sugars, true)}
-            ${row('Protein', n.protein)}${row('Cholesterol', n.cholesterol)}${row('Sodium', n.sodium)}
-          </table>
-          <p class="pd-note">Refrigerate after opening. Made in Canada from domestic &amp; imported ingredients.</p>
-        </details>` : ''}
-      </article>`;
-    pdDialog.showModal();
-    document.getElementById('pd-content').scrollTop = 0;
-  }
-
-  document.getElementById('shop-grid').addEventListener('click', e => {
-    if (e.target.closest('button, a, label, input')) return;
-    const card = e.target.closest('.shop-card[id]');
-    if (card) openProductDetails(card.id);
-  });
-  document.getElementById('shop-grid').addEventListener('keydown', e => {
-    if (e.key !== 'Enter' || e.target.closest('button, a, label, input')) return;
-    const card = e.target.closest('.shop-card[id]');
-    if (card) { e.preventDefault(); openProductDetails(card.id); }
-  });
-  pdDialog.addEventListener('click', e => {
-    if (e.target === pdDialog || e.target.closest('.pd-close')) pdDialog.close();
-    const thumb = e.target.closest('.pd-thumb');
-    if (thumb) {
-      document.getElementById('pd-main-img').src = thumb.dataset.src;
-      pdDialog.querySelectorAll('.pd-thumb').forEach(t => t.classList.toggle('active', t === thumb));
-    }
-    if (e.target.closest('.pd-add')) pdDialog.close();
-  });
-
   // Picking an amount updates that card's price
   document.addEventListener('change', e => {
     const input = e.target.closest('.variant-picker input');
@@ -644,7 +509,6 @@
         if (!entry) return; // product not mapped — skip
         const [key, meta] = entry;
         const local = LOCAL_META[key] || {};
-        PRODUCT_DATA[key] = product;
 
         if (local.type === 'merch' || local.type === 'giftbox') {
           merchItems.push(renderMerchCard(product, key, local));
