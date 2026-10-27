@@ -153,8 +153,8 @@
   <div class="promo-banner-inner">
     <div class="promo-banner-text">
       <p class="eyebrow">&#127873; Bundle &amp; Save</p>
-      <h2>Buy 4, Get<br />Free Shipping!</h2>
-      <p>Stock up on your favourites and enjoy FREE shipping on orders of 4 jars or more. No code needed.</p>
+      <h2 id="home-bundle-title">Buy 4, Get<br />Free Shipping!</h2>
+      <p id="home-bundle-sub">Stock up on your favourites and enjoy FREE shipping on orders of 4 jars or more. No code needed.</p>
       <a href="bundle.html" class="btn btn-white">Build Your Bundle</a>
     </div>
     <div class="promo-banner-img">
@@ -336,7 +336,11 @@
   </div>
   <p class="footer-copy">&copy; 2025 Yawdi's. Made with love in Canada.</p>
 </footer>
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
 <script src="cart.js"></script>
+<script src="announcement.js"></script>
 <script>
 (function () {
   const CC_KEY = 'yawdis-community';
@@ -357,6 +361,24 @@
     });
   }
   document.addEventListener('DOMContentLoaded', updateRecipeStats);
+
+  // Dynamic bundle promo text from Firestore (shared) with localStorage fallback
+  async function updateBundlePromo() {
+    let t = 4;
+    if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
+      try {
+        const doc = await firebase.firestore().collection('site_settings').doc('global').get();
+        if (doc.exists && doc.data().bundleThreshold) t = parseInt(doc.data().bundleThreshold, 10);
+      } catch (err) { console.warn('Failed to load bundle threshold:', err); }
+    } else {
+      t = parseInt(localStorage.getItem('yawdis_bundle_threshold') || '4', 10);
+    }
+    const title = document.getElementById('home-bundle-title');
+    const sub = document.getElementById('home-bundle-sub');
+    if (title) title.innerHTML = 'Buy ' + t + ', Get<br />Free Shipping!';
+    if (sub) sub.textContent = 'Stock up on your favourites and enjoy FREE shipping on orders of ' + t + ' jars or more. No code needed.';
+  }
+  updateBundlePromo();
 })();
 </script>
 </body>

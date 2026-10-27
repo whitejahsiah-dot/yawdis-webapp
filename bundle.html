@@ -129,12 +129,12 @@
 <section class="bundle-hero">
   <div class="bundle-hero-text">
     <p class="eyebrow">&#9889; Bundle &amp; Save</p>
-    <h1>Buy 4, Get<br />Free Shipping!</h1>
-    <p>Stock up on your favourites and enjoy FREE shipping on orders of 4 jars or more.</p>
+    <h1 id="bundle-hero-title">Buy 4, Get<br />Free Shipping!</h1>
+    <p id="bundle-hero-sub">Stock up on your favourites and enjoy FREE shipping on orders of 4 jars or more.</p>
     <a href="#build" class="btn btn-maroon">Build Your Bundle</a>
     <div class="free-ship-badge">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-      Free Shipping when you buy 4 jars or more. No code needed.
+      <span id="bundle-hero-badge">Free Shipping when you buy 4 jars or more. No code needed.</span>
     </div>
   </div>
   <div class="bundle-hero-img">
@@ -193,7 +193,7 @@
         <div class="bf-icon">&#128666;</div>
         <div>
           <h4>Free Shipping Savings</h4>
-          <p>Automatically applied at checkout on 4+ jars.</p>
+          <p id="bundle-feature-ship-text">Automatically applied at checkout on 4+ jars.</p>
         </div>
       </div>
 
@@ -279,7 +279,11 @@
   </div>
   <p class="footer-copy">&copy; 2025 Yawdi's. Made with love in Canada.</p>
 </footer>
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
 <script src="cart.js"></script>
+<script src="announcement.js"></script>
 <script>
 (function () {
   const bundleQtys = {};
@@ -318,7 +322,7 @@
       </div>`).join('');
   }
 
-  function updateSummary(products) {
+  async function updateSummary(products) {
     let subtotal = 0, totalJars = 0;
     const rows = [];
 
@@ -335,7 +339,8 @@
     document.getElementById('bundle-items-list').innerHTML =
       rows.length ? rows.join('') : '<p class="bundle-empty-msg">Add products above to build your bundle.</p>';
 
-    const freeShip = totalJars >= 4;
+    const threshold = await getBundleThreshold();
+    const freeShip = totalJars >= threshold;
     const shipping = freeShip ? 0 : (totalJars > 0 ? 8.99 : 0);
 
     document.getElementById('bundle-subtotal').textContent = '$' + subtotal.toFixed(2);
@@ -359,13 +364,27 @@
     if (totalJars === 0) {
       note.textContent = 'Select at least 1 jar to continue.'; note.style.cssText = '';
     } else if (!freeShip) {
-      const left = 4 - totalJars;
+      const left = threshold - totalJars;
       note.textContent = 'Add ' + left + ' more jar' + (left !== 1 ? 's' : '') + ' for FREE shipping!';
       note.style.color = 'var(--maroon)'; note.style.fontWeight = '600';
     } else {
       note.textContent = '\u2713 Free shipping unlocked!';
       note.style.color = '#2d7a2d'; note.style.fontWeight = '700';
     }
+  }
+
+  async function getBundleThreshold() {
+    if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
+      try {
+        const doc = await firebase.firestore().collection('site_settings').doc('global').get();
+        if (doc.exists && doc.data().bundleThreshold) {
+          return parseInt(doc.data().bundleThreshold, 10);
+        }
+      } catch (err) {
+        console.warn('Failed to load bundle threshold from Firestore:', err);
+      }
+    }
+    return parseInt(localStorage.getItem('yawdis_bundle_threshold') || '4', 10);
   }
 
   function addToCart(products) {
@@ -398,6 +417,20 @@
   }
 
   document.addEventListener('DOMContentLoaded', init);
+
+  // Dynamic hero text from bundle threshold setting (Firestore with localStorage fallback)
+  async function updateBundleHeroText() {
+    const t = await getBundleThreshold();
+    const h1 = document.getElementById('bundle-hero-title');
+    const sub = document.getElementById('bundle-hero-sub');
+    const badge = document.getElementById('bundle-hero-badge');
+    const feat = document.getElementById('bundle-feature-ship-text');
+    if (h1) h1.innerHTML = 'Buy ' + t + ', Get<br />Free Shipping!';
+    if (sub) sub.textContent = 'Stock up on your favourites and enjoy FREE shipping on orders of ' + t + ' jars or more.';
+    if (badge) badge.textContent = 'Free Shipping when you buy ' + t + ' jars or more. No code needed.';
+    if (feat) feat.textContent = 'Automatically applied at checkout on ' + t + '+ jars.';
+  }
+  updateBundleHeroText();
 })();
 </script>
 </body>

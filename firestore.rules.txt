@@ -74,6 +74,14 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Site settings (announcement banner, bundle threshold, etc.):
+    // publicly readable so every visitor sees the same promo/config,
+    // but only writable by the admin.
+    match /site_settings/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // Comment moderation emails: written only by the moderateComment Cloud
     // Function (Admin SDK bypasses rules) for the Firebase "Trigger Email"
     // extension to pick up and send. No client may read or write here —

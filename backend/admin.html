@@ -251,6 +251,47 @@
       <button class="section-tab" data-section="recipes">Recipes</button>
       <button class="section-tab" data-section="stores">Stores</button>
       <button class="section-tab" data-section="story">Story Page</button>
+      <button class="section-tab" data-section="settings">Site Settings</button>
+    </div>
+
+    <!-- ── SETTINGS VIEW ── -->
+    <div id="settings-view" hidden>
+      <div class="console-note">
+        <strong>Shared settings:</strong> these are stored in Firestore and visible to every visitor on every device.
+      </div>
+
+      <div class="store-form-card" style="max-width:560px;">
+        <h3 class="store-form-title">Announcement Banner</h3>
+        <div class="form-row">
+          <label for="setting-banner-text">Banner text</label>
+          <input type="text" id="setting-banner-text" placeholder="e.g. Free shipping on all orders this weekend!" />
+          <div class="form-hint">Leave empty to hide the banner. Shows at the very top of every page for all visitors.</div>
+        </div>
+        <div class="form-row">
+          <label>
+            <input type="checkbox" id="setting-banner-enabled" style="width:auto;margin-right:8px;" />
+            Show banner
+          </label>
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" id="save-banner-btn">Save Banner</button>
+          <span class="geocode-status" id="banner-save-status"></span>
+        </div>
+      </div>
+
+      <div class="store-form-card" style="max-width:560px;">
+        <h3 class="store-form-title">Bundle Free Shipping Threshold</h3>
+        <div class="form-row">
+          <label for="setting-bundle-threshold">Jars required for free shipping</label>
+          <input type="number" id="setting-bundle-threshold" min="1" max="20" value="4" />
+          <div class="form-hint">Currently set to <strong>4 jars</strong>. Changing this updates the cart drawer, bundle page, and homepage for all visitors.</div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" id="save-threshold-btn">Save Threshold</button>
+          <span class="geocode-status" id="threshold-save-status"></span>
+        </div>
+      </div>
+
     </div>
 
     <!-- ── COMMENTS VIEW ── -->
@@ -1393,6 +1434,112 @@ document.addEventListener('DOMContentLoaded', () => {
       try { await StoryStore.permanentDeletePressItem(id); await renderPressItems(); } catch (err) { console.error('Failed to permanently delete press item:', err); btn.disabled = false; }
     }
   });
+
+  // ── Settings view ──
+  function initSettings() {
+    // Load from Firestore (shared across all visitors)
+    loadSettingsFromFirestore();
+
+    document.getElementById('save-banner-btn').addEventListener('click', saveBannerSettings);
+    document.getElementById('save-threshold-btn').addEventListener('click', saveThresholdWithReminder);
+  }
+
+  async function loadSettingsFromFirestore() {
+    if (!db) {
+      // Fallback to localStorage if Firebase not ready
+      document.getElementById('setting-banner-text').value = localStorage.getItem('yawdis_announcement_text') || '';
+      document.getElementById('setting-banner-enabled').checked = localStorage.getItem('yawdis_announcement_enabled') === 'true';
+      document.getElementById('setting-bundle-threshold').value = parseInt(localStorage.getItem('yawdis_bundle_threshold') || '4', 10);
+      return;
+    }
+    try {
+      const doc = await db.collection('site_settings').doc('global').get();
+      if (doc.exists) {
+        const data = doc.data();
+        document.getElementById('setting-banner-text').value = data.announcementText || '';
+        document.getElementById('setting-banner-enabled').checked = data.announcementEnabled || false;
+        document.getElementById('setting-bundle-threshold').value = data.bundleThreshold || 4;
+      }
+    } catch (err) {
+      console.error('Failed to load settings:', err);
+    }
+  }
+
+  async function saveBannerSettings() {
+    const text = document.getElementById('setting-banner-text').value.trim();
+    const enabled = document.getElementById('setting-banner-enabled').checked;
+    const status = document.getElementById('banner-save-status');
+
+    try {
+      if (db) {
+        await db.collection('site_settings').doc('global').set({
+          announcementText: text,
+          announcementEnabled: enabled,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+      }
+      // Also save to localStorage as cache for this browser
+      localStorage.setItem('yawdis_announcement_text', text);
+      localStorage.setItem('yawdis_announcement_enabled', enabled);
+
+      status.textContent = 'Saved! All visitors will see this banner.';
+      status.className = 'geocode-status success';
+    } catch (err) {
+      console.error('Failed to save banner:', err);
+      status.textContent = 'Error saving. Check Firestore rules.';
+      status.className = 'geocode-status error';
+    }
+    setTimeout(() => { status.textContent = ''; status.className = 'geocode-status'; }, 3000);
+  }
+
+  function saveThresholdWithReminder() {
+    const val = Math.max(1, Math.min(20, parseInt(document.getElementById('setting-bundle-threshold').value, 10) || 4));
+    document.getElementById('setting-bundle-threshold').value = val;
+
+    // Show reminder popup about Shopify shipping settings
+    const confirmed = confirm(
+      `REMINDER: Update Shopify Shipping Settings\n\n` +
+      `You've set the free shipping threshold to ${val} jars.\n\n` +
+      `For customers to actually get free shipping at checkout, you must also:\n\n` +
+      `1. Go to Shopify Admin → Settings → Shipping and delivery\n` +
+      `2. Click "Manage rates" under your shipping profile\n` +
+      `3. Add or edit a rate to be free when cart has ${val} or more items\n\n` +
+      `Click OK to confirm you've updated Shopify settings, or Cancel to go back.`
+    );
+
+    if (!confirmed) return;
+
+    // Save after confirmation
+    saveThresholdToFirestore(val);
+  }
+
+  async function saveThresholdToFirestore(val) {
+    const status = document.getElementById('threshold-save-status');
+    try {
+      if (db) {
+        await db.collection('site_settings').doc('global').set({
+          bundleThreshold: val,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+      }
+      localStorage.setItem('yawdis_bundle_threshold', String(val));
+
+      status.textContent = 'Saved! All visitors will see the new threshold.';
+      status.className = 'geocode-status success';
+    } catch (err) {
+      console.error('Failed to save threshold:', err);
+      status.textContent = 'Error saving. Check Firestore rules.';
+      status.className = 'geocode-status error';
+    }
+    setTimeout(() => { status.textContent = ''; status.className = 'geocode-status'; }, 3000);
+  }
+
+  // Wire settings when switching to that section
+  const origSwitch = switchSection;
+  switchSection = function(section) {
+    origSwitch(section);
+    if (section === 'settings') initSettings();
+  };
 });
 </script>
 

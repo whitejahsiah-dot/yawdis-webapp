@@ -85,8 +85,8 @@ const COMMUNITY_POST_TITLES = {
 // the admin (or comments left by any visitor) are visible to EVERY visitor,
 // on any device/network — not just the browser that made them.
 // window.YAWDIS_FIREBASE_CONFIG comes from firebase-config.js (loaded before
-// this file, only on pages that need it: community.html, find-us.html,
-// backend/admin.html). The config value itself is safe to be public; real
+// this file on every page, since the announcement banner and bundle threshold
+// read shared settings from Firestore). The config value itself is safe to be public; real
 // protection is Firestore Security Rules + Firebase Authentication.
 if (typeof firebase !== 'undefined' && window.YAWDIS_FIREBASE_CONFIG && !firebase.apps.length) {
   firebase.initializeApp(window.YAWDIS_FIREBASE_CONFIG);
