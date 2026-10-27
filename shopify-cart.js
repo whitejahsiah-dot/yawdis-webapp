@@ -84,14 +84,14 @@
 
     items.forEach((item, idx) => {
       subtotal += item.price * item.qty;
-      jarCount += item.qty;
+      if (isJar(item)) jarCount += item.qty;
       const row = document.createElement("div");
       row.className = "cart-item";
       row.innerHTML = `
         <div class="cart-item-img"><img src="${item.image || ""}" alt="${item.title}" /></div>
         <div class="cart-item-info">
           <strong>${item.title}</strong>
-          <span class="cart-item-variant">${item.variantTitle || "250 mL"}</span>
+          ${item.variantTitle ? `<span class="cart-item-variant">${item.variantTitle}</span>` : ""}
           <span class="cart-item-price">$${item.price.toFixed(2)}</span>
           <div class="cart-qty">
             <button data-act="dec" aria-label="Decrease">−</button>
@@ -156,6 +156,11 @@
     });
   }
 
+  // Only jars count toward the "X+ jars ship free" offer; gift cards, merch and gift boxes don't
+  const JAR_KEYS = new Set(["mango", "redPepper", "jerk", "lavender", "pineapple"]);
+  // Items saved before the jar flag existed fall back to the product name
+  const isJar = (item) => item.jar ?? /pepper jelly|marinade/i.test(item.title);
+
   // ── public API: add product by config key, open drawer ──
   // variantId picks one option (e.g. a gift card amount); without it the first variant is used
   async function addToCart(productKey, qty = 1, variantId = null) {
@@ -169,10 +174,12 @@
     if (!meta._product) meta._product = await client.product.fetchByHandle(meta.handle);
     const product = meta._product;
     const variant = product.variants.find(v => v.id === variantId) || product.variants[0];
+    const jar = JAR_KEYS.has(key);
     addVariant({
       variantId: variant.id,
       title: product.title,
-      variantTitle: variant.title === "Default Title" ? "250 mL" : variant.title,
+      jar,
+      variantTitle: jar ? "250 mL" : (variant.title === "Default Title" ? "" : variant.title.replace(/^CA/, "")),
       price: parseFloat(variant.price.amount ?? variant.price),
       image: product.images[0] ? product.images[0].src : ""
     }, qty);
@@ -223,10 +230,19 @@
     } catch (err) {
       console.error("[Yawdi's] checkout failed:", err);
       alert("Sorry, we couldn't start checkout. Please try again in a moment.");
-      btn.disabled = false;
-      btn.textContent = "Checkout";
+      resetCheckoutButton();
     }
   }
+
+  function resetCheckoutButton() {
+    const btn = document.getElementById("cart-checkout");
+    if (!btn) return;
+    btn.disabled = false;
+    btn.textContent = "Checkout";
+  }
+  // Coming back from Shopify with the Back button restores the page as it was left,
+  // "Preparing checkout…" included, so reset the button whenever the page is shown again
+  window.addEventListener("pageshow", (e) => { if (e.persisted) resetCheckoutButton(); });
 
   // ── live price sync: pulls real Shopify prices into product cards ──
   async function syncPrices() {
