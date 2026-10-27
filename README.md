@@ -136,7 +136,7 @@ story-data.js       — Optional sample story/press seed data
 firebase-config.js  — Firebase project configuration
 firestore.rules.txt — Firestore read/write security rules
 storage.rules.txt   — Firebase Storage upload security rules
-functions/          — Node.js Firebase Cloud Function for comment moderation
+firebase-functions/ — Node.js Firebase Cloud Function for comment moderation
 maps-config.js       — Google Maps API key placeholder + setup instructions
 content/
   Full Labels/      — Product label images (used on shop + bundle)
