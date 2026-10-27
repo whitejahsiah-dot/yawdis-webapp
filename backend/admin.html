@@ -397,6 +397,7 @@
 <script src="../recipes-data.js"></script>
 <script src="../story-data.js"></script>
 <script src="../maps-config.js"></script>
+<script src="../shopify-config.js"></script>
 <script>
 function showPanel() {
   document.getElementById('gate').hidden = true;
@@ -439,12 +440,13 @@ const SECTION_TITLES = {
   comments: ['Comment Queue', 'Review, approve, or reject submitted comments before they go public.'],
   recipes:  ['Community Recipes', 'Add, edit, or remove the recipes shown on the Community page.'],
   stores:   ['Store Locations', 'Add, edit, or remove the stores shown on the "Where You Can Find Us" map.'],
-  story:    ['Our Story Page', 'Add or edit narrative sections and press items shown on the Our Story page.']
+  story:    ['Our Story Page', 'Add or edit narrative sections and press items shown on the Our Story page.'],
+  settings: ['Site Settings', 'Announcement banner and free-shipping threshold shown to every visitor.']
 };
 
 function switchSection(section) {
   document.querySelectorAll('.section-tab').forEach(b => b.classList.toggle('active', b.dataset.section === section));
-  ['comments', 'recipes', 'stores', 'story'].forEach(name => {
+  ['comments', 'recipes', 'stores', 'story', 'settings'].forEach(name => {
     document.getElementById(`${name}-view`).hidden = section !== name;
   });
   const [title, subtitle] = SECTION_TITLES[section];
@@ -1452,12 +1454,13 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ── Settings view ──
+  // Bound once here; initSettings runs every time the tab opens
+  document.getElementById('save-banner-btn').addEventListener('click', saveBannerSettings);
+  document.getElementById('save-threshold-btn').addEventListener('click', saveThresholdWithReminder);
+
   function initSettings() {
     // Load from Firestore (shared across all visitors)
     loadSettingsFromFirestore();
-
-    document.getElementById('save-banner-btn').addEventListener('click', saveBannerSettings);
-    document.getElementById('save-threshold-btn').addEventListener('click', saveThresholdWithReminder);
 
     // Handle cheat-sheet
     const tbody = document.getElementById('handle-cheatsheet-body');
