@@ -101,7 +101,7 @@ const RECIPES_SEED = [
   {
     uploaderName: 'Veneise George',
     title: 'Jerk Chicken',
-    image: 'content/GlamShots/Yawdis-all-jars.png',
+    image: 'content/GlamShots/Yawdis-all-jars.webp',
     description: "The Yawdi's classic — chicken marinated overnight in Jerk Marinade for deep, authentic Caribbean flavour.",
     madeWith: 'Jerk Marinade',
     serves: 'Serves 6–8',
