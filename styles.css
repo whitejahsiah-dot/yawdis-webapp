@@ -1286,6 +1286,25 @@ h3 { font-size: 1.15rem; font-weight: 700; }
 .cart-checkout:disabled { opacity: 0.6; cursor: default; }
 .cart-foot-note { font-size: 0.74rem; color: var(--muted); text-align: center; margin: 0; }
 
+/* Option picker on shop cards (gift card amounts) */
+.variant-picker { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 14px; }
+.variant-pill { position: relative; cursor: pointer; }
+.variant-pill input { position: absolute; opacity: 0; pointer-events: none; }
+.variant-pill span {
+  display: inline-block;
+  padding: 6px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--warm-text);
+  background: var(--white);
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.variant-pill:hover span { border-color: var(--maroon); }
+.variant-pill input:checked + span { background: var(--maroon); border-color: var(--maroon); color: #fff; }
+.variant-pill input:focus-visible + span { outline: 2px solid var(--gold); outline-offset: 2px; }
+
 /* ═══════════════════════════
    MERCH BAND (shop.html)
 ═══════════════════════════ */

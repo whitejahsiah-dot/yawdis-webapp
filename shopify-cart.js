@@ -157,7 +157,8 @@
   }
 
   // ── public API: add product by config key, open drawer ──
-  async function addToCart(productKey, qty = 1) {
+  // variantId picks one option (e.g. a gift card amount); without it the first variant is used
+  async function addToCart(productKey, qty = 1, variantId = null) {
     if (!configured) { openDrawer(); return; }
     // Accept a config key ("redPepper") or the site's product id ("red-pepper")
     const key = cfg.products[productKey] ? productKey
@@ -165,19 +166,16 @@
     const meta = cfg.products[key];
     if (!meta) return console.warn("[Yawdi's] unknown product key:", productKey);
 
-    const existing = meta._variant;
-    if (existing) return addVariant(existing, qty);
-
-    const product = await client.product.fetchByHandle(meta.handle);
-    const variant = product.variants[0];
-    meta._variant = {
+    if (!meta._product) meta._product = await client.product.fetchByHandle(meta.handle);
+    const product = meta._product;
+    const variant = product.variants.find(v => v.id === variantId) || product.variants[0];
+    addVariant({
       variantId: variant.id,
       title: product.title,
       variantTitle: variant.title === "Default Title" ? "250 mL" : variant.title,
       price: parseFloat(variant.price.amount ?? variant.price),
       image: product.images[0] ? product.images[0].src : ""
-    };
-    addVariant(meta._variant, qty);
+    }, qty);
   }
 
   function addVariant(v, qty) {
@@ -280,7 +278,9 @@
       const btn = e.target.closest("[data-cart-id]");
       if (!btn) return;
       e.preventDefault();
-      addToCart(btn.getAttribute("data-cart-id"));
+      // Cards with options (gift card amounts) carry a checked radio for the chosen variant
+      const picked = btn.closest("article")?.querySelector("input[data-variant-id]:checked");
+      addToCart(btn.getAttribute("data-cart-id"), 1, picked ? picked.dataset.variantId : null);
     });
   });
 

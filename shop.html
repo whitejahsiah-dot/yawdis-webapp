@@ -412,6 +412,16 @@
     const typeDisplay = { jelly: 'Pepper Jelly', marinade: 'Marinade', giftcard: 'Gift Card', merch: 'Clothing', giftbox: 'Gift Box' }[typeLabel] || typeLabel;
     const useAttr = meta && meta.use ? meta.use.join(' ') : '';
 
+    // Products with several options (gift card amounts) get a picker; the first option starts selected
+    const hasOptions = product.variants.length > 1;
+    const optionsHtml = hasOptions
+      ? `<div class="variant-picker" role="radiogroup" aria-label="Choose an amount">${product.variants.map((v, i) => `
+          <label class="variant-pill">
+            <input type="radio" name="variant-${escHtml(key)}" data-variant-id="${escHtml(v.id)}" data-price="${parseFloat(v.price.amount ?? v.price).toFixed(2)}"${i === 0 ? ' checked' : ''} />
+            <span>${escHtml(v.title.replace(/^CA/, ''))}</span>
+          </label>`).join('')}</div>`
+      : '';
+
     const pairsHtml = meta && meta.pairs && meta.pairs.length
       ? `<div class="shop-card-pairs"><span>Pairs well with</span><div class="pair-tags">${meta.pairs.map(p => `<span class="pair-tag">${escHtml(p)}</span>`).join('')}</div></div>`
       : '';
@@ -424,10 +434,11 @@
         <div class="shop-card-body">
           <span class="shop-card-type">${escHtml(typeDisplay)}</span>
           <h3>${escHtml(title)}</h3>
+          ${optionsHtml}
           <div class="shop-card-footer">
             <div>
-              <span class="shop-card-price">${priceLabel}</span>
-              ${variant.title !== 'Default Title' ? `<span class="shop-card-size">${escHtml(variant.title)}</span>` : '<span class="shop-card-size">250 mL</span>'}
+              <span class="shop-card-price">${hasOptions ? `$${price.toFixed(2)}` : priceLabel}</span>
+              ${hasOptions ? '' : '<span class="shop-card-size">250 mL</span>'}
             </div>
             <button class="btn btn-maroon btn-sm" data-cart-id="${escHtml(key)}">Add to Cart</button>
           </div>
@@ -459,6 +470,14 @@
         </div>
       </article>`;
   }
+
+  // Picking an amount updates that card's price
+  document.addEventListener('change', e => {
+    const input = e.target.closest('.variant-picker input');
+    if (!input) return;
+    const price = input.closest('.shop-card').querySelector('.shop-card-price');
+    if (price) price.textContent = '$' + input.dataset.price;
+  });
 
   async function loadShopifyProducts() {
     const cfg = window.YAWDIS_SHOPIFY;
