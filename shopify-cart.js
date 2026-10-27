@@ -190,17 +190,44 @@
   }
 
   // ── checkout handoff ──
-  // Shopify removed the Storefront checkout API this SDK version uses, so hand off with a
-  // cart permalink instead: /cart/<variant>:<qty>,... opens Shopify checkout with those items.
-  function goToCheckout() {
+  // Shopify removed the Storefront checkout API this SDK version uses, so create a cart with the
+  // Storefront Cart API and send the shopper to its checkoutUrl. (A /cart/<variant>:<qty> permalink
+  // only works for products published to the Online Store channel; this works for anything the
+  // storefront token can see.)
+  const CART_CREATE = `mutation($lines: [CartLineInput!]!) {
+    cartCreate(input: { lines: $lines }) { cart { checkoutUrl } userErrors { message } }
+  }`;
+
+  async function goToCheckout() {
     const items = loadCart();
     if (!items.length) return;
     if (!configured) {
       alert("Connect your Shopify token in shopify-config.js to enable checkout.");
       return;
     }
-    const lines = items.map(i => `${String(i.variantId).split("/").pop()}:${i.qty}`).join(",");
-    window.location.href = `https://${cfg.domain}/cart/${lines}`;
+    const btn = document.getElementById("cart-checkout");
+    btn.disabled = true;
+    btn.textContent = "Preparing checkout…";
+    try {
+      const res = await fetch(`https://${cfg.domain}/api/2025-07/graphql.json`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Shopify-Storefront-Access-Token": cfg.storefrontAccessToken },
+        body: JSON.stringify({
+          query: CART_CREATE,
+          variables: { lines: items.map(i => ({ merchandiseId: i.variantId, quantity: i.qty })) }
+        })
+      });
+      const json = await res.json();
+      const result = json.data && json.data.cartCreate;
+      const errors = (json.errors || []).concat(result ? result.userErrors : []);
+      if (!result || !result.cart || errors.length) throw new Error(errors.map(e => e.message).join("; ") || "No cart returned");
+      window.location.href = result.cart.checkoutUrl;
+    } catch (err) {
+      console.error("[Yawdi's] checkout failed:", err);
+      alert("Sorry, we couldn't start checkout. Please try again in a moment.");
+      btn.disabled = false;
+      btn.textContent = "Checkout";
+    }
   }
 
   // ── live price sync: pulls real Shopify prices into product cards ──
