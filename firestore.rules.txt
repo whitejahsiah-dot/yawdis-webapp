@@ -74,7 +74,7 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
-    // Site settings (announcement banner, bundle threshold, etc.):
+    // Site settings (announcement banner, etc.):
     // publicly readable so every visitor sees the same promo/config,
     // but only writable by the admin.
     match /site_settings/{docId} {

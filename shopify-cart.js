@@ -40,7 +40,6 @@
         </div>
         <div class="cart-drawer-body" id="cart-items"></div>
         <div class="cart-drawer-foot">
-          <div class="cart-ship-note" id="cart-ship-note"></div>
           <div class="cart-total-row">
             <span>Subtotal</span>
             <strong id="cart-subtotal">$0.00</strong>
@@ -77,7 +76,6 @@
     const items = loadCart();
     wrap.innerHTML = "";
     let subtotal = 0;
-    let jarCount = 0;
 
     if (!items.length) {
       wrap.innerHTML = `<p class="cart-empty">Your cart is empty.<br/>Add a jar of island flavour!</p>`;
@@ -85,7 +83,6 @@
 
     items.forEach((item, idx) => {
       subtotal += item.price * item.qty;
-      if (isJar(item)) jarCount += item.qty;
       const row = document.createElement("div");
       row.className = "cart-item";
       row.innerHTML = `
@@ -109,35 +106,7 @@
 
     document.getElementById("cart-subtotal").textContent = "$" + subtotal.toFixed(2);
 
-    // Bundle threshold from Firestore (shared) with localStorage fallback
-    const threshold = await getBundleThreshold();
-    const note = document.getElementById("cart-ship-note");
-    if (jarCount >= threshold) {
-      note.innerHTML = `&#127873; <strong>Free shipping unlocked!</strong> You've got ${threshold}+ jars.`;
-      note.classList.add("unlocked");
-    } else if (jarCount > 0) {
-      note.innerHTML = `Add <strong>${threshold - jarCount} more jar${threshold - jarCount > 1 ? "s" : ""}</strong> for free shipping.`;
-      note.classList.remove("unlocked");
-    } else {
-      note.innerHTML = "";
-      note.classList.remove("unlocked");
-    }
-
     updateBadges();
-  }
-
-  async function getBundleThreshold() {
-    if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
-      try {
-        const doc = await firebase.firestore().collection('site_settings').doc('global').get();
-        if (doc.exists && doc.data().bundleThreshold) {
-          return parseInt(doc.data().bundleThreshold, 10);
-        }
-      } catch (err) {
-        console.warn('Failed to load bundle threshold from Firestore:', err);
-      }
-    }
-    return parseInt(localStorage.getItem("yawdis_bundle_threshold") || "4", 10);
   }
 
   function updateQty(idx, qty) {
@@ -157,10 +126,8 @@
     });
   }
 
-  // Only jars count toward the "X+ jars ship free" offer; gift cards, merch and gift boxes don't
+  // The pepper jellies and marinade; gift cards, merch and gift boxes aren't jars
   const JAR_KEYS = new Set(["mango", "redPepper", "jerk", "lavender", "pineapple"]);
-  // Items saved before the jar flag existed fall back to the product name
-  const isJar = (item) => item.jar ?? /pepper jelly|marinade/i.test(item.title);
 
   // ── public API: add product by config key, open drawer ──
   // variantId picks one option (e.g. a gift card amount); without it the first variant is used

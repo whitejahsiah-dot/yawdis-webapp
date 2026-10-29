@@ -85,8 +85,8 @@ const COMMUNITY_POST_TITLES = {
 // the admin (or comments left by any visitor) are visible to EVERY visitor,
 // on any device/network — not just the browser that made them.
 // window.YAWDIS_FIREBASE_CONFIG comes from firebase-config.js (loaded before
-// this file on every page, since the announcement banner and bundle threshold
-// read shared settings from Firestore). The config value itself is safe to be public; real
+// this file on every page, since the announcement banner
+// reads shared settings from Firestore). The config value itself is safe to be public; real
 // protection is Firestore Security Rules + Firebase Authentication.
 if (typeof firebase !== 'undefined' && window.YAWDIS_FIREBASE_CONFIG && !firebase.apps.length) {
   firebase.initializeApp(window.YAWDIS_FIREBASE_CONFIG);
@@ -632,8 +632,7 @@ function renderCart() {
 
   const count = CartState.count();
   const total = CartState.total();
-  const freeShip = count >= 4;
-  const shipping = freeShip ? 0 : 8.99;
+  const shipping = 8.99;
 
   if (countEl) countEl.textContent = count > 0 ? `(${count})` : '';
 
@@ -671,15 +670,13 @@ function renderCart() {
     </div>
   `).join('');
 
-  const jarsLeft = 4 - count;
   footer.innerHTML = `
     <div class="yw-cart-totals">
       <div class="yw-total-row"><span>Subtotal</span><span>$${total.toFixed(2)}</span></div>
       <div class="yw-total-row">
         <span>Shipping</span>
-        <span class="${freeShip ? 'yw-free-ship' : ''}">${freeShip ? 'FREE' : '$' + shipping.toFixed(2)}</span>
+        <span>$${shipping.toFixed(2)}</span>
       </div>
-      ${!freeShip ? `<p class="yw-upsell">&#127873; Add ${jarsLeft} more jar${jarsLeft !== 1 ? 's' : ''} for <strong>free shipping</strong>!</p>` : ''}
       <div class="yw-total-row yw-grand-total">
         <span>Total</span>
         <span>$${(total + shipping).toFixed(2)}</span>

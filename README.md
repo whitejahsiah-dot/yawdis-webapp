@@ -10,7 +10,6 @@ Full-featured static storefront for Yawdi's Canadian condiment brand. No framewo
 |---|---|
 | `index.html` | English homepage |
 | `shop.html` | Full product listing |
-| `bundle.html` | Interactive bundle builder |
 | `community.html` | Community recipe wall |
 | `story.html` | Our Story + press coverage |
 | `find-us.html` | Store locator with Google Maps |
@@ -23,9 +22,7 @@ Full-featured static storefront for Yawdi's Canadian condiment brand. No framewo
 ### 🛒 Shopping Cart
 - Slide-in cart drawer accessible from every page via the bag icon
 - Persists across pages using `localStorage` (`yawdis-cart` key)
-- Automatic **free shipping** unlocked at 4+ jars (otherwise $8.99)
 - Live jar count badge on the cart icon
-- Upsell prompt inside the drawer counting jars left to unlock free shipping
 - Checkout button links to `https://www.yawdi.ca/shop` (configurable)
 
 ### 🔍 Search
@@ -50,13 +47,6 @@ Full-featured static storefront for Yawdi's Canadian condiment brand. No framewo
   ```js
   JSON.parse(localStorage.getItem('yawdis-marketing-emails'))
   ```
-
-### 🌶️ Bundle Builder (`bundle.html`)
-- Interactive product grid — all 5 products with +/− quantity selectors
-- Live summary panel: per-item line totals, subtotal, shipping, grand total
-- Prices pulled directly from the shared `PRODUCTS` array — always in sync with shop prices
-- Free shipping banner appears automatically when 4+ jars are selected
-- "Add Bundle to Cart" button writes directly to the shared cart and opens the cart drawer
 
 ### 🍽️ Community Wall (`community.html`)
 - Community recipe cards are loaded from the shared Firestore `recipes` collection (click any card to open a detail modal)
@@ -123,7 +113,6 @@ Product images are in `content/Full Labels/`.
 ```
 index.html          — English homepage
 shop.html           — Shop page
-bundle.html         — Bundle builder
 community.html      — Community recipes
 story.html          — Our Story + press
 find-us.html        — Store locator (Google Maps)
@@ -139,7 +128,7 @@ storage.rules.txt   — Firebase Storage upload security rules
 firebase-functions/ — Node.js Firebase Cloud Function for comment moderation
 maps-config.js       — Google Maps API key placeholder + setup instructions
 content/
-  Full Labels/      — Product label images (used on shop + bundle)
+  Full Labels/      — Product label images (used on shop)
   Silo Images/      — Product silo images (used on homepage tiles)
   Glam Shots/       — Lifestyle product photos
   AboutUs/          — Story page and press images

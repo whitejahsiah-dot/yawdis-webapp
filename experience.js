@@ -19,17 +19,16 @@ const TEXT = [
   ".promo-banner-text > *", ".about-strip-text > *", ".shop-header > *",
   ".community-hero-left > *", ".story-hero > *", ".find-us-header > *",
   ".press-section-header > *", ".community-cta-text > *", ".story-text > *",
-  ".shop-bundle-strip", ".community-controls-row", ".load-more-wrap",
-  ".bundle-hero-text > *", ".bundle-title", ".bundle-summary",
+  ".community-controls-row", ".load-more-wrap",
 ].join(",");
 const CARDS = [
   ".product-tile", ".recipe-card", ".shop-card", ".community-card",
   ".press-card", ".find-us-store-card", ".footer-col", ".promo-banner-img img",
-  ".find-us-map-panel", ".shop-sidebar", ".bprod-card", ".bundle-feature",
+  ".find-us-map-panel", ".shop-sidebar",
 ].join(",");
 const FRAMES = [
   ".about-strip-img img", ".community-hero-right img",
-  ".community-cta-img img", ".story-img:not(.logo-img) img", ".bundle-hero-img img",
+  ".community-cta-img img", ".story-img:not(.logo-img) img",
 ].join(",");
 
 // ── Batched reveal: everything entering view in the same frame staggers together ──
@@ -147,7 +146,7 @@ function swapGlyphs(scope) {
     while (walker.nextNode()) texts.push(walker.currentNode);
   }
   texts.forEach(t => {
-    if (!GLYPH_RE.test(t.data) || t.parentElement?.closest(".bf-icon, script, style, textarea, title, svg")) return;
+    if (!GLYPH_RE.test(t.data) || t.parentElement?.closest("script, style, textarea, title, svg")) return;
     const frag = document.createDocumentFragment();
     t.data.split(new RegExp(GLYPH_SRC, "gu")).forEach((part, i) => {
       if (i % 2) frag.append(glyph(part, t));
@@ -320,22 +319,6 @@ if (stageEl && tiles.length > 1) {
 
   if (!reduce) animate(wrapEl, { opacity: [0, 1], y: [120, 0] }, { type: "spring", stiffness: 90, damping: 16, delay: 0.25 });
 }
-
-// ── Bundle features: swap the emoji icons for line icons that draw themselves in ──
-const ICONS = [
-  [/flavou?r|value/i, "jars", `<g class="xp-ico-a"><path d="M5.5 6.5h5V9h-5z"/><path d="M5 9h6v10a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1z"/><path d="M7 13.5h2"/></g><g class="xp-ico-b"><path d="M13.5 8.5h5V11h-5z"/><path d="M13 11h6v8a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1z"/><path d="M15 15h2"/></g>`],
-  [/ship/i, "truck", `<g class="xp-ico-a"><path d="M2 7h11v9H2z"/><path d="M13 10h4l3 3v3h-7z"/><circle cx="6" cy="17.5" r="1.8"/><circle cx="16.5" cy="17.5" r="1.8"/></g>`],
-  [/gift/i, "gift", `<path d="M4 11h16v9H4z"/><path d="M12 11v9"/><g class="xp-ico-a"><path d="M3 8h18v3H3z"/><path d="M12 8c-1.5-3-5-3.5-5-1.2C7 8 9.5 8 12 8z"/><path d="M12 8c1.5-3 5-3.5 5-1.2C17 8 14.5 8 12 8z"/></g>`],
-  [/canada/i, "leaf", `<g class="xp-ico-a"><path d="M12 3l1.6 3.4 2.4-1-.6 4.1 3-1.8-.6 2.4 2.2.9-3.6 3 .7 1.9-4.3-.6.2 5.7h-1.2l-.2-5.7-4.3.6.7-1.9-3.6-3 2.2-.9-.6-2.4 3 1.8-.6-4.1 2.4 1z"/></g>`],
-];
-$$(".bundle-feature .bf-icon").forEach(icon => {
-  const title = icon.parentElement.querySelector("h4")?.textContent || "";
-  const match = ICONS.find(([re]) => re.test(title));
-  if (!match) { icon.remove(); return; }
-  icon.innerHTML = `<svg class="xp-ico xp-ico-${match[1]}" viewBox="0 0 24 24" aria-hidden="true">${match[2]}</svg>`;
-  icon.querySelectorAll("path, circle").forEach(el => el.setAttribute("pathLength", "1"));
-  inView(icon, () => icon.classList.add("is-drawn"), { amount: 0.6 });
-});
 
 // ── Swipe rows (recipes, press): dots that follow the swipe on smaller screens (row layout itself is CSS) ──
 // Press cards arrive later from Firestore, so dots rebuild whenever the row's cards change.

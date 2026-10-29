@@ -60,7 +60,6 @@
     <p>Pepper jellies and jerk marinades crafted to bring sweet heat and island soul to every meal &mdash; from the grill to the cheese board.</p>
     <div style="display:flex;gap:14px;flex-wrap:wrap;">
       <a href="shop.html" class="btn btn-maroon">Shop All Products</a>
-      <a href="bundle.html" class="btn btn-outline">Bundle &amp; Save</a>
     </div>
   </div>
   <div class="hero-home-images">
@@ -150,21 +149,6 @@
         </div>
       </div>
 
-    </div>
-  </div>
-</section>
-
-<!-- -- BUNDLE PROMO -- -->
-<section class="promo-banner">
-  <div class="promo-banner-inner">
-    <div class="promo-banner-text">
-      <p class="eyebrow">&#127873; Bundle &amp; Save</p>
-      <h2 id="home-bundle-title">Buy 4, Get<br />Free Shipping!</h2>
-      <p id="home-bundle-sub">Stock up on your favourites and enjoy FREE shipping on orders of 4 jars or more. No code needed.</p>
-      <a href="bundle.html" class="btn btn-white">Build Your Bundle</a>
-    </div>
-    <div class="promo-banner-img">
-      <img src="content/GlamShots/Yawdis-all-jars.webp" alt="All Yawdi's jars" />
     </div>
   </div>
 </section>
@@ -319,7 +303,6 @@
         <li><a href="shop.html">All Products</a></li>
         <li><a href="shop.html#jellies">Pepper Jellies</a></li>
         <li><a href="shop.html#jerk">Jerk Marinade</a></li>
-        <li><a href="bundle.html">Bundle &amp; Save</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -368,23 +351,6 @@
   }
   document.addEventListener('DOMContentLoaded', updateRecipeStats);
 
-  // Dynamic bundle promo text from Firestore (shared) with localStorage fallback
-  async function updateBundlePromo() {
-    let t = 4;
-    if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
-      try {
-        const doc = await firebase.firestore().collection('site_settings').doc('global').get();
-        if (doc.exists && doc.data().bundleThreshold) t = parseInt(doc.data().bundleThreshold, 10);
-      } catch (err) { console.warn('Failed to load bundle threshold:', err); }
-    } else {
-      t = parseInt(localStorage.getItem('yawdis_bundle_threshold') || '4', 10);
-    }
-    const title = document.getElementById('home-bundle-title');
-    const sub = document.getElementById('home-bundle-sub');
-    if (title) title.innerHTML = 'Buy ' + t + ', Get<br />Free Shipping!';
-    if (sub) sub.textContent = 'Stock up on your favourites and enjoy FREE shipping on orders of ' + t + ' jars or more. No code needed.';
-  }
-  updateBundlePromo();
 })();
 </script>
 

@@ -68,9 +68,11 @@
     .filter-btn.active { background: var(--maroon); color: var(--white); font-weight: 600; }
 
     /* product grid */
+    /* As many columns as fit with cards at least 270px wide: 3 on wide screens, 2 on laptops
+       and tablets, 1 on phones, so price, size and Add to Cart always sit on one line */
     .shop-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
       gap: 24px;
     }
     .shop-card {
@@ -178,27 +180,11 @@
     .yw-barcode-bars { height: 34px; flex-shrink: 0; }
     .yw-barcode-number { font-size: 0.78rem; letter-spacing: 0.06em; color: var(--warm-text); font-variant-numeric: tabular-nums; }
 
-    /* bundle CTA strip */
-    .shop-bundle-strip {
-      background: var(--maroon);
-      color: var(--white);
-      text-align: center;
-      padding: 36px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 24px;
-      flex-wrap: wrap;
-    }
-    .shop-bundle-strip p { font-size: 1.05rem; font-weight: 600; margin: 0; }
-    .shop-bundle-strip strong { font-family: var(--font-display); font-size: 1.15rem; }
-
     @media (max-width: 900px) {
       .shop-layout { grid-template-columns: 1fr; }
       .shop-sidebar { position: static; }
       .filter-group { display: flex; flex-wrap: wrap; gap: 6px; }
       .filter-btn { width: auto; display: inline-block; }
-      .shop-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 540px) {
       .shop-grid { grid-template-columns: 1fr; }
@@ -246,12 +232,6 @@
   <p class="eyebrow">Island Flavour Pantry</p>
   <h1>Shop All Products</h1>
   <p>Bold Caribbean flavour, made in Canada. One jar transforms any meal.</p>
-</div>
-
-<!-- ── BUNDLE STRIP ── -->
-<div class="shop-bundle-strip">
-  <p>&#127873; <strong>Buy 4, Get Free Shipping!</strong> Stock up and save — no code needed.</p>
-  <a href="bundle.html" class="btn btn-white btn-sm">Build a Bundle</a>
 </div>
 
 <!-- ── SHOP LAYOUT ── -->
@@ -335,7 +315,6 @@
         <li><a href="shop.html">All Products</a></li>
         <li><a href="shop.html#jellies">Pepper Jellies</a></li>
         <li><a href="shop.html#jerk">Jerk Marinade</a></li>
-        <li><a href="bundle.html">Bundle &amp; Save</a></li>
       </ul>
     </div>
     <div class="footer-col">
