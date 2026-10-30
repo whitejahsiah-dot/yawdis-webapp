@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Get in touch with Yawdi's — questions, wholesale inquiries, press, or just to say hello." />
   <title>Contact Us | Yawdi's</title>
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="experience.css" />
   <script>
@@ -231,7 +234,7 @@
         </div>
         <button type="submit" class="btn btn-maroon cf-submit">Send Message</button>
         <div class="cf-success" id="cf-success">&#10003; Thanks! We'll get back to you soon.</div>
-        <p class="cf-note">We typically respond within 1–2 business days.</p>
+        <p class="cf-note">We typically respond within 1–2 business days. We use your details only to reply to you. See our <a href="privacy.html" style="color:var(--maroon);text-decoration:underline;">Privacy Policy</a>.</p>
       </form>
     </div>
 
@@ -244,7 +247,7 @@
         </div>
         <div class="ci-text">
           <h4>Email</h4>
-          <p><a href="mailto:info@yawdi.ca">info@yawdi.ca</a></p>
+          <p><a href="mailto:vgeorge@yawdi.ca">vgeorge@yawdi.ca</a></p>
         </div>
       </div>
 
@@ -344,7 +347,8 @@
         <li><a href="contact.html" style="color:var(--maroon);">Contact Us</a></li>
         <li><a href="#">Shipping Info</a></li>
         <li><a href="#">FAQ</a></li>
-        <li><a href="https://www.yawdi.ca/press" target="_blank" rel="noopener">Press</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+        <li><a href="story.html#press">Press</a></li>
       </ul>
     </div>
   </div>
@@ -371,7 +375,7 @@
       const subject = document.getElementById('cf-subject').value;
       const message = document.getElementById('cf-message').value.trim();
       if (!name || !email || !message) return;
-      window.location.href = `mailto:info@yawdi.ca?subject=${encodeURIComponent(subject || 'Website enquiry')}&body=${encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\n' + message)}`;
+      window.location.href = `mailto:vgeorge@yawdi.ca?subject=${encodeURIComponent(subject || 'Website enquiry')}&body=${encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\n' + message)}`;
       return;
     }
     e.preventDefault();

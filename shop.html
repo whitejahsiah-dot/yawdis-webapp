@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Shop all Yawdi's pepper jellies and jerk marinade. Bold Caribbean flavour, made in Canada." />
   <title>Shop | Yawdi's</title>
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="experience.css" />
   <script>
@@ -27,12 +30,12 @@
     .shop-header p { color: var(--muted); max-width: 480px; margin: 0 auto; }
 
     .shop-layout {
-      max-width: 1200px;
+      max-width: 1320px;
       margin: 0 auto;
       padding: 48px 32px 80px;
       display: grid;
-      grid-template-columns: 220px 1fr;
-      gap: 48px;
+      grid-template-columns: 200px 1fr;
+      gap: 40px;
       align-items: start;
     }
 
@@ -85,7 +88,7 @@
     .shop-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); }
     .shop-card-img {
       overflow: hidden;
-      height: 240px;
+      height: 220px;
     }
     .shop-card-img img {
       width: 100%;
@@ -113,8 +116,11 @@
       justify-content: space-between;
       gap: 10px;
     }
+    /* Price and size stay together on one line; the button never wraps */
+    .shop-card-footer > div { display: flex; align-items: baseline; gap: 6px; white-space: nowrap; }
+    .shop-card-footer .btn-sm { padding: 9px 16px; font-size: 0.72rem; white-space: nowrap; flex-shrink: 0; }
     .shop-card-price { font-weight: 700; font-size: 1rem; color: var(--maroon-dark); }
-    .shop-card-size { font-size: 0.75rem; color: var(--muted); margin-left: 4px; font-weight: 400; }
+    .shop-card-size { font-size: 0.75rem; color: var(--muted); font-weight: 400; }
 
     /* product detail side panels */
     .shop-card-pairs {
@@ -122,7 +128,8 @@
       margin-top: 14px;
       padding-top: 12px;
     }
-    .shop-card-pairs span {
+    /* Only the "Pairs well with" label; the tags are spans too and get their own style below */
+    .shop-card-pairs > span {
       font-size: 0.72rem;
       font-weight: 700;
       letter-spacing: 0.1em;
@@ -135,9 +142,11 @@
     .pair-tag {
       background: var(--cream-dark);
       color: var(--warm-text);
-      font-size: 0.72rem;
-      padding: 3px 9px;
+      font-size: 0.74rem;
+      font-weight: 500;
+      padding: 3px 10px;
       border-radius: 999px;
+      white-space: nowrap;
     }
 
     /* nutrition / barcode expandable */
@@ -331,6 +340,7 @@
         <li><a href="contact.html">Contact Us</a></li>
         <li><a href="#">Shipping Info</a></li>
         <li><a href="#">FAQ</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
       </ul>
     </div>
   </div>

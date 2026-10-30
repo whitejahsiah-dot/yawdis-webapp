@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="See how the Yawdi's community uses our products. Share your recipes and creations." />
   <title>Community | Yawdi's</title>
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="experience.css" />
   <script>
@@ -91,6 +94,8 @@
     .cc-comment-date { font-size: 0.71rem; color: var(--muted); margin: 0; }
     .cc-no-comments { font-size: 0.87rem; color: var(--muted); font-style: italic; margin-bottom: 16px; }
     .cc-comment-form { display: flex; flex-direction: column; gap: 10px; }
+    .cc-privacy-note { font-size: 0.75rem; color: var(--muted); line-height: 1.5; margin: 0; }
+    .cc-privacy-note a { color: var(--maroon); text-decoration: underline; }
     .cc-comment-form input, .cc-comment-form textarea {
       border: 1.5px solid var(--border); border-radius: var(--radius-sm);
       padding: 10px 14px; font-size: 0.88rem; font-family: var(--font-body);
@@ -257,6 +262,7 @@
         <li><a href="contact.html">Contact Us</a></li>
         <li><a href="#">Shipping Info</a></li>
         <li><a href="#">FAQ</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
       </ul>
     </div>
   </div>
@@ -434,6 +440,7 @@ async function ccRenderModal() {
         <input type="text" id="cc-name-input" placeholder="Your name" maxlength="60" required />
         <textarea id="cc-text-input" placeholder="Leave a comment\u2026" maxlength="500" required></textarea>
         <button type="submit" class="btn btn-maroon btn-sm" style="align-self:flex-end;">Post Comment</button>
+        <p class="cc-privacy-note">Comments are checked by an automated AI tool (OpenAI) and our team before they appear, and your name is shown publicly. See our <a href="privacy.html#ai-moderation">Privacy Policy</a>.</p>
       </form>`;
   }
 }

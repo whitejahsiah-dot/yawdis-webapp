@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="How Yawdi's collects, uses and protects your personal information, including AI-assisted comment moderation." />
+  <title>Privacy Policy | Yawdi's</title>
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="experience.css" />
+  <script>
+    // Hide reveal targets until the motion layer is ready; give up after 2.5s so content never stays hidden.
+    document.documentElement.classList.add('xp');
+    setTimeout(function () { if (!window.__xp) document.documentElement.classList.remove('xp'); }, 2500);
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    .policy-hero {
+      background: var(--maroon-dark);
+      color: var(--white);
+      text-align: center;
+      padding: 72px 32px 64px;
+    }
+    .policy-hero .eyebrow { color: var(--gold); }
+    .policy-hero .eyebrow::before,
+    .policy-hero .eyebrow::after { background: var(--gold); }
+    .policy-hero h1 { color: var(--white); margin-bottom: 14px; }
+    .policy-hero p { color: rgba(255,255,255,0.72); max-width: 520px; margin: 0 auto; font-size: 1.05rem; }
+
+    .policy-body { background: var(--cream); padding: 64px 24px 88px; }
+    .policy {
+      max-width: 760px;
+      margin: 0 auto;
+      color: var(--warm-text);
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+    .policy-meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 32px; }
+    .policy h2 {
+      font-family: var(--font-display);
+      color: var(--maroon-dark);
+      font-size: 1.45rem;
+      margin: 48px 0 14px;
+      scroll-margin-top: 96px;
+    }
+    .policy h3 { font-size: 1.05rem; color: var(--maroon-dark); margin: 26px 0 8px; }
+    .policy p { margin: 0 0 14px; }
+    .policy ul { margin: 0 0 16px; padding-left: 22px; }
+    .policy li { margin-bottom: 8px; }
+    .policy a { color: var(--maroon); text-decoration: underline; text-underline-offset: 3px; }
+    .policy strong { color: var(--maroon-dark); }
+
+    .policy-summary {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px 28px;
+      box-shadow: var(--shadow-sm);
+    }
+    .policy-summary h2 { margin-top: 0; font-size: 1.2rem; }
+    .policy-summary ul { margin-bottom: 0; }
+
+    .policy-toc {
+      margin: 32px 0 8px;
+      padding: 22px 28px;
+      border-left: 3px solid var(--gold);
+      background: var(--cream-dark);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .policy-toc p { font-weight: 700; color: var(--maroon-dark); margin-bottom: 8px; }
+    .policy-toc ol { margin: 0; padding-left: 20px; columns: 2; column-gap: 32px; font-size: 0.93rem; }
+    .policy-toc li { margin-bottom: 4px; break-inside: avoid; }
+
+    .policy-table-wrap { overflow-x: auto; margin: 0 0 18px; }
+    .policy table { width: 100%; border-collapse: collapse; font-size: 0.92rem; background: var(--white); border-radius: var(--radius-sm); overflow: hidden; }
+    .policy th, .policy td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .policy th { background: var(--cream-dark); color: var(--maroon-dark); font-weight: 700; }
+    .policy tr:last-child td { border-bottom: none; }
+
+    .policy-contact {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 26px;
+      margin-top: 8px;
+    }
+    .policy-contact p { margin: 0 0 6px; }
+
+    @media (max-width: 640px) {
+      .policy-hero { padding: 52px 20px 44px; }
+      .policy-body { padding: 44px 18px 64px; }
+      .policy-toc ol { columns: 1; }
+      .policy-summary, .policy-toc { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="community.html">Recipes</a>
+      <a href="story.html">Our Story</a>
+      <a href="find-us.html" title="Where You Can Find Us">Find Us</a>
+    </div>
+    <div class="nav-wordmark">
+      <a href="index.html"><em>Yawdi's</em></a>
+      <div class="nav-underline">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="nav-icons">
+        <a href="#" aria-label="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </a>
+        <a href="#" class="cart-link" aria-label="Cart">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="cart-badge">0</span>
+        </a>
+      </div>
+    </div>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" />
+    <label for="nav-toggle" class="nav-hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </label>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="policy-hero">
+  <p class="eyebrow">&#9829; Your Privacy Matters</p>
+  <h1>Privacy Policy</h1>
+  <p>What we collect, why, who helps us, and the choices you have.</p>
+</div>
+
+<!-- ── POLICY ── -->
+<section class="policy-body">
+  <article class="policy">
+    <p class="policy-meta">Effective date: October 30, 2026 &middot; Last updated: October 30, 2026</p>
+
+    <div class="policy-summary">
+      <h2>The short version</h2>
+      <ul>
+        <li>We collect only what we need: what you choose to send us (comments, emails, orders) and the basic technical information any website needs to run.</li>
+        <li>Comments are checked by an <strong>automated AI moderation tool (OpenAI)</strong> and by our team before they appear. Some comments are rejected automatically, and you can ask a person to review that decision.</li>
+        <li>Checkout and payment are handled by <strong>Shopify</strong>. We never see or store your card number.</li>
+        <li>We do not use advertising or analytics trackers, and we do not sell, rent or trade your personal information.</li>
+        <li>You can ask to see, correct or delete your information at any time by emailing <a href="mailto:vgeorge@yawdi.ca">vgeorge@yawdi.ca</a>.</li>
+      </ul>
+    </div>
+
+    <nav class="policy-toc" aria-label="Contents">
+      <p>Contents</p>
+      <ol>
+        <li><a href="#who-we-are">Who we are</a></li>
+        <li><a href="#what-we-collect">Information we collect</a></li>
+        <li><a href="#how-we-use">How we use it</a></li>
+        <li><a href="#ai-moderation">AI-assisted comment moderation</a></li>
+        <li><a href="#purchases">Purchases through Shopify</a></li>
+        <li><a href="#browser-storage">Cookies and browser storage</a></li>
+        <li><a href="#service-providers">Service providers</a></li>
+        <li><a href="#outside-canada">Storage outside Canada</a></li>
+        <li><a href="#sharing">When we share information</a></li>
+        <li><a href="#retention">How long we keep it</a></li>
+        <li><a href="#security">Security</a></li>
+        <li><a href="#your-rights">Your rights and choices</a></li>
+        <li><a href="#children">Children</a></li>
+        <li><a href="#other-sites">Other websites</a></li>
+        <li><a href="#changes">Changes to this policy</a></li>
+        <li><a href="#contact">Contact us</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="who-we-are">1. Who we are</h2>
+    <p>Yawdi's ("Yawdi's", "we", "us" or "our") is a Canadian food business based in Toronto, Ontario. This policy explains how we handle personal information when you visit <strong>yawdi.ca</strong> (the "Site"), comment on our recipes and posts, contact us, or buy our products.</p>
+    <p>We follow Canada's <em>Personal Information Protection and Electronic Documents Act</em> (PIPEDA) and, where they apply to you, the privacy laws of your province, including Quebec's <em>Act respecting the protection of personal information in the private sector</em>. By using the Site you agree to the practices described here. If you do not agree, please do not use the features that collect personal information, such as commenting.</p>
+
+    <h2 id="what-we-collect">2. Information we collect</h2>
+
+    <h3>Information you give us</h3>
+    <ul>
+      <li><strong>Comments.</strong> When you comment on a recipe or post, we collect the name you enter (optional; "Anonymous" is used if you leave it blank), your comment, the post it belongs to, and the date and time. We do not ask for your email address to comment. Please don't include personal details such as your phone number or address in a comment.</li>
+      <li><strong>Messages to us.</strong> Our contact form opens your own email program with your message ready to send to <a href="mailto:vgeorge@yawdi.ca">vgeorge@yawdi.ca</a>. The Site does not store what you type. When you send the email, we receive your name, email address and whatever you write.</li>
+      <li><strong>Orders.</strong> When you buy from us, Shopify collects the details needed to complete your order (see <a href="#purchases">Purchases through Shopify</a>).</li>
+    </ul>
+
+    <h3>Information collected automatically</h3>
+    <ul>
+      <li><strong>Technical information.</strong> Like every website, our hosting and security providers automatically receive your IP address, browser and device type, the pages you request and the date and time. They use this to deliver pages, keep the Site secure and block attacks and spam.</li>
+      <li><strong>Information stored on your own device.</strong> The Site saves a few small items in your browser so it works properly: your cart, which posts you have liked, and whether you closed an announcement. This stays on your device and is not sent to us (see <a href="#browser-storage">Cookies and browser storage</a>).</li>
+    </ul>
+
+    <h3>Your location (only if you ask)</h3>
+    <p>On our <a href="find-us.html">Find Us</a> page you can choose "Use my location" to sort stores by distance. Your browser will ask your permission first. Your location is used only on your device to sort the list and centre the map. We do not send it to our servers or store it. Google Maps loads the map for that area, as it would for any area you scroll to.</p>
+
+    <h3>What we don't collect</h3>
+    <p>We do not use advertising cookies, tracking pixels, or analytics tools that follow you across websites. We do not collect sensitive information such as health, financial or government ID details, and we ask that you don't share it with us.</p>
+
+    <h2 id="how-we-use">3. How we use your information</h2>
+    <p>We use personal information only for the purposes below, and with your consent, which you give by choosing to use these features:</p>
+    <ul>
+      <li>to publish your approved comments and show likes on recipes and posts;</li>
+      <li>to moderate comments and keep the community safe and respectful;</li>
+      <li>to answer your questions, wholesale and press inquiries;</li>
+      <li>to process, ship and support your orders, and handle returns and refunds;</li>
+      <li>to send you news and offers by email, <strong>only if you opted in</strong> (you can unsubscribe at any time using the link in any message, in line with Canada's Anti-Spam Legislation);</li>
+      <li>to operate, secure and improve the Site, and prevent fraud and abuse;</li>
+      <li>to meet our legal, tax and accounting obligations.</li>
+    </ul>
+    <p>We will not use your information for a new purpose without telling you and, where required, asking for your consent.</p>
+
+    <h2 id="ai-moderation">4. AI-assisted comment moderation</h2>
+    <p>To keep our comment sections safe, every new comment is checked by an automated moderation tool before it can appear publicly. Here is exactly how it works:</p>
+    <ul>
+      <li><strong>What is checked:</strong> the <strong>text of your comment</strong> is sent to the OpenAI Moderation service, operated by OpenAI, L.L.C. in the United States. The tool screens text for categories such as harassment, hate, threats, sexual content, violence and self-harm. Your name is not part of what is screened.</li>
+      <li><strong>Possible results:</strong>
+        <ul>
+          <li><strong>Approved automatically</strong>: no concerns detected, so the comment is published;</li>
+          <li><strong>Held for review</strong>: a possible concern was detected, so the comment stays hidden until a member of our team reviews it. When this happens, our team receives an email containing your name and comment so they can review it;</li>
+          <li><strong>Rejected automatically</strong>: the tool flagged the comment as breaking its content rules, so it is not published. This decision is made by the automated tool alone, without a person reviewing it first.</li>
+        </ul>
+      </li>
+      <li><strong>Human review and your rights:</strong> if your comment is not published and you think that's a mistake, email <a href="mailto:vgeorge@yawdi.ca">vgeorge@yawdi.ca</a> with the post and roughly when you commented. A member of our team will review the decision. You can also ask what information was used and the main reasons for the decision, and you can correct the information.</li>
+      <li><strong>How OpenAI handles it:</strong> OpenAI processes comment text on our behalf as a service provider. Under OpenAI's business terms, data sent through its API is not used to train its models by default, and may be kept for a limited time for abuse and misuse monitoring. See <a href="https://openai.com/policies/privacy-policy" target="_blank" rel="noopener">OpenAI's privacy policy</a>.</li>
+      <li><strong>Our team has the final say:</strong> staff can approve, reject or delete any comment at any time, and may remove comments that break our community standards even after they were published.</li>
+    </ul>
+    <p>Approved comments, including the name you entered, are <strong>public</strong> and can be seen by anyone who visits the Site.</p>
+
+    <h2 id="purchases">5. Purchases through Shopify</h2>
+    <p>Our online store and checkout are provided by <strong>Shopify Inc.</strong> When you check out, you enter your contact details, shipping and billing address, phone number (optional) and payment information on Shopify's secure checkout pages. Payments are processed by Shopify and its payment partners (for example Shop Pay, PayPal or Google Pay, if you choose them). <strong>We never see or store your full card number.</strong></p>
+    <p>We receive the order details we need to fulfil and support your purchase: your name, email address, shipping address, phone number if you provided it, and what you bought. Shopify's handling of your information is described in <a href="https://www.shopify.com/legal/privacy" target="_blank" rel="noopener">Shopify's privacy policy</a>, and any payment method you choose has its own privacy terms.</p>
+
+    <h2 id="browser-storage">6. Cookies and browser storage</h2>
+    <p>The Site does not set advertising or analytics cookies. It uses your browser's local storage for these functional items only:</p>
+    <div class="policy-table-wrap">
+      <table>
+        <thead><tr><th>Item</th><th>What it does</th><th>How long</th></tr></thead>
+        <tbody>
+          <tr><td>Your cart</td><td>Remembers the products in your cart until you check out</td><td>Until you clear it or empty your cart</td></tr>
+          <tr><td>Liked posts</td><td>Remembers which posts you liked on this device, so a like is counted once</td><td>Until you clear your browser data</td></tr>
+          <tr><td>Announcement</td><td>Remembers that you closed the announcement banner</td><td>Until you close your browser tab</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Some services we use may set their own cookies or similar technology under their own policies: Shopify's checkout, Cloudflare (to protect the Site from bots and attacks), and embedded YouTube videos and Spotify players on our <a href="story.html">Our Story</a> page. You can block or delete cookies and site data in your browser settings. If you do, your cart and likes will be forgotten, but the rest of the Site will still work.</p>
+
+    <h2 id="service-providers">7. Service providers</h2>
+    <p>We use trusted companies to run the Site. They process personal information only to provide their services to us, under contracts that require them to protect it.</p>
+    <div class="policy-table-wrap">
+      <table>
+        <thead><tr><th>Provider</th><th>What they do for us</th></tr></thead>
+        <tbody>
+          <tr><td>Cloudflare</td><td>Hosts and delivers the Site, protects it from attacks and spam</td></tr>
+          <tr><td>Google (Firebase)</td><td>Stores comments, likes and site content; staff sign-in; sends comment-review emails to our team</td></tr>
+          <tr><td>Google Workspace</td><td>Our email (messages you send to vgeorge@yawdi.ca)</td></tr>
+          <tr><td>Google Maps &amp; Google Fonts</td><td>Shows the store map on Find Us; delivers the Site's fonts</td></tr>
+          <tr><td>OpenAI</td><td>Automated comment moderation (see section 4)</td></tr>
+          <tr><td>Shopify</td><td>Product catalogue, cart checkout, payments and order management</td></tr>
+          <tr><td>jsDelivr</td><td>Delivers a code library the Site uses for animations</td></tr>
+          <tr><td>YouTube &amp; Spotify</td><td>Embedded videos and podcast players on Our Story</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>When your browser loads content from these providers, they receive your IP address and basic browser information, as described in their own privacy policies.</p>
+
+    <h2 id="outside-canada">8. Storage and processing outside Canada</h2>
+    <p>Some of our service providers store or process information outside Canada, mainly in the United States. That information is protected by our agreements with them, but it may be accessible to courts, law enforcement and national security authorities in those countries under their laws. If you have questions about how your information is handled outside Canada, contact us using the details below.</p>
+
+    <h2 id="sharing">9. When we share information</h2>
+    <p><strong>We do not sell, rent or trade your personal information.</strong> We share it only:</p>
+    <ul>
+      <li>with the service providers listed above, so they can provide their services to us;</li>
+      <li>publicly, for comments you post once they are approved;</li>
+      <li>when required by law, such as a court order or a valid request from authorities, or to protect the rights, safety or property of Yawdi's, our customers or others;</li>
+      <li>with a buyer or successor if our business is sold or reorganised, in which case your information would remain protected by this policy.</li>
+    </ul>
+
+    <h2 id="retention">10. How long we keep it</h2>
+    <ul>
+      <li><strong>Comments:</strong> kept while they serve the community. Comments that are rejected or deleted are removed when our team clears them, and you can ask us to delete your comments at any time.</li>
+      <li><strong>Emails you send us:</strong> kept as long as needed to answer you and keep a reasonable record of our conversation, then deleted.</li>
+      <li><strong>Order records:</strong> kept for as long as Canadian tax and accounting rules require (generally six years).</li>
+      <li><strong>Technical logs</strong> held by our providers: kept for short periods set by those providers.</li>
+    </ul>
+    <p>When we no longer need personal information, we delete it or make it anonymous.</p>
+
+    <h2 id="security">11. Security</h2>
+    <p>We use reasonable safeguards to protect personal information, including encrypted connections (HTTPS) across the Site, access controls so that only authorised staff can see unpublished comments, and reputable providers with strong security practices. No method of transmission or storage is completely secure, so we cannot guarantee absolute security. If a privacy breach creates a real risk of significant harm to you, we will notify you and the appropriate privacy regulator as the law requires.</p>
+
+    <h2 id="your-rights">12. Your rights and choices</h2>
+    <p>Depending on where you live, you have the right to:</p>
+    <ul>
+      <li><strong>access</strong> the personal information we hold about you and learn how it has been used and shared;</li>
+      <li><strong>correct</strong> information that is inaccurate or incomplete;</li>
+      <li><strong>withdraw your consent</strong>, for example by unsubscribing from emails (this may limit what we can do for you, such as answering a question);</li>
+      <li>ask us to <strong>delete</strong> your comments or other personal information, unless we must keep it by law;</li>
+      <li>ask for a <strong>human review</strong> of an automated comment decision (see section 4);</li>
+      <li>where applicable, receive your information in a commonly used format.</li>
+    </ul>
+    <p>To make a request, email <a href="mailto:vgeorge@yawdi.ca">vgeorge@yawdi.ca</a>. We may need to confirm your identity first. We will reply within 30 days. There is no charge for a reasonable request.</p>
+    <p>If you are not satisfied with our response, you can contact the <a href="https://www.priv.gc.ca" target="_blank" rel="noopener">Office of the Privacy Commissioner of Canada</a>. If you live in Quebec, you can also contact the <a href="https://www.cai.gouv.qc.ca" target="_blank" rel="noopener">Commission d'accès à l'information du Québec</a>.</p>
+
+    <h2 id="children">13. Children</h2>
+    <p>The Site is meant for adults and is not directed to children. We do not knowingly collect personal information from children under 13, or from children under 14 in Quebec, without a parent's or guardian's consent. If you believe a child has given us personal information, contact us and we will delete it.</p>
+
+    <h2 id="other-sites">14. Other websites</h2>
+    <p>The Site links to other websites and services, such as Instagram, Facebook, press articles and retailers. We are not responsible for their privacy practices. Please read their policies before giving them any information.</p>
+
+    <h2 id="changes">15. Changes to this policy</h2>
+    <p>We may update this policy as the Site or the law changes. We will post the new version here and update the date at the top. If we make an important change to how we use your personal information, we will make it clear on the Site and, where required, ask for your consent.</p>
+
+    <h2 id="contact">16. Contact us</h2>
+    <p>Our Privacy Officer is responsible for how we protect your personal information. For questions, requests or complaints about privacy, please contact:</p>
+    <div class="policy-contact">
+      <p><strong>Privacy Officer, Yawdi's</strong></p>
+      <p>Email: <a href="mailto:vgeorge@yawdi.ca">vgeorge@yawdi.ca</a></p>
+      <p>Toronto, Ontario, Canada</p>
+    </div>
+  </article>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="footer-brand footer-col">
+      <span class="footer-brand-name">Yawdi's</span>
+      <p style="font-size:0.88rem;margin-bottom:14px;">Island flavour for everyday meals<br />and memorable gatherings.</p>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/yawdis" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a href="https://www.facebook.com/YAWDIsCa/" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="shop.html">All Products</a></li>
+        <li><a href="shop.html#jellies">Pepper Jellies</a></li>
+        <li><a href="shop.html#jerk">Jerk Marinade</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <ul>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="community.html#recipes">Recipes</a></li>
+        <li><a href="story.html">Our Story</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Help</h4>
+      <ul>
+        <li><a href="contact.html">Contact Us</a></li>
+        <li><a href="#">Shipping Info</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="story.html#press">Press</a></li>
+        <li><a href="privacy.html" style="color:var(--maroon);">Privacy Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <p class="footer-copy">&copy; 2025 Yawdi's. Made with love in Canada.</p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="cart.js"></script>
+<script src="announcement.js"></script>
+<!-- Shopify Integration -->
+<script src="https://sdks.shopifycdn.com/js-buy-sdk/v2/latest/index.umd.min.js"></script>
+<script src="shopify-config.js"></script>
+<script src="shopify-cart.js"></script>
+<script type="module" src="experience.js"></script>
+</body>
+</html>
