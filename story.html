@@ -108,7 +108,10 @@
     @media (max-width: 768px) {
       .story-inner { grid-template-columns: 1fr; gap: 32px; }
       .story-section.reverse .story-inner { direction: ltr; }
-      .story-img img, .story-img.logo-img { height: 280px; }
+      /* Keep photos in proportion as the column widens (a fixed 280px turned tablet widths into thin strips) */
+      .story-img img { height: auto; aspect-ratio: 4 / 3; }
+      .story-img.logo-img { height: 280px; }
+      .story-img.logo-img img { aspect-ratio: auto; }
       .story-embed-wrap { height: 280px; }
       .story-hero { padding: 52px 20px 44px; }
       .story-section { padding: 52px 20px; }
