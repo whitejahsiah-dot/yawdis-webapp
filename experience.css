@@ -98,7 +98,13 @@ body::after {
   min-height: min(88vh, 760px);
 }
 .hero-home-text h1 { font-size: clamp(2.6rem, 5.6vw, 4.6rem); letter-spacing: -0.015em; }
-.hero-home-images { height: min(80vh, 640px); }
+/* Never shorter than 360px, and a size container so the jars below can be capped by its height */
+.hero-home-images { height: clamp(360px, 80vh, 640px); container-type: size; }
+/* Single-column hero (tablets and phones): size the jar stage to the screen width, not its height,
+   so there's no tall empty gap between the button and the jars */
+@media (max-width: 768px) {
+  .hero-home-images { height: clamp(340px, 95vw, 480px); }
+}
 .hero-home-images::before {
   content: "";
   position: absolute;
@@ -135,7 +141,9 @@ body::after {
   position: absolute;
   left: 0; right: 0; bottom: 0;
   margin-inline: auto;
-  width: min(400px, 56%);
+  /* A jar is ~1.3x taller than wide: also cap the width by the stage height (minus the name label),
+     so in a short window the jars shrink instead of spilling up over the hero text */
+  width: min(400px, 56%, calc(72cqh - 70px));
   padding: 0;
   border: 0;
   background: none;

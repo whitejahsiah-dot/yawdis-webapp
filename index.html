@@ -156,97 +156,20 @@
   </div>
 </section>
 
-<!-- -- RECIPE IDEAS -- -->
-<section class="section-pad" style="background:var(--cream);">
-  <div class="inner">
-    <div class="section-center">
-      <p class="eyebrow">Recipe Inspiration</p>
-      <h2>Signature dishes that always<br />feel like an occasion.</h2>
+<!-- -- RECIPES & COMMUNITY: the three newest real recipes, loaded from Firestore (see loadHomeRecipes) -- -->
+<section class="home-recipes">
+  <div class="home-recipes-inner">
+    <div class="home-recipes-intro">
+      <p class="eyebrow left">Recipes &amp; Community</p>
+      <h2>Made by you.<br /><em>Loved by all.</em></h2>
+      <p>Real dishes from the Yawdi's kitchen and our community. Find your next favourite, then share your own.</p>
     </div>
-    <div class="recipe-row">
-
-      <article class="recipe-card" data-post-id="classic-jerk-chicken">
-        <div class="recipe-card-img jar-bg">
-          <img src="content/SiloImages/JerkSilo-NoShadow.png" alt="Jerk Marinade" />
-        </div>
-        <div class="recipe-card-body">
-          <span class="recipe-tag">Grill</span>
-          <h3>Classic Jerk Chicken</h3>
-          <p>Marinate bone-in thighs overnight, then grill until charred outside and juicy within.</p>
-          <p class="recipe-made-with">Made with <span>Jerk Marinade</span></p>
-          <div class="recipe-stats">
-            <span class="recipe-stat cc-like-count" data-post="classic-jerk-chicken">&#9825; 0</span>
-            <span class="recipe-stat cc-comment-count" data-post="classic-jerk-chicken">&#128172; 0</span>
-          </div>
-        </div>
-      </article>
-
-      <article class="recipe-card" data-post-id="mango-pepper-glazed-chicken">
-        <div class="recipe-card-img jar-bg">
-          <img src="content/SiloImages/Mango-Silo-NoShadow.png" alt="Mango Jelly" />
-        </div>
-        <div class="recipe-card-body">
-          <span class="recipe-tag">Dinner</span>
-          <h3>Mango Pepper Glazed Chicken</h3>
-          <p>Sweet, spicy and full of flavour. A family favourite that takes just minutes to make.</p>
-          <p class="recipe-made-with">Made with <span>Mango Pepper Jelly</span></p>
-          <div class="recipe-stats">
-            <span class="recipe-stat cc-like-count" data-post="mango-pepper-glazed-chicken">&#9825; 0</span>
-            <span class="recipe-stat cc-comment-count" data-post="mango-pepper-glazed-chicken">&#128172; 0</span>
-          </div>
-        </div>
-      </article>
-
-      <article class="recipe-card" data-post-id="lavender-jelly-brie">
-        <div class="recipe-card-img jar-bg">
-          <img src="content/SiloImages/Lavender-Silo-NoShadow.png" alt="Lavender Jelly" />
-        </div>
-        <div class="recipe-card-body">
-          <span class="recipe-tag">Elegant</span>
-          <h3>Lavender Jelly &amp; Brie</h3>
-          <p>Floral, sweet and so elegant. Spoon over warm Brie and serve with crackers.</p>
-          <p class="recipe-made-with">Made with <span>Lavender Pepper Jelly</span></p>
-          <div class="recipe-stats">
-            <span class="recipe-stat cc-like-count" data-post="lavender-jelly-brie">&#9825; 0</span>
-            <span class="recipe-stat cc-comment-count" data-post="lavender-jelly-brie">&#128172; 0</span>
-          </div>
-        </div>
-      </article>
-
-      <article class="recipe-card" data-post-id="pineapple-pepper-pork-chops">
-        <div class="recipe-card-img jar-bg">
-          <img src="content/SiloImages/PineappleSilo.png" alt="Pineapple Jelly" />
-        </div>
-        <div class="recipe-card-body">
-          <span class="recipe-tag">BBQ</span>
-          <h3>Pineapple Pepper Pork Chops</h3>
-          <p>Juicy, tangy and delicious. So easy to make &mdash; just brush and grill.</p>
-          <p class="recipe-made-with">Made with <span>Pineapple Pepper Jelly</span></p>
-          <div class="recipe-stats">
-            <span class="recipe-stat cc-like-count" data-post="pineapple-pepper-pork-chops">&#9825; 0</span>
-            <span class="recipe-stat cc-comment-count" data-post="pineapple-pepper-pork-chops">&#128172; 0</span>
-          </div>
-        </div>
-      </article>
-
+    <div class="home-recipes-track" id="home-recipes-track">
+      <p class="home-recipes-status">Loading recipes&hellip;</p>
     </div>
-    <div style="text-align:center;margin-top:36px;">
-      <a href="community.html" class="btn btn-outline">See Yawdi's Recipes</a>
-    </div>
-  </div>
-</section>
-
-<!-- -- COMMUNITY TEASER -- -->
-<section class="promo-banner" style="background:var(--cream-dark);color:var(--warm-text);">
-  <div class="promo-banner-inner">
-    <div class="promo-banner-img">
-      <img src="content/JARlineup2.webp" alt="Four Yawdi's pepper jellies in a warm kitchen" style="border-radius:var(--radius);box-shadow:var(--shadow-md);width:100%;max-width:450px;height:300px;object-fit:cover;object-position:50% 40%;" />
-    </div>
-    <div class="promo-banner-text">
-      <p class="eyebrow" style="color:var(--maroon);">Community</p>
-      <h2 style="color:var(--maroon-dark);">Made by You.<br /><em>Loved by all.</em></h2>
-      <p style="color:var(--muted);">Share how you use Yawdi's in your kitchen! Post your recipes, leave a review, and inspire others in our growing community.</p>
-      <a href="community.html" class="btn btn-maroon">Share Your Creation</a>
+    <div class="home-recipes-actions">
+      <a href="community.html#recipes" class="btn btn-maroon">See All Recipes</a>
+      <a href="community.html#share" class="btn btn-outline">Share Your Creation</a>
     </div>
   </div>
 </section>
@@ -255,7 +178,7 @@
 <section class="about-strip" id="about">
   <div class="about-strip-inner">
     <div class="about-strip-img">
-      <img src="Yawdis--scaled_1.jpeg" alt="Yawdi's brand story" />
+      <img src="content/JARlineup2.webp" alt="Four Yawdi's pepper jellies in a warm kitchen" style="height:420px;object-position:50% 45%;" />
     </div>
     <div class="about-strip-text">
       <p class="eyebrow left">Our Story</p>
@@ -335,26 +258,36 @@
 <script src="cart.js"></script>
 <script src="announcement.js"></script>
 <script>
+// Homepage recipes: the three newest recipes from Firestore as photo cards (a swipe row on small screens).
+// Each card opens that recipe on the Recipes page (community.html?post=<id>).
 (function () {
-  const CC_KEY = 'yawdis-community';
-  function updateRecipeStats() {
-    let data = {};
-    try { data = JSON.parse(localStorage.getItem(CC_KEY) || '{}'); } catch {}
-    document.querySelectorAll('.recipe-card[data-post-id]').forEach(card => {
-      const id   = card.dataset.postId;
-      const post = data[id] || { likes: 0, liked: false, comments: [] };
-      const likeEl = card.querySelector('.cc-like-count');
-      const cmtEl  = card.querySelector('.cc-comment-count');
-      if (likeEl) {
-        likeEl.innerHTML = (post.liked ? '&#9829;' : '&#9825;') + ' ' + post.likes;
-        likeEl.style.color = post.liked ? 'var(--maroon)' : '';
-        likeEl.style.fontWeight = post.liked ? '700' : '';
-      }
-      if (cmtEl) cmtEl.innerHTML = '&#128172; ' + (post.comments ? post.comments.length : 0);
-    });
-  }
-  document.addEventListener('DOMContentLoaded', updateRecipeStats);
+  const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+  function cardHtml(r) {
+    return `
+      <a class="home-recipe" href="community.html?post=${encodeURIComponent(r.id)}">
+        <img src="${esc(r.image)}" alt="${esc(r.title)}" loading="lazy" />
+        <div class="home-recipe-overlay">
+          ${r.madeWith ? `<span class="home-recipe-made">${esc(r.madeWith)}</span>` : ''}
+          <h3>${esc(r.title)}</h3>
+          <span class="home-recipe-cta">View recipe &rarr;</span>
+        </div>
+      </a>`;
+  }
+
+  async function loadHomeRecipes() {
+    const track = document.getElementById('home-recipes-track');
+    if (!track) return;
+    if (typeof RecipeStore === 'undefined' || !db) { track.closest('section').hidden = true; return; }
+    let recipes;
+    try { recipes = (await RecipeStore.getAll()).slice(0, 3); }
+    catch (err) { console.error('Failed to load recipes:', err); recipes = []; }
+    track.innerHTML = recipes.length
+      ? recipes.map(cardHtml).join('')
+      : '<p class="home-recipes-status">New recipes are on the way — check back soon!</p>';
+  }
+
+  document.addEventListener('DOMContentLoaded', loadHomeRecipes);
 })();
 </script>
 

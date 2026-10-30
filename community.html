@@ -187,8 +187,9 @@
     <p style="grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 0;">Loading recipes&hellip;</p>
   </div>
 
-  <div class="load-more-wrap">
-    <button class="btn btn-outline">Load More Posts</button>
+  <!-- Shown only when there are more posts than the first page (see ccShowMore) -->
+  <div class="load-more-wrap" id="cc-load-more-wrap" hidden>
+    <button class="btn btn-outline" id="cc-load-more" type="button">Load More Posts</button>
   </div>
 </div>
 
@@ -332,8 +333,25 @@ async function loadCommunityGrid() {
     grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 0;">No recipes yet \u2014 check back soon!</p>';
     return;
   }
-  grid.innerHTML = communityRecipes.map(communityCardHtml).join('');
+  grid.innerHTML = '';
+  ccShown = 0;
+  ccShowMore();
   await ccUpdateCardCounts();
+
+  // Links from the homepage (community.html?post=<id>) open that recipe straight away
+  const linked = new URLSearchParams(location.search).get('post');
+  if (linked && communityRecipes.some(r => r.id === linked)) ccOpenModal(linked);
+}
+
+// Posts appear a page at a time (three full rows on desktop); "Load More Posts" only shows while more remain
+const CC_PAGE_SIZE = 9;
+let ccShown = 0;
+
+function ccShowMore() {
+  const next = communityRecipes.slice(ccShown, ccShown + CC_PAGE_SIZE);
+  document.getElementById('community-grid').insertAdjacentHTML('beforeend', next.map(communityCardHtml).join(''));
+  ccShown += next.length;
+  document.getElementById('cc-load-more-wrap').hidden = ccShown >= communityRecipes.length;
 }
 
 function ccBuildModal() {
@@ -491,6 +509,11 @@ function ccEsc(s) {
 
 document.addEventListener('DOMContentLoaded', () => {
   loadCommunityGrid();
+
+  document.getElementById('cc-load-more').addEventListener('click', async () => {
+    ccShowMore();
+    await ccUpdateCardCounts();
+  });
 
   // Tab switching
   document.querySelectorAll('.tab-btn').forEach(btn => {
